@@ -11,11 +11,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.spacecomplexity.longboilife.Main;
 import com.spacecomplexity.longboilife.MainInputManager;
+import com.spacecomplexity.longboilife.game.globals.Window;
 
 /**
  * Main class to control the menu screen.
@@ -35,7 +37,7 @@ public class MenuScreen implements Screen {
         this.game = game;
 
         // Initialise viewport and drawing elements
-        viewport = new FitViewport(640, 480);
+        viewport = new ScalingViewport(Scaling.fit, Window.DEFAULT_WIDTH, Window.DEFAULT_HEIGHT);
         stage = new Stage(viewport);
         batch = new SpriteBatch();
 
@@ -74,10 +76,12 @@ public class MenuScreen implements Screen {
         });
 
         // Add buttons to table
-        table.pad(100).right().bottom();
         table.add(playButton);
         table.row();
         table.add(exitButton).padTop(10);
+        
+        // Position the table correctly
+        table.pad(150).padBottom((Window.DEFAULT_HEIGHT / 2) - 40).bottom().right();
 
         // Allows UI to capture touch events
         InputMultiplexer inputMultiplexer = new InputMultiplexer(new MainInputManager(), stage);
@@ -91,7 +95,7 @@ public class MenuScreen implements Screen {
 
         // Draw background image
         batch.begin();
-        batch.draw(backgroundTexture, (640 - 480) / 2f, 0, 480, 480);
+        batch.draw(backgroundTexture, 0, 0, Window.DEFAULT_HEIGHT, Window.DEFAULT_HEIGHT);
         batch.end();
 
         // Draw and apply ui
@@ -101,6 +105,7 @@ public class MenuScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
+        Window.update(width, height);
         viewport.update(width, height, true);
     }
 

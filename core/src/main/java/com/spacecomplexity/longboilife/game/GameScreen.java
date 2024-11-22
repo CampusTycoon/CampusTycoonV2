@@ -18,6 +18,7 @@ import com.spacecomplexity.longboilife.game.globals.Constants;
 import com.spacecomplexity.longboilife.game.globals.GameState;
 import com.spacecomplexity.longboilife.game.globals.MainCamera;
 import com.spacecomplexity.longboilife.game.globals.MainTimer;
+import com.spacecomplexity.longboilife.game.globals.Window;
 import com.spacecomplexity.longboilife.game.tile.InvalidSaveMapException;
 import com.spacecomplexity.longboilife.game.tile.Tile;
 import com.spacecomplexity.longboilife.game.ui.UIManager;
@@ -307,6 +308,9 @@ public class GameScreen implements Screen {
      */
     @Override
     public void resize(int width, int height) {
+        // Updates the window width/height globals
+        Window.update(width, height);
+
         // Updates viewport to match new window size
         viewport.update(width, height, false);
 

@@ -7,6 +7,7 @@ import com.spacecomplexity.longboilife.game.building.BuildingCategory;
 import com.spacecomplexity.longboilife.game.globals.Constants;
 import com.spacecomplexity.longboilife.game.globals.GameState;
 import com.spacecomplexity.longboilife.game.globals.MainCamera;
+import com.spacecomplexity.longboilife.game.globals.Window;
 import com.spacecomplexity.longboilife.game.world.World;
 
 import java.util.HashMap;
@@ -42,7 +43,7 @@ public class GameUtils {
      * Calculate and set scaling factors using the window size.
      */
     public static void calculateScaling() {
-        int screenHeight = Gdx.graphics.getHeight();
+        int screenHeight = Window.height;
 
         // If height is 0 then the window is minimised so don't bother calculating as this could cause unintended behaviour with scaling at 0
         if (screenHeight == 0)
