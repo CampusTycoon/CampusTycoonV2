@@ -38,7 +38,7 @@ public class Lwjgl3Launcher {
 
         //// Sets the icon that will be used for the window
         //// You can change these files; they are in lwjgl3/src/main/resources/ .
-        configuration.setWindowIcon("icon128.png", "icon64.png", "icon32.png", "icon16.png");
+        configuration.setWindowIcon("LogoNew.png");
 
         return configuration;
     }
