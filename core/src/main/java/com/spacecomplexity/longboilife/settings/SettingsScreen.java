@@ -1,4 +1,4 @@
-package com.spacecomplexity.longboilife.menu;
+package com.spacecomplexity.longboilife.settings;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -22,7 +22,7 @@ import com.spacecomplexity.longboilife.game.globals.Window;
 /**
  * Main class to control the menu screen.
  */
-public class MenuScreen implements Screen {
+public class SettingsScreen implements Screen {
     private final Main game;
 
     private Viewport viewport;
@@ -33,7 +33,7 @@ public class MenuScreen implements Screen {
     private Stage stage;
     private Skin skin;
 
-    public MenuScreen(Main game) {
+    public SettingsScreen(Main game) {
         this.game = game;
 
         // Initialise viewport and drawing elements
@@ -55,16 +55,6 @@ public class MenuScreen implements Screen {
         table.setFillParent(true);
         stage.addActor(table);
 
-        // Initialise play button
-        TextButton playButton = new TextButton("Play", skin, "round");
-        playButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                // Switch to game screen
-                game.switchScreen(Main.ScreenType.GAME);
-            }
-        });
-
         // Initialise exit button
         TextButton exitButton = new TextButton("Exit", skin, "round");
         exitButton.addListener(new ClickListener() {
@@ -74,25 +64,12 @@ public class MenuScreen implements Screen {
                 Gdx.app.exit();
             }
         });
-
-        // Initialise settings button
-        TextButton settingsButton = new TextButton("Settings", skin, "round");
-        exitButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                // Switch to settings screen
-                game.switchScreen(Main.ScreenType.SETTINGS);
-            }
-        });
     
 
         // Add buttons to table
-        table.add(playButton);
-        table.row();
         table.add(exitButton).padTop(10);
         table.row();
-        table.add(settingsButton).padTop(20);
-        
+     
         // Position the table correctly
         table.pad(150).padBottom((Window.DEFAULT_HEIGHT / 2) - 40).bottom().right();
 
