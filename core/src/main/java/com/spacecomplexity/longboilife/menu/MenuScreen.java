@@ -77,7 +77,7 @@ public class MenuScreen implements Screen {
 
         // Initialise settings button
         TextButton settingsButton = new TextButton("Settings", skin, "round");
-        exitButton.addListener(new ClickListener() {
+        settingsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 // Switch to settings screen

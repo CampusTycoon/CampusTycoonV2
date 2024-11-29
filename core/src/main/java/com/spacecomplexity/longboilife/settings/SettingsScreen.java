@@ -42,7 +42,7 @@ public class SettingsScreen implements Screen {
         batch = new SpriteBatch();
 
         // Load background texture
-        backgroundTexture = new Texture(Gdx.files.internal("menu/background.png"));
+        backgroundTexture = new Texture(Gdx.files.internal("menu/Plain black.png"));
 
         // Load UI skin for buttons
         skin = new Skin(Gdx.files.internal("ui/skin/uiskin.json"));
