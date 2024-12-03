@@ -18,6 +18,9 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.spacecomplexity.longboilife.Main;
 import com.spacecomplexity.longboilife.MainInputManager;
 import com.spacecomplexity.longboilife.game.globals.Window;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 
 /**
  * Main class to control the menu screen.
@@ -121,6 +124,26 @@ public class SettingsScreen implements Screen {
         fullscreenRow.add(fullscreenLabel).right().pad(10);
         fullscreenRow.add(rightFullscreenButton).right().pad(10);
 
+
+        // Volume Control
+        Table volumeRow = new Table();
+        volumeRow.setSkin(skin);
+        volumeRow.add(new TextButton("Volume:", skin, "round")).left();
+        volumeRow.add().expandX();
+
+        // Create slider for volume control
+        Slider volumeSlider = new Slider(0f, 1f, 0.1f, false, skin);
+        volumeSlider.setValue(0.5f); // Set default volume to 50%
+        volumeSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                // TODO: Implement volume change logic
+                float volume = volumeSlider.getValue();
+            }
+        });
+
+        volumeRow.add(volumeSlider).right().padRight(120);
+
         // Save button
         Table saveRow = new Table();
         saveRow.setSkin(skin);
@@ -141,7 +164,10 @@ public class SettingsScreen implements Screen {
         table.row();
         table.add(fullscreenRow).expandX().fillX().padTop(10);
         table.row();
+        table.add(volumeRow).expandX().fillX().padTop(20);
+        table.row();
         table.add(saveRow).padBottom(10);   // TODO: Figure out how to anchor this to the bottom of the screen
+        table.row();
      
         // Position the table correctly
         table.left().pad(50);

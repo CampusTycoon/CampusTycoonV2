@@ -83,8 +83,7 @@ public class MenuScreen implements Screen {
                 // Switch to settings screen
                 game.switchScreen(Main.ScreenType.SETTINGS);
             }
-        });
-    
+        });        
 
         // Add buttons to table
         table.add(playButton);
