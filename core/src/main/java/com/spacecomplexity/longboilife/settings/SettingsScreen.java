@@ -33,6 +33,9 @@ public class SettingsScreen implements Screen {
     private Stage stage;
     private Skin skin;
 
+    private TextButton fullscreenLabel;
+    private TextButton resolutionLabel;
+
     public SettingsScreen(Main game) {
         this.game = game;
 
@@ -56,23 +59,70 @@ public class SettingsScreen implements Screen {
         table.setSkin(skin);
         stage.addActor(table);
 
-        // Create settings rows with labels and buttons
+
+
+        // Initialise resolution table
         Table resolutionRow = new Table();
         resolutionRow.setSkin(skin);    // Set skin for a table to prevent app from crashing
         resolutionRow.add(new TextButton("Resolution:", skin, "round")).left(); // Add button and anchor it to the left
         resolutionRow.add().expandX();  // Makes the text go all the way to the right
-        resolutionRow.add(new TextButton("<", skin, "round")).right().pad(25);
-        resolutionRow.add("1920x1080").right().pad(20); // Add text label
-        resolutionRow.add(new TextButton(">", skin, "round")).right().pad(15);
 
-        // Initialise resolution button
+        // Left cycle button for resolution
+        TextButton leftResolutionButton = new TextButton("<", skin, "round");
+        leftResolutionButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // TODO: Add resolution cycling logic
+            }
+        });
+
+        // Right cycle button for resolution
+        TextButton rightResolutionButton = new TextButton(">", skin, "round");
+        rightResolutionButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // TODO: Add resolution cycling logic
+            }
+        });
+        
+        resolutionLabel = new TextButton(Gdx.graphics.isFullscreen() ? "1920x1080" : "1280x720", skin, "round");
+        resolutionRow.add(leftResolutionButton).right().pad(10);
+        resolutionRow.add(resolutionLabel).right().pad(10);
+        resolutionRow.add(rightResolutionButton).right().pad(10);
+
+
+        // Initialise resolution table
         Table fullscreenRow = new Table();
         fullscreenRow.setSkin(skin);
         fullscreenRow.add(new TextButton("Fullscreen:", skin, "round")).left();
         fullscreenRow.add().expandX();
-        fullscreenRow.add(new TextButton("<", skin, "round")).right().pad(25);
-        fullscreenRow.add("Fullscreen").right().pad(20); // Add text label
-        fullscreenRow.add(new TextButton(">", skin, "round")).right().pad(15);
+        
+
+
+        // Left cycle button for fullscreen
+        TextButton leftFullscreenButton = new TextButton("<", skin, "round");
+        leftFullscreenButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                toggleFullscreen();
+            }
+        });
+
+        // Right cycle button for fullscreen
+        TextButton rightFullscreenButton = new TextButton(">", skin, "round");
+        rightFullscreenButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                toggleFullscreen();
+            }
+        });
+
+        // Logic for displaying the current window mode
+        fullscreenLabel = new TextButton(Gdx.graphics.isFullscreen() ? "Fullscreen" : "Windowed", skin, "round");
+        fullscreenRow.add(leftFullscreenButton).right().pad(10);
+        fullscreenRow.add(fullscreenLabel).right().pad(10);
+        fullscreenRow.add(rightFullscreenButton).right().pad(10);
+
 
         // Add buttons to table
         table.add(resolutionRow).expandX().fillX().padTop(10);  // Adding the rows declared above to the render table
@@ -131,5 +181,15 @@ public class SettingsScreen implements Screen {
         skin.dispose();
         backgroundTexture.dispose();
         batch.dispose();
+    }
+
+    private void toggleFullscreen() {
+        if (Gdx.graphics.isFullscreen()) {
+            Gdx.graphics.setWindowedMode(Window.DEFAULT_WIDTH, Window.DEFAULT_HEIGHT);
+            fullscreenLabel.setText("Windowed");
+        } else {
+            Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+            fullscreenLabel.setText("Fullscreen");
+        }
     }
 }
