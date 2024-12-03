@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
 import com.spacecomplexity.longboilife.game.GameScreen;
 import com.spacecomplexity.longboilife.menu.MenuScreen;
+import com.spacecomplexity.longboilife.settings.SettingsScreen;
 
 import java.util.HashMap;
 
@@ -22,11 +23,12 @@ public class Main extends Game {
     public static int prevAppWidth, prevAppHeight;
 
     /**
-     * Enum containing all screens and there class references.
+     * Enum containing all screens and their class references.
      */
     public enum ScreenType {
         MENU(MenuScreen.class),
         GAME(GameScreen.class),
+        SETTINGS(SettingsScreen.class)
         ;
 
         private final Class<? extends Screen> screenClass;

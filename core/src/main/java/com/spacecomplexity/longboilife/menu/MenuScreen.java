@@ -75,10 +75,23 @@ public class MenuScreen implements Screen {
             }
         });
 
+        // Initialise settings button
+        TextButton settingsButton = new TextButton("Settings", skin, "round");
+        settingsButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // Switch to settings screen
+                game.switchScreen(Main.ScreenType.SETTINGS);
+            }
+        });        
+
         // Add buttons to table
         table.add(playButton);
         table.row();
+        table.add(settingsButton).padTop(10);
+        table.row();
         table.add(exitButton).padTop(10);
+
         
         // Position the table correctly
         table.pad(150).padBottom((Window.DEFAULT_HEIGHT / 2) - 40).bottom().right();
