@@ -59,8 +59,7 @@ public class SettingsScreen implements Screen {
         table.setSkin(skin);
         stage.addActor(table);
 
-
-
+        // Resolution Functions
         // Initialise resolution table
         Table resolutionRow = new Table();
         resolutionRow.setSkin(skin);    // Set skin for a table to prevent app from crashing
@@ -91,14 +90,13 @@ public class SettingsScreen implements Screen {
         resolutionRow.add(rightResolutionButton).right().pad(10);
 
 
-        // Initialise resolution table
+        // Window Mode Functions
+        // Initialise window mode table
         Table fullscreenRow = new Table();
         fullscreenRow.setSkin(skin);
         fullscreenRow.add(new TextButton("Fullscreen:", skin, "round")).left();
         fullscreenRow.add().expandX();
         
-
-
         // Left cycle button for fullscreen
         TextButton leftFullscreenButton = new TextButton("<", skin, "round");
         leftFullscreenButton.addListener(new ClickListener() {
@@ -123,12 +121,27 @@ public class SettingsScreen implements Screen {
         fullscreenRow.add(fullscreenLabel).right().pad(10);
         fullscreenRow.add(rightFullscreenButton).right().pad(10);
 
+        // Save button
+        Table saveRow = new Table();
+        saveRow.setSkin(skin);
+        saveRow.add().expandX();
+        
+        TextButton saveButton = new TextButton("Save", skin, "round");
+        saveButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.switchScreen(Main.ScreenType.MENU);
+            }
+        });
+        
+        saveRow.add(saveButton).right().pad(10);
 
         // Add buttons to table
         table.add(resolutionRow).expandX().fillX().padTop(10);  // Adding the rows declared above to the render table
         table.row();
         table.add(fullscreenRow).expandX().fillX().padTop(10);
         table.row();
+        table.add(saveRow).padBottom(10);   // TODO: Figure out how to anchor this to the bottom of the screen
      
         // Position the table correctly
         table.left().pad(50);

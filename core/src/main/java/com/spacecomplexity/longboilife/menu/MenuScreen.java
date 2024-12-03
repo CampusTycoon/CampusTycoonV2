@@ -89,9 +89,10 @@ public class MenuScreen implements Screen {
         // Add buttons to table
         table.add(playButton);
         table.row();
-        table.add(exitButton).padTop(10);
+        table.add(settingsButton).padTop(10);
         table.row();
-        table.add(settingsButton).padTop(20);
+        table.add(exitButton).padTop(10);
+
         
         // Position the table correctly
         table.pad(150).padBottom((Window.DEFAULT_HEIGHT / 2) - 40).bottom().right();
