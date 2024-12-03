@@ -53,25 +53,36 @@ public class SettingsScreen implements Screen {
         // Table layout for menu alignment
         Table table = new Table();
         table.setFillParent(true);
+        table.setSkin(skin);
         stage.addActor(table);
 
-        // Initialise exit button
-        TextButton exitButton = new TextButton("Exit", skin, "round");
-        exitButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                // Exit the application
-                Gdx.app.exit();
-            }
-        });
-    
+        // Create settings rows with labels and buttons
+        Table resolutionRow = new Table();
+        resolutionRow.setSkin(skin);    // Set skin for a table to prevent app from crashing
+        resolutionRow.add(new TextButton("Resolution:", skin, "round")).left(); // Add button and anchor it to the left
+        resolutionRow.add().expandX();  // Makes the text go all the way to the right
+        resolutionRow.add(new TextButton("<", skin, "round")).right().pad(25);
+        resolutionRow.add("1920x1080").right().pad(20); // Add text label
+        resolutionRow.add(new TextButton(">", skin, "round")).right().pad(15);
+
+        // Initialise resolution button
+        Table fullscreenRow = new Table();
+        fullscreenRow.setSkin(skin);
+        fullscreenRow.add(new TextButton("Fullscreen:", skin, "round")).left();
+        fullscreenRow.add().expandX();
+        fullscreenRow.add(new TextButton("<", skin, "round")).right().pad(25);
+        fullscreenRow.add("Fullscreen").right().pad(20); // Add text label
+        fullscreenRow.add(new TextButton(">", skin, "round")).right().pad(15);
 
         // Add buttons to table
-        table.add(exitButton).padTop(10);
+        table.add(resolutionRow).expandX().fillX().padTop(10);  // Adding the rows declared above to the render table
+        table.row();
+        table.add(fullscreenRow).expandX().fillX().padTop(10);
         table.row();
      
         // Position the table correctly
-        table.pad(150).padBottom((Window.DEFAULT_HEIGHT / 2) - 40).bottom().right();
+        table.left().pad(50);
+        table.top().pad(50);
 
         // Allows UI to capture touch events
         InputMultiplexer inputMultiplexer = new InputMultiplexer(new MainInputManager(), stage);
