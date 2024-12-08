@@ -184,21 +184,10 @@ public class InputManager {
          */
         @Override
         public boolean keyDown(int keycode) {
-            // If the escape key is pressed
+            // If the close key is pressed, send events to cancel actions
             if (keycode == Keybindings.CANCEL.getKey()) {
-                // If there are operations to cancel, cancel them
-                if (GameState.getState().placingBuilding != null) {
-                    eventHandler.callEvent(EventHandler.Event.CANCEL_OPERATIONS);
-                }
-                // If no operations to cancel, pause and open settings
-                else if (!GameState.getState().paused) {
-                    eventHandler.callEvent(EventHandler.Event.PAUSE_GAME);
-                    eventHandler.callEvent(EventHandler.Event.SETTINGS_MENU);
-                }
-                // If settings are open (game is paused), close settings and resume
-                else {
-                    eventHandler.callEvent(EventHandler.Event.RESUME_GAME);
-                }
+                eventHandler.callEvent(EventHandler.Event.CANCEL_OPERATIONS);
+
                 return true;
             }
 
