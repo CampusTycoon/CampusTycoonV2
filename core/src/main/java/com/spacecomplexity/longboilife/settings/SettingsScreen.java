@@ -56,6 +56,9 @@ public class SettingsScreen implements Screen {
 
     @Override
     public void show() {
+        // Clear any existing actors before setting up new ones
+        stage.clear();
+        
         // Table layout for menu alignment
         Table table = new Table();
         table.setFillParent(true);
@@ -211,7 +214,8 @@ public class SettingsScreen implements Screen {
 
     @Override
     public void hide() {
-
+        // Clear all actors from the stage when hiding the screen
+        stage.clear();
     }
 
     @Override
@@ -230,5 +234,8 @@ public class SettingsScreen implements Screen {
             Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
             fullscreenLabel.setText("Fullscreen");
         }
+        // Clear and rebuild stage after changing screen mode
+        stage.clear();
+        show();
     }
 }
