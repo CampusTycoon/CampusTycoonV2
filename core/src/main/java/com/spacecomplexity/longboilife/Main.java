@@ -70,6 +70,17 @@ public class Main extends Game {
         setScreen(screens.get(screen));
     }
 
+    public void openSettings(ScreenType previousScreen) {
+        try {
+            Screen settingsScreen = SettingsScreen.class.getConstructor(Main.class, ScreenType.class)
+                .newInstance(this, previousScreen);
+            screens.put(ScreenType.SETTINGS, settingsScreen);
+            setScreen(settingsScreen);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create settings screen", e);
+        }
+    }
+
     @Override
     public void dispose() {
         for (Screen screen : screens.values()) {

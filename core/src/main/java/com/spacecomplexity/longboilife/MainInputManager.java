@@ -39,6 +39,24 @@ public class MainInputManager extends InputAdapter {
 
             return true;
         }
+        
+        // Handle escape key
+        if (keycode == Keybindings.OPEN_SETTINGS.getKey()) {
+            // Check if there are any active operations
+            boolean hasActiveOperations = gameState.placingBuilding != null || 
+                                        gameState.selectedBuilding != null || 
+                                        gameState.movingBuilding != null;
+            
+            if (hasActiveOperations) {
+                // Cancel operations if there are any active
+                eventHandler.callEvent(EventHandler.Event.CANCEL_OPERATIONS);
+            } else {
+                // Open settings if no active operations
+                eventHandler.callEvent(EventHandler.Event.OPEN_SETTINGS);
+            }
+            
+            return true;
+        }
 
         return false;
     }

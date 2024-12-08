@@ -27,6 +27,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
  */
 public class SettingsScreen implements Screen {
     private final Main game;
+    private final Main.ScreenType previousScreen;
 
     private Viewport viewport;
 
@@ -39,8 +40,9 @@ public class SettingsScreen implements Screen {
     private TextButton fullscreenLabel;
     private TextButton resolutionLabel;
 
-    public SettingsScreen(Main game) {
+    public SettingsScreen(Main game, Main.ScreenType previousScreen) {
         this.game = game;
+        this.previousScreen = previousScreen;
 
         // Initialise viewport and drawing elements
         viewport = new ScalingViewport(Scaling.fit, Window.DEFAULT_WIDTH, Window.DEFAULT_HEIGHT);
@@ -156,7 +158,7 @@ public class SettingsScreen implements Screen {
         saveButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.switchScreen(Main.ScreenType.MENU);
+                game.switchScreen(previousScreen);
             }
         });
         
