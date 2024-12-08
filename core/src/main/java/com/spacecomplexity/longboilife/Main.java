@@ -44,6 +44,7 @@ public class Main extends Game {
 
     private HashMap<ScreenType, Screen> screens = new HashMap<>();
 
+
     @Override
     public void create() {
         // Initially load the menu screen

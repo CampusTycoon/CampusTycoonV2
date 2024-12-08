@@ -2,6 +2,7 @@ package com.spacecomplexity.longboilife.settings;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -86,7 +87,7 @@ public class SettingsScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 // TODO: Add resolution cycling logic
-            }
+            }   
         });
         
         resolutionLabel = new TextButton(Gdx.graphics.isFullscreen() ? "1920x1080" : "1280x720", skin, "round");
@@ -155,6 +156,8 @@ public class SettingsScreen implements Screen {
         saveButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.log("SettingsScreen", "Save button clicked"); // Debug log
+                dispose(); // Clean up resources
                 game.switchScreen(Main.ScreenType.MENU);
             }
         });
@@ -175,13 +178,17 @@ public class SettingsScreen implements Screen {
         table.left().pad(50);
         table.top().pad(50);
 
-        // Allows UI to capture touch events
-        InputMultiplexer inputMultiplexer = new InputMultiplexer(new MainInputManager(), stage);
-        Gdx.input.setInputProcessor(inputMultiplexer);
+        // Set up input processing
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
     public void render(float delta) {
+        // Handle escape key to return to previous screen
+        if (Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
+            game.switchScreen(Main.ScreenType.MENU);
+        }
+
         // Clear the screen
         ScreenUtils.clear(0, 0, 0, 1f);
 
@@ -213,16 +220,27 @@ public class SettingsScreen implements Screen {
 
     @Override
     public void hide() {
+        // Clear input processor when hiding the screen
+        Gdx.input.setInputProcessor(null);
         // Clear all actors from the stage when hiding the screen
         stage.clear();
     }
 
     @Override
     public void dispose() {
-        stage.dispose();
-        skin.dispose();
-        backgroundTexture.dispose();
-        batch.dispose();
+        // Make sure to dispose of resources properly
+        if (stage != null) {
+            stage.dispose();
+        }
+        if (skin != null) {
+            skin.dispose();
+        }
+        if (backgroundTexture != null) {
+            backgroundTexture.dispose();
+        }
+        if (batch != null) {
+            batch.dispose();
+        }
     }
 
     private void toggleFullscreen() {
