@@ -1,4 +1,4 @@
-package com.spacecomplexity.longboilife.menu;
+package com.spacecomplexity.longboilife.leaderboard;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -22,8 +22,9 @@ import com.spacecomplexity.longboilife.game.globals.Window;
 /**
  * Main class to control the menu screen.
  */
-public class MenuScreen implements Screen {
+public class LeaderboardScreen implements Screen {
     private final Main game;
+    private final Main.ScreenType previousScreen;
 
     private Viewport viewport;
 
@@ -33,8 +34,9 @@ public class MenuScreen implements Screen {
     private Stage stage;
     private Skin skin;
 
-    public MenuScreen(Main game) {
+    public LeaderboardScreen(Main game, Main.ScreenType previousScreen) {
         this.game = game;
+        this.previousScreen = previousScreen;
 
         // Initialise viewport and drawing elements
         viewport = new ScalingViewport(Scaling.fit, Window.DEFAULT_WIDTH, Window.DEFAULT_HEIGHT);
@@ -97,8 +99,6 @@ public class MenuScreen implements Screen {
         table.add(playButton);
         table.row();
         table.add(settingsButton).padTop(10);
-        table.row();
-        table.add(leaderboardButton).padTop(10);
         table.row();
         table.add(exitButton).padTop(10);
 

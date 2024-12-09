@@ -5,7 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.spacecomplexity.longboilife.game.GameScreen;
 import com.spacecomplexity.longboilife.menu.MenuScreen;
 import com.spacecomplexity.longboilife.settings.SettingsScreen;
-
+import com.spacecomplexity.longboilife.leaderboard.LeaderboardScreen;
 import java.util.HashMap;
 
 /**
@@ -28,8 +28,8 @@ public class Main extends Game {
     public enum ScreenType {
         MENU(MenuScreen.class),
         GAME(GameScreen.class),
-        SETTINGS(SettingsScreen.class)
-        ;
+        SETTINGS(SettingsScreen.class),
+        LEADERBOARD(LeaderboardScreen.class);
 
         private final Class<? extends Screen> screenClass;
 
@@ -78,6 +78,17 @@ public class Main extends Game {
             setScreen(settingsScreen);
         } catch (Exception e) {
             throw new RuntimeException("Failed to create settings screen", e);
+        }
+    }
+
+    public void openLeaderboard(ScreenType previousScreen) {
+        try {
+            Screen leaderboardScreen = LeaderboardScreen.class.getConstructor(Main.class, ScreenType.class)
+                .newInstance(this, previousScreen);
+            screens.put(ScreenType.LEADERBOARD, leaderboardScreen);
+            setScreen(leaderboardScreen);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create leaderboard screen", e);
         }
     }
 
