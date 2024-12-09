@@ -75,7 +75,7 @@ public class InputManager {
             MainCamera.camera().getCamera().unproject(mousePosition);
 
             // Zoom in/out at the mouses current position
-            MainCamera.camera().zoomAt(amountY * gameState.cameraScrollZoomSpeed * deltaTime * MainCamera.camera().zoom, mousePosition);
+            MainCamera.camera().zoomAt(amountY * gameState.cameraScrollZoomSpeed * deltaTime, mousePosition);
 
             return true;
         }
