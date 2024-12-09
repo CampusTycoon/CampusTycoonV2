@@ -19,6 +19,7 @@ public class EventHandler {
         CLOSE_BUILD_MENU,
         GAME_END,
         RETURN_MENU,
+        OPEN_SETTINGS,
         ;
 
         private Function<Object[], Object> callback;

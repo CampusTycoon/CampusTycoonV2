@@ -15,6 +15,7 @@ public enum Keybindings {
     FULLSCREEN(Input.Keys.F11),
     CANCEL(Input.Keys.ESCAPE),
     PAUSE(Input.Keys.SPACE),
+    OPEN_SETTINGS(Input.Keys.ESCAPE),
     ;
 
     private final int key;

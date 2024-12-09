@@ -243,6 +243,12 @@ public class GameScreen implements Screen {
 
             return null;
         });
+
+        // Open settings menu
+        eventHandler.createEvent(EventHandler.Event.OPEN_SETTINGS, (params) -> {
+            game.openSettings(Main.ScreenType.GAME);
+            return null;
+        });
     }
 
     /**

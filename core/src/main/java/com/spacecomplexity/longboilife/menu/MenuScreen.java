@@ -80,8 +80,7 @@ public class MenuScreen implements Screen {
         settingsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // Switch to settings screen
-                game.switchScreen(Main.ScreenType.SETTINGS);
+                game.openSettings(Main.ScreenType.MENU);
             }
         });        
 
