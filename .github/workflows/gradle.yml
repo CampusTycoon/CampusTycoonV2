@@ -1,78 +1,68 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
-
-name: Java CI with Gradle
-
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
 jobs:
   build:
+    runs triggered by a pull request from a forked repository.
 
-    runs-on: ubuntu-latest
+### How to Fix:
+1. **Ensure Permissions**: Make sure-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write  # Ensure this permission is set
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up JDK 17
+ the workflow has the `contents: write` permission for the job. This permission is necessary for submitting dependency    - uses: actions/checkout@v4
+    - name: Set up J graphs.
+2. **Modify Workflow for Forks**: Adjust the workflow to handle pull requests from forks. You can add a condition to skip the dependency submissionDK 17
       uses: actions/setup-java@v4
       with:
         java-version: '17'
-        distribution: 'temurin'
-        
+        distribution: ' step if the event is a pull request from a fork.
+
+Here is an example of how you can update thetemurin'
+
     - name: Make gradlew executable
-      run: chmod +x ./gradlew
+      run: workflow to conditionally skip the dependency submission chmod +x ./gradlew
 
-    # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
-    # See: https://github.com/gradle/actions/blob/main/setup-gradle/README.md
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+      uses: gradle/actions/setup-gradle@af1da67850ed:
 
-    - name: Cache Gradle packages
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.gradle/caches
-          ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-
-
-    - name: Build with Gradle Wrapper
-      run: ./gradlew build
-
-    - name: Run tests
-      run: ./gradlew test
-
-    - name: Check code quality
-      run: ./gradlew check
-
-    - name: Generate and submit dependency graph
-      uses: gradle/actions/dependency-submission@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
-
-  dependency-submission:
-
+```yaml
+jobs:
+  build:
     runs-on: ubuntu-latest
     permissions:
       contents: write
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
+9a4cedd57bfd976089dd991e2582 # v4.0.0
 
-    # Generates and submits a dependency graph, enabling Dependabot Alerts for all project dependencies.
-    # See: https://github.com/gradle/actions/blob/main/dependency-submission/README.md
+    - name: Cache Gradle dependencies
+      uses: actions/cache@    - uses: actions/checkout@v4
+    - name: Setv3
+      with:
+        path: |
+          ~/.gradle/c up JDK 17
+      uses: actions/setup-java@v4
+     aches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', with:
+        java-version: '17'
+        distribution: '**/gradle-wrapper.properties') }}
+        restore- 'temurin'
+
+    - name: Make gradlew executable
+      runkeys: |
+          ${{ runner.os }}-gradle-
+
+    - name: Build with Gradle Wrapper
+      run: ./gradlew: chmod +x ./gradlew
+
+    - name: Cache Gradle dependencies build
+
     - name: Generate and submit dependency graph
+      if: github.event_name != 'pull_request'
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle # Skip this step for pull requests from forks
       uses: gradle/actions/dependency-submission@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
