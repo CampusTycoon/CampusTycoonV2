@@ -188,19 +188,19 @@ public class GameScreen implements Screen {
 
         // Cancel all events
         eventHandler.createEvent(EventHandler.Event.CANCEL_OPERATIONS, (params) -> {
-            // Close menus and deselect any buildings
-            eventHandler.callEvent(EventHandler.Event.CLOSE_BUILD_MENU);
-            gameState.placingBuilding = null;
-            eventHandler.callEvent(EventHandler.Event.CLOSE_SELECTED_MENU);
-            gameState.selectedBuilding = null;
+        // Close menus and deselect any buildings
+        eventHandler.callEvent(EventHandler.Event.CLOSE_BUILD_MENU);
+        gameState.placingBuilding = null;
+        eventHandler.callEvent(EventHandler.Event.CLOSE_SELECTED_MENU);
+        gameState.selectedBuilding = null;
 
-            // If there is a building move in progress cancel this
-            if (gameState.movingBuilding != null) {
-                world.build(gameState.movingBuilding);
-                gameState.movingBuilding = null;
-            }
+        // If there is a building move in progress cancel this
+        if (gameState.movingBuilding != null) {
+            world.build(gameState.movingBuilding);
+            gameState.movingBuilding = null;
+        }
 
-            return null;
+        return null;
         });
 
         // Sell the selected building
