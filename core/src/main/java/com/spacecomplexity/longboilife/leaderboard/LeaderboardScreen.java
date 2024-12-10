@@ -59,16 +59,21 @@ public class LeaderboardScreen implements Screen {
         // Table layout for menu alignment
         Table table = new Table();
         table.setFillParent(true);
+        table.top(); // Align table contents to the top
         stage.addActor(table);
 
-        // Add labels for username and score
-        Label usernameLabel = new Label("Username", skin);
-        Label scoreLabel = new Label("Score", skin);
+        // Create a table to display one row of labels
+        // TODO: These are currently buttons, but should be labels
+        Table labelsRow = new Table();
+        labelsRow.setSkin(skin);
+        labelsRow.add(new TextButton("Username", skin, "round")).left();
+        labelsRow.add().expandX();
+        labelsRow.add(new TextButton("Score", skin, "round")).right();
+
         
         // Add labels to table
-        table.add(usernameLabel).padRight(50);
-        table.add(scoreLabel);
-        table.row();  // Move to next row
+        table.add(labelsRow).expandX().fillX().pad(100);
+        table.row();
         
         // Initialise back button
         TextButton backButton = new TextButton("Back", skin, "round");
@@ -81,7 +86,7 @@ public class LeaderboardScreen implements Screen {
 
         // Add buttons to table with bottom alignment
         table.row();  // Move to next row
-        table.add(backButton).colspan(2).padBottom(100);  // colspan(2) makes button span both columns
+        table.add(backButton).colspan(2).padBottom(10);  // colspan(2) makes button span both columns
 
         // Allows UI to capture touch events
         InputMultiplexer inputMultiplexer = new InputMultiplexer(new MainInputManager(), stage);
