@@ -68,6 +68,11 @@ public class GameState {
     public Building movingBuilding;
 
     /**
+     * If the building menu is currently open.
+     */
+    public boolean buildMenuOpen;
+
+    /**
      * If the game is currently paused.
      */
     public boolean paused;
@@ -151,6 +156,7 @@ public class GameState {
         placingBuilding = null;
         selectedBuilding = null;
         movingBuilding = null;
+        buildMenuOpen = false;
         paused = false;
         buildingsCount = new HashMap<>();
         satisfactionScoreVelocity = 0;

@@ -45,7 +45,8 @@ public class MainInputManager extends InputAdapter {
             // Check if there are any active operations
             boolean hasActiveOperations = gameState.placingBuilding != null || 
                                         gameState.selectedBuilding != null || 
-                                        gameState.movingBuilding != null;
+                                        gameState.movingBuilding != null ||
+                                        gameState.buildMenuOpen == true;
             
             if (hasActiveOperations) {
                 // Cancel operations if there are any active
