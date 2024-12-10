@@ -158,6 +158,7 @@ public class SettingsScreen implements Screen {
         saveButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                saveSettings();
                 game.switchScreen(previousScreen);
             }
         });
@@ -226,6 +227,10 @@ public class SettingsScreen implements Screen {
         skin.dispose();
         backgroundTexture.dispose();
         batch.dispose();
+    }
+
+    private void saveSettings() {
+        
     }
 
     private void toggleFullscreen() {
