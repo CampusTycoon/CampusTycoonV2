@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -24,6 +25,7 @@ import com.spacecomplexity.longboilife.game.globals.Window;
  */
 public class LeaderboardScreen implements Screen {
     private final Main game;
+    private final Main.ScreenType previousScreen;
 
     private Viewport viewport;
 
@@ -33,8 +35,9 @@ public class LeaderboardScreen implements Screen {
     private Stage stage;
     private Skin skin;
 
-    public LeaderboardScreen(Main game) {
+    public LeaderboardScreen(Main game, Main.ScreenType previousScreen) {
         this.game = game;
+        this.previousScreen = previousScreen;
 
         // Initialise viewport and drawing elements
         viewport = new ScalingViewport(Scaling.fit, Window.DEFAULT_WIDTH, Window.DEFAULT_HEIGHT);
@@ -42,7 +45,7 @@ public class LeaderboardScreen implements Screen {
         batch = new SpriteBatch();
 
         // Load background texture
-        backgroundTexture = new Texture(Gdx.files.internal("menu/background.png"));
+        backgroundTexture = new Texture(Gdx.files.internal("menu/Plain Black.png"));
 
         // Load UI skin for buttons
         skin = new Skin(Gdx.files.internal("ui/skin/uiskin.json"));
@@ -50,59 +53,35 @@ public class LeaderboardScreen implements Screen {
 
     @Override
     public void show() {
+        // Clear any existing actors before setting up new ones
+        stage.clear();
+
         // Table layout for menu alignment
         Table table = new Table();
         table.setFillParent(true);
         stage.addActor(table);
 
-        // Initialise play button
-        TextButton playButton = new TextButton("Play", skin, "round");
-        playButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                // Switch to game screen
-                game.switchScreen(Main.ScreenType.GAME);
-            }
-        });
-
-        // Initialise exit button
-        TextButton exitButton = new TextButton("Exit", skin, "round");
-        exitButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                // Exit the application
-                Gdx.app.exit();
-            }
-        });
-
-        // Initialise settings button
-        TextButton settingsButton = new TextButton("Settings", skin, "round");
-        settingsButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.openSettings(Main.ScreenType.MENU);
-            }
-        });        
-
-        // Initialise leaderboard button
-        TextButton leaderboardButton = new TextButton("Leaderboard", skin, "round");
-        leaderboardButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.openLeaderboard(Main.ScreenType.MENU);
-            }
-        });
-
-        // Add buttons to table
-        table.add(playButton);
-        table.row();
-        table.add(settingsButton).padTop(10);
-        table.row();
-        table.add(exitButton).padTop(10);
-
+        // Add labels for username and score
+        Label usernameLabel = new Label("Username", skin);
+        Label scoreLabel = new Label("Score", skin);
         
-        // Position the table correctly
-        table.pad(150).padBottom((Window.DEFAULT_HEIGHT / 2) - 40).bottom().right();
+        // Add labels to table
+        table.add(usernameLabel).padRight(50);
+        table.add(scoreLabel);
+        table.row();  // Move to next row
+        
+        // Initialise back button
+        TextButton backButton = new TextButton("Back", skin, "round");
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.switchScreen(previousScreen);
+            }
+        });
+
+        // Add buttons to table with bottom alignment
+        table.row();  // Move to next row
+        table.add(backButton).colspan(2).padBottom(100);  // colspan(2) makes button span both columns
 
         // Allows UI to capture touch events
         InputMultiplexer inputMultiplexer = new InputMultiplexer(new MainInputManager(), stage);

@@ -144,7 +144,7 @@ public class GameState {
 //        uiScaleFactor = 1;
         cameraSpeed = 1400;
         cameraKeyZoomSpeed = 3;
-        cameraScrollZoomSpeed = 32;
+        cameraScrollZoomSpeed = 4;
 //        fullscreen = false;
         money = 800000;
         satisfactionScore = 0f;

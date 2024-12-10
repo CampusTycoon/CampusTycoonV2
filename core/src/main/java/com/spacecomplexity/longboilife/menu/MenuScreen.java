@@ -84,10 +84,21 @@ public class MenuScreen implements Screen {
             }
         });        
 
+        // Initialise leaderboard button
+        TextButton leaderboardButton = new TextButton("Leaderboard", skin, "round");
+        leaderboardButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.openLeaderboard(Main.ScreenType.MENU);
+            }
+        });
+
         // Add buttons to table
         table.add(playButton);
         table.row();
         table.add(settingsButton).padTop(10);
+        table.row();
+        table.add(leaderboardButton).padTop(10);
         table.row();
         table.add(exitButton).padTop(10);
 
