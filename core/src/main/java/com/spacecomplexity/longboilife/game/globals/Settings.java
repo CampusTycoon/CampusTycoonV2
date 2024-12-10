@@ -4,15 +4,73 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.Scanner;
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * Class to represent the user settings
  */
 public final class Settings {
+    private static HashMap<SETTING, String> DEFAULTS = new HashMap<>() {{
+        put(SETTING.RESOLUTION, "1920x1080");
+        put(SETTING.VOLUME, "0.5");
+    }};
+    
+    private static enum SETTING {
+        RESOLUTION("resolution"),
+        VOLUME("volume");
+
+        String id;
+        SETTING(String identifier) {
+            this.id = identifier;
+        }
+        
+        /**
+         * Gets the setting corresponding to the identifier.
+         * @param identifier the string representation of a setting.
+         * @return the corresponding setting if it can be found.
+         * <li><code>null</code> if it cannot be found.
+         */
+        private static SETTING getSetting(String identifier) {
+            identifier = identifier.toLowerCase();
+            
+            for (SETTING setting : SETTING.values()) {
+                // Iterate through all settings
+                if (setting.id.equals(identifier)){
+                    // Return the setting that matches the ID
+                    return setting;
+                }
+            }
+            // No matching setting found
+            return null;
+        }
+    }   
+    
     /**
      * The current game volume (where 0 is muted and 1 is the max volume).
      */
     public static float volume;
+    
+    /**
+     * Saves the current settings to file.
+     */
+    public static void save() {
+        // TODO: Make this less hardcoded
+        try {
+            FileWriter writer = new FileWriter("Settings.txt");
+            
+            // Clear the file
+            writer.write("");
+            
+            writer.append(SETTING.RESOLUTION.id + ":" + 
+                Window.width + "x" + Window.height + "\n");
+            writer.append(SETTING.VOLUME.id + ":" +
+                volume + "\n");
+            
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     
     /**
      * Attempts to read the user settings from file, 
@@ -26,11 +84,8 @@ public final class Settings {
                 // Initialise settings file with default values
                 initialiseFile(new FileWriter(settings));
             }
-            else {
-                // Settings file already exists
-                // Read all the settings into local memory
-                readFile(new Scanner(settings));
-            }
+            // Read all the settings into local memory
+            readFile(new Scanner(settings));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -41,12 +96,14 @@ public final class Settings {
      * @throws IOException 
      */
     private static void initialiseFile(FileWriter writer) throws IOException {
-        // Manually writes the contents of the file
-        // TODO: Change this to iterate through a dictionary or something
-        writer.append("resolution:1920x1080\n");
-        writer.append("volume:0.5\n");
-        
+        // Iterates through every setting and appends its identifier and default value to the file
+        for (SETTING setting : DEFAULTS.keySet()) {
+            String defaultValue = DEFAULTS.get(setting);
+            writer.append(setting.id + ":" + defaultValue + "\n");
+        }
         writer.close();
+        
+        
     }
     
     /**
@@ -58,7 +115,6 @@ public final class Settings {
             String line = reader.nextLine();
             readLine(line);
         }
-        
         reader.close();
     }
     
@@ -70,17 +126,17 @@ public final class Settings {
             return;
         }
         
-        // Retrieves the name of the setting
-        String identifier = setting[0].strip();
+        // Retrieves the name of the setting, case insensitive
+        String identifier = setting[0].strip().toLowerCase();
         // Retrieves the value of the setting
         String value = setting[1].strip();
         
         // Sets the local value of the corresponding setting to the value read from file
-        switch (identifier) {
-            case "resolution":
+        switch (SETTING.getSetting(identifier)) {
+            case RESOLUTION:
                 // TODO: Let this actually set the resolution somehow
                 break;
-            case "volume":
+            case VOLUME:
                 volume = Float.parseFloat(value);
                 break;
             default:
