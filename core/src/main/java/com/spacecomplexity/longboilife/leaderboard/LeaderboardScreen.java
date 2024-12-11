@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.spacecomplexity.longboilife.Main;
 import com.spacecomplexity.longboilife.MainInputManager;
 import com.spacecomplexity.longboilife.game.globals.Window;
+import java.util.List;
 
 /**
  * Main class to control the menu screen.
@@ -35,6 +36,9 @@ public class LeaderboardScreen implements Screen {
     private Stage stage;
     private Skin skin;
 
+    private LeaderboardDataManager dataManager;
+    private List<LeaderboardEntry> entries;
+
     public LeaderboardScreen(Main game, Main.ScreenType previousScreen) {
         this.game = game;
         this.previousScreen = previousScreen;
@@ -49,12 +53,17 @@ public class LeaderboardScreen implements Screen {
 
         // Load UI skin for buttons
         skin = new Skin(Gdx.files.internal("ui/skin/uiskin.json"));
+
+        dataManager = new LeaderboardDataManager();
+        entries = dataManager.loadLeaderboard();
     }
 
     @Override
     public void show() {
         // Clear any existing actors before setting up new ones
         stage.clear();
+
+        LeaderboardDataManager ldbManager = new LeaderboardDataManager();
 
         // Table layout for menu alignment
         Table table = new Table();
@@ -70,10 +79,19 @@ public class LeaderboardScreen implements Screen {
         labelsRow.add().expandX();
         labelsRow.add(new TextButton("Score", skin, "round")).right();
 
-        
         // Add labels to table
         table.add(labelsRow).expandX().fillX().pad(100);
         table.row();
+        
+        // Add entries to the table
+        for (LeaderboardEntry entry : entries) {
+            Table row = new Table();
+            row.add(new Label(entry.getUsername(), skin)).left();
+            row.add().expandX();
+            row.add(new Label(String.valueOf(entry.getScore()), skin)).right();
+            table.add(row).expandX().fillX().pad(10);
+            table.row();
+        }
         
         // Initialise back button
         TextButton backButton = new TextButton("Back", skin, "round");
