@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -18,6 +19,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.spacecomplexity.longboilife.Main;
 import com.spacecomplexity.longboilife.MainInputManager;
 import com.spacecomplexity.longboilife.game.globals.Window;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Main class to control the menu screen.
@@ -34,6 +37,9 @@ public class LeaderboardScreen implements Screen {
     private Stage stage;
     private Skin skin;
 
+    private LeaderboardDataManager dataManager;
+    private List<LeaderboardEntry> entries;
+
     public LeaderboardScreen(Main game, Main.ScreenType previousScreen) {
         this.game = game;
         this.previousScreen = previousScreen;
@@ -44,67 +50,66 @@ public class LeaderboardScreen implements Screen {
         batch = new SpriteBatch();
 
         // Load background texture
-        backgroundTexture = new Texture(Gdx.files.internal("menu/background.png"));
+        backgroundTexture = new Texture(Gdx.files.internal("menu/Plain Black.png"));
 
         // Load UI skin for buttons
         skin = new Skin(Gdx.files.internal("ui/skin/uiskin.json"));
+
+        dataManager = new LeaderboardDataManager();
+        entries = dataManager.loadLeaderboard();
+
+        // Testing whether adding scores to the leaderboard works
+        //List<LeaderboardEntry> newEntries = new ArrayList<>();
+        //newEntries.add(new LeaderboardEntry("Test5", 556300));
+        //dataManager.saveLeaderboard(newEntries);
     }
 
     @Override
     public void show() {
+        // Clear any existing actors before setting up new ones
+        stage.clear();
+
         // Table layout for menu alignment
         Table table = new Table();
         table.setFillParent(true);
+        table.top(); // Align table contents to the top
         stage.addActor(table);
 
-        // Initialise play button
-        TextButton playButton = new TextButton("Play", skin, "round");
-        playButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                // Switch to game screen
-                game.switchScreen(Main.ScreenType.GAME);
-            }
-        });
+        // Create a table to display one row of labels
+        // TODO: These are currently buttons, but should be labels
+        Table labelsRow = new Table();
+        labelsRow.setSkin(skin);
+        labelsRow.add(new TextButton("Username", skin, "round")).left();
+        labelsRow.add().expandX();
+        labelsRow.add(new TextButton("Score", skin, "round")).right();
 
-        // Initialise exit button
-        TextButton exitButton = new TextButton("Exit", skin, "round");
-        exitButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                // Exit the application
-                Gdx.app.exit();
-            }
-        });
-
-        // Initialise settings button
-        TextButton settingsButton = new TextButton("Settings", skin, "round");
-        settingsButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.openSettings(Main.ScreenType.MENU);
-            }
-        });        
-
-        // Initialise leaderboard button
-        TextButton leaderboardButton = new TextButton("Leaderboard", skin, "round");
-        leaderboardButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.openLeaderboard(Main.ScreenType.MENU);
-            }
-        });
-
-        // Add buttons to table
-        table.add(playButton);
+        // Add labels to table
+        table.add(labelsRow).expandX().fillX().pad(100);
         table.row();
-        table.add(settingsButton).padTop(10);
-        table.row();
-        table.add(exitButton).padTop(10);
-
         
-        // Position the table correctly
-        table.pad(150).padBottom((Window.DEFAULT_HEIGHT / 2) - 40).bottom().right();
+        // Add entries to the table
+        // TODO: Pull all data from leaderboard file, only display top X amount of scores/usernames
+        for (LeaderboardEntry entry : entries) {
+            Table row = new Table();
+            row.add(new Label(entry.getUsername(), skin)).left();
+            row.add().expandX();
+            row.add(new Label(String.valueOf(entry.getScore()), skin)).right();
+            table.add(row).expandX().fillX().pad(10);
+            table.row();
+        }
+        
+        // Initialise back button
+        TextButton backButton = new TextButton("Back", skin, "round");
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.switchScreen(previousScreen);
+            }
+        });
+
+        // Add buttons to table with bottom alignment
+        table.row();  // Move to next row
+        table.add(backButton).colspan(2).padBottom(10);  // colspan(2) makes button span both columns
 
         // Allows UI to capture touch events
         InputMultiplexer inputMultiplexer = new InputMultiplexer(new MainInputManager(), stage);
