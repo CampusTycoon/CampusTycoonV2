@@ -62,10 +62,6 @@ public class LeaderboardScreen implements Screen {
         //List<LeaderboardEntry> newEntries = new ArrayList<>();
         //newEntries.add(new LeaderboardEntry("Test5", 556300));
         //dataManager.saveLeaderboard(newEntries);
-
-        for (LeaderboardEntry entry : entries) {
-            System.out.println(entry.getUsername() + ": " + entry.getScore());
-        }
     }
 
     @Override

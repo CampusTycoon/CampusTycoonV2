@@ -38,6 +38,7 @@ public class LeaderboardDataManager {
     
     public void saveLeaderboard(List<LeaderboardEntry> entries) {
         try {
+            // TODO: Sort the entries by score before saving so scores don't have to be sorted every time leaderboard is displayed
             // Load existing entries first
             List<LeaderboardEntry> existingEntries = loadLeaderboard();
             // Add all new entries ensures the structure of the JSON is kept
