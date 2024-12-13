@@ -20,6 +20,7 @@ import com.spacecomplexity.longboilife.Main;
 import com.spacecomplexity.longboilife.MainInputManager;
 import com.spacecomplexity.longboilife.game.globals.Window;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Main class to control the menu screen.
@@ -56,14 +57,21 @@ public class LeaderboardScreen implements Screen {
 
         dataManager = new LeaderboardDataManager();
         entries = dataManager.loadLeaderboard();
+
+        // Testing whether adding scores to the leaderboard works
+        //List<LeaderboardEntry> newEntries = new ArrayList<>();
+        //newEntries.add(new LeaderboardEntry("Test5", 556300));
+        //dataManager.saveLeaderboard(newEntries);
+
+        for (LeaderboardEntry entry : entries) {
+            System.out.println(entry.getUsername() + ": " + entry.getScore());
+        }
     }
 
     @Override
     public void show() {
         // Clear any existing actors before setting up new ones
         stage.clear();
-
-        LeaderboardDataManager ldbManager = new LeaderboardDataManager();
 
         // Table layout for menu alignment
         Table table = new Table();
@@ -84,6 +92,7 @@ public class LeaderboardScreen implements Screen {
         table.row();
         
         // Add entries to the table
+        // TODO: Pull all data from leaderboard file, only display top X amount of scores/usernames
         for (LeaderboardEntry entry : entries) {
             Table row = new Table();
             row.add(new Label(entry.getUsername(), skin)).left();

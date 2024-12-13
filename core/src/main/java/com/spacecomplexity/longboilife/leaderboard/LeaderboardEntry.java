@@ -4,14 +4,14 @@ public class LeaderboardEntry {
     private String username;
     private int score;
     
-    // Required for JSON serialization
-    public LeaderboardEntry() {}
     public LeaderboardEntry(String username, int score) {
         this.username = username;
         this.score = score;
     }
     
-    // Getters and setters
+    public LeaderboardEntry() { // Required for JSON serialization
+    }
+    
     public String getUsername() { 
         return username; 
     }
