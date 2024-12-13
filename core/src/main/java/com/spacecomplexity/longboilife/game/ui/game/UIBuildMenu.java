@@ -59,7 +59,7 @@ public class UIBuildMenu extends UIElement {
      * @param category specific category of buildings to show.
      */
     public void openMenu(BuildingCategory category) {
-        // CLear previous buildings from the table
+        // Clear previous buildings from the table
         table.clear();
 
         // Get list of all buildings to display on this menu
@@ -95,7 +95,7 @@ public class UIBuildMenu extends UIElement {
 
             // create container for UI elements relating to this building
             Table buildingTable = new Table();
-            // Add building UI elements into there container
+            // Add building UI elements into their container
             buildingTable.add(button);
             buildingTable.row();
             buildingTable.add(titleLabel).padTop(2);
@@ -112,6 +112,9 @@ public class UIBuildMenu extends UIElement {
 
         // Show the build menu
         table.setVisible(true);
+
+        // Update game state
+        GameState.getState().buildMenuOpen = true;
     }
 
     /**
@@ -120,6 +123,9 @@ public class UIBuildMenu extends UIElement {
     public void closeMenu() {
         // Hide the build menu
         table.setVisible(false);
+
+        // Update game state
+        GameState.getState().buildMenuOpen = false;
     }
 
     @Override

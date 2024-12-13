@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.spacecomplexity.longboilife.Main;
 import com.spacecomplexity.longboilife.MainInputManager;
+import com.spacecomplexity.longboilife.game.globals.Settings;
 import com.spacecomplexity.longboilife.game.globals.Window;
 
 /**
@@ -46,6 +47,9 @@ public class MenuScreen implements Screen {
 
         // Load UI skin for buttons
         skin = new Skin(Gdx.files.internal("ui/skin/uiskin.json"));
+        
+        // Load user settings
+        Settings.initialise();
     }
 
     @Override

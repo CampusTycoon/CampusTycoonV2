@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.spacecomplexity.longboilife.Main;
 import com.spacecomplexity.longboilife.MainInputManager;
+import com.spacecomplexity.longboilife.game.globals.Settings;
 import com.spacecomplexity.longboilife.game.globals.Window;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
@@ -138,12 +139,12 @@ public class SettingsScreen implements Screen {
 
         // Create slider for volume control
         Slider volumeSlider = new Slider(0f, 1f, 0.1f, false, skin);
-        volumeSlider.setValue(0.5f); // Set default volume to 50%
+        volumeSlider.setValue(Settings.volume); // Set default volume
         volumeSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                // TODO: Implement volume change logic
                 float volume = volumeSlider.getValue();
+                Settings.volume = volume;
             }
         });
 
@@ -158,6 +159,7 @@ public class SettingsScreen implements Screen {
         saveButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                Settings.save();
                 game.switchScreen(previousScreen);
             }
         });
