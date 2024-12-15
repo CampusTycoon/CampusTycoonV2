@@ -21,6 +21,13 @@ public class MainInputManager extends InputAdapter {
      */
     @Override
     public boolean keyDown(int keycode) {
+        // Add this before the existing keyDown logic
+        if (keycode == com.badlogic.gdx.Input.Keys.SHIFT_LEFT || 
+            keycode == com.badlogic.gdx.Input.Keys.SHIFT_RIGHT) {
+            GameState.getState().shiftHeld = true;
+            return true;
+        }
+        
         // If the fullscreen key is pressed then toggle fullscreen mode
         if (keycode == Keybindings.FULLSCREEN.getKey()) {
             Main.fullscreen = !Main.fullscreen;
@@ -59,6 +66,16 @@ public class MainInputManager extends InputAdapter {
             return true;
         }
 
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        if (keycode == com.badlogic.gdx.Input.Keys.SHIFT_LEFT || 
+            keycode == com.badlogic.gdx.Input.Keys.SHIFT_RIGHT) {
+            GameState.getState().shiftHeld = false;
+            return true;
+        }
         return false;
     }
 }

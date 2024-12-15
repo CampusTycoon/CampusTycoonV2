@@ -53,7 +53,11 @@ public class Constants {
      * Which category of buildings will not be deselected when built.
      */
     public static BuildingCategory[] dontRemoveSelection = new BuildingCategory[]{
-        BuildingCategory.PATHWAY
+        BuildingCategory.PATHWAY,
+        BuildingCategory.FOOD,
+        BuildingCategory.RECREATIONAL,
+        BuildingCategory.EDUCATIONAL,
+        BuildingCategory.ACCOMMODATION
     };
 
     /**

@@ -129,6 +129,11 @@ public class GameState {
     public boolean gameOver = false;
 
     /**
+     * If the SHIFT key is currently held.
+     */
+    public boolean shiftHeld = false;
+
+    /**
      * Get the singleton instance of the {@link GameState} class.
      *
      * @return The single {@link GameState} class.
@@ -162,5 +167,6 @@ public class GameState {
         satisfactionScoreVelocity = 0;
         satisfactionModifierPositive = false;
         gameOver = false;
+        shiftHeld = false;
     }
 }
