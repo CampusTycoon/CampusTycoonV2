@@ -80,7 +80,7 @@ public class SettingsScreen implements Screen {
         leftResolutionButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // TODO: Add resolution cycling logic
+                toggleFullscreen();
             }
         });
 
@@ -89,7 +89,7 @@ public class SettingsScreen implements Screen {
         rightResolutionButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // TODO: Add resolution cycling logic
+                toggleFullscreen();
             }
         });
         
@@ -242,4 +242,5 @@ public class SettingsScreen implements Screen {
         stage.clear();
         show();
     }
+
 }
