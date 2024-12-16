@@ -21,6 +21,23 @@ public class MainInputManager extends InputAdapter {
      */
     @Override
     public boolean keyDown(int keycode) {
+        // If game is over, only allow fullscreen toggle
+        if (GameState.getState().gameOver) {
+            if (keycode == Keybindings.FULLSCREEN.getKey()) {
+                Main.fullscreen = !Main.fullscreen;
+
+                if (Main.fullscreen) {
+                    Main.prevAppWidth = Gdx.graphics.getWidth();
+                    Main.prevAppHeight = Gdx.graphics.getHeight();
+                    Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+                } else {
+                    Gdx.graphics.setWindowedMode(Main.prevAppWidth, Main.prevAppHeight);
+                }
+                return true;
+            }
+            return false;
+        }
+
         // Add this before the existing keyDown logic
         if (keycode == com.badlogic.gdx.Input.Keys.SHIFT_LEFT || 
             keycode == com.badlogic.gdx.Input.Keys.SHIFT_RIGHT) {

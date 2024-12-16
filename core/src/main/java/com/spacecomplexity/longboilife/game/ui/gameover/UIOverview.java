@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -35,24 +36,36 @@ public class UIOverview extends UIElement {
         label.setFontScale(1.2f);
         label.setColor(Color.WHITE);
 
+        // Add username text field
+        Label usernameLabel = new Label("Enter username:", skin);
+        TextField usernameField = new TextField("", skin);
+        usernameField.setMaxLength(20); // Limit username length
+        usernameField.setMessageText("Enter your username");
+
         // Initialise button
         TextButton button = new TextButton("Menu", skin);
         button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                // You can get the username before returning to menu if needed
+                String username = usernameField.getText();
                 // Call the events to return to the menu
                 EventHandler.getEventHandler().callEvent(EventHandler.Event.RETURN_MENU);
             }
         });
 
-        // Place label onto table
+        // Place elements onto table
         table.add(label).align(Align.center);
         table.row();
-        table.add(button).padTop(5).align(Align.center);
+        table.add(usernameLabel).padTop(10).align(Align.center);
+        table.row();
+        table.add(usernameField).width(200).padTop(5).align(Align.center);
+        table.row();
+        table.add(button).padTop(10).align(Align.center);
 
         // Style and place the table
         table.setBackground(skin.getDrawable("panel1"));
-        table.setSize(220, 100);
+        table.setSize(220, 160); // Increased height to accommodate new elements
         placeTable();
     }
 
