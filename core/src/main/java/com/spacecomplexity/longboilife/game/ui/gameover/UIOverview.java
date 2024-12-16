@@ -13,11 +13,19 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.spacecomplexity.longboilife.game.globals.GameState;
 import com.spacecomplexity.longboilife.game.ui.UIElement;
 import com.spacecomplexity.longboilife.game.utils.EventHandler;
+import java.util.List;
+import java.util.ArrayList;
 
+import com.spacecomplexity.longboilife.leaderboard.LeaderboardDataManager;
+import com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry;
 /**
  * Class to represent the Overview UI after the game is completed.
  */
 public class UIOverview extends UIElement {
+
+    private LeaderboardDataManager dataManager;
+    private List<LeaderboardEntry> entries;
+
     /**
      * Initialise overview elements.
      *
@@ -27,6 +35,9 @@ public class UIOverview extends UIElement {
      */
     public UIOverview(Viewport uiViewport, Table parentTable, Skin skin) {
         super(uiViewport, parentTable, skin);
+
+        // Initialize the data manager
+        this.dataManager = new LeaderboardDataManager();
 
         String overview = String.format("Game Over\r\nSatisfaction Score: %.2f%%", GameState.getState().satisfactionScore * 100);
 
@@ -47,9 +58,16 @@ public class UIOverview extends UIElement {
         button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // You can get the username before returning to menu if needed
+                // Getting username and score which will be saved to Leaderboard JSON file
                 String username = usernameField.getText();
-                // Call the events to return to the menu
+                Float userScore = GameState.getState().satisfactionScore;
+
+                // Adding user's username and score to the leaderboard JSON file
+                List<LeaderboardEntry> newEntries = new ArrayList<>();
+                newEntries.add(new LeaderboardEntry(username, userScore));
+                dataManager.saveLeaderboard(newEntries);
+                
+                // Return to menu once button is clicked
                 EventHandler.getEventHandler().callEvent(EventHandler.Event.RETURN_MENU);
             }
         });

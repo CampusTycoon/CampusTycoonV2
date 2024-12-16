@@ -38,14 +38,16 @@ public class LeaderboardDataManager {
     
     public void saveLeaderboard(List<LeaderboardEntry> entries) {
         try {
-            // TODO: Sort the entries by score before saving so scores don't have to be sorted every time leaderboard is displayed
-            // Load existing entries first
+            // Load existing entries
             List<LeaderboardEntry> existingEntries = loadLeaderboard();
-            // Add all new entries ensures the structure of the JSON is kept
-            // This is important, as not keeping the structurs causes errors when trying to read the file
+            
+            // Add all new entries
             existingEntries.addAll(entries);
             
-            // Save the combined list (overwriting the file)
+            // Sort the combined list in descending order by score
+            existingEntries.sort((e1, e2) -> Float.compare(e2.getScore(), e1.getScore()));
+            
+            // Save the sorted list
             FileHandle file = Gdx.files.local(LEADERBOARD_FILE);
             String jsonString = json.prettyPrint(existingEntries);
             file.writeString(jsonString, false);  // Use false to overwrite
