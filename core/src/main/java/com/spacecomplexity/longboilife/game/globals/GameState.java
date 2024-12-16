@@ -68,6 +68,11 @@ public class GameState {
     public Building movingBuilding;
 
     /**
+     * If the building menu is currently open.
+     */
+    public boolean buildMenuOpen;
+
+    /**
      * If the game is currently paused.
      */
     public boolean paused;
@@ -124,6 +129,11 @@ public class GameState {
     public boolean gameOver = false;
 
     /**
+     * If the SHIFT key is currently held.
+     */
+    public boolean shiftHeld = false;
+
+    /**
      * Get the singleton instance of the {@link GameState} class.
      *
      * @return The single {@link GameState} class.
@@ -151,10 +161,12 @@ public class GameState {
         placingBuilding = null;
         selectedBuilding = null;
         movingBuilding = null;
+        buildMenuOpen = false;
         paused = false;
         buildingsCount = new HashMap<>();
         satisfactionScoreVelocity = 0;
         satisfactionModifierPositive = false;
         gameOver = false;
+        shiftHeld = false;
     }
 }

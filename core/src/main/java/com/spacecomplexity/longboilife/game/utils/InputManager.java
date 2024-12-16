@@ -25,6 +25,11 @@ public class InputManager {
      * Should be called every frame (before rendering).
      */
     public void handleContinuousInput() {
+        // If game is over, don't process any continuous input
+        if (gameState.gameOver) {
+            return;
+        }
+
         float deltaTime = Gdx.graphics.getDeltaTime();
 
         // Calculate camera speed and move camera around given camera direction keys pressed
@@ -68,6 +73,11 @@ public class InputManager {
          */
         @Override
         public boolean scrolled(float amountX, float amountY) {
+            // If game is over, don't allow zooming
+            if (gameState.gameOver) {
+                return true;
+            }
+            
             float deltaTime = Gdx.graphics.getDeltaTime();
 
             // Convert the current mouse position into world coordinates
@@ -77,7 +87,7 @@ public class InputManager {
             // Zoom in/out at the mouses current position
             MainCamera.camera().zoomAt(amountY * gameState.cameraScrollZoomSpeed * deltaTime, mousePosition);
 
-            return true;
+            return false;
         }
 
         private int lastButton;
@@ -142,11 +152,16 @@ public class InputManager {
          */
         @Override
         public boolean touchDragged(int screenX, int screenY, int pointer) {
+            // If game is over, don't allow any interactions
+            if (gameState.gameOver) {
+                return true;
+            }
+
             switch (lastButton) {
                 // If main button clicked
                 case 0:
-                    // If game is paused or over don't allow any actions
-                    if (gameState.paused || gameState.gameOver) {
+                    // If game is paused don't allow any actions
+                    if (gameState.paused) {
                         return true;
                     }
 

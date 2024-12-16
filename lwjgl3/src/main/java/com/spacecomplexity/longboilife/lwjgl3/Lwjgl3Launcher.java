@@ -20,7 +20,7 @@ public class Lwjgl3Launcher {
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
         Lwjgl3ApplicationConfiguration configuration = new Lwjgl3ApplicationConfiguration();
-        configuration.setTitle("Longboi Life (But Better)");
+        configuration.setTitle("Campus Tycoon");
 
         //// Vsync limits the frames per second to what your hardware can display, and helps eliminate
         //// screen tearing. This setting doesn't always work on Linux, so the line after is a safeguard.
@@ -38,7 +38,7 @@ public class Lwjgl3Launcher {
 
         //// Sets the icon that will be used for the window
         //// You can change these files; they are in lwjgl3/src/main/resources/ .
-        configuration.setWindowIcon("LogoNew.png");
+        configuration.setWindowIcon("CampusTycoon.png");
 
         return configuration;
     }

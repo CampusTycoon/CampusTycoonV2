@@ -34,8 +34,8 @@ public class GameUtils {
         // Divide these by the cell size (as the world starts at (0, 0))
         float cellSize = Constants.TILE_SIZE * GameState.getState().scaleFactor;
         return new Vector2Int(
-            Math.max(0, Math.min((int) (mouse.x / cellSize), world.getWidth() - 1)),
-            Math.max(0, Math.min((int) (mouse.y / cellSize), world.getHeight() - 1))
+            (int) (mouse.x / cellSize),
+            (int) (mouse.y / cellSize)
         );
     }
 

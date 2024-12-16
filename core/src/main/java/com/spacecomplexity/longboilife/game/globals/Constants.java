@@ -50,13 +50,6 @@ public class Constants {
     public static float moveCostRecovery = 0.25f;
 
     /**
-     * Which category of buildings will not be deselected when built.
-     */
-    public static BuildingCategory[] dontRemoveSelection = new BuildingCategory[]{
-        BuildingCategory.PATHWAY
-    };
-
-    /**
      * The satisfactory distances from accommodation to a specific category of building
      * <p>
      * Used for calculating satisfaction score

@@ -149,18 +149,17 @@ public class RenderUtils {
 
         Vector2Int mouse = GameUtils.getMouseOnGrid(world);
 
-        // Check if this would be a valid position to build
-        boolean validPosition = world.canBuild(building, mouse);
-
-        // Begin the batch with the specified tint based on the building being valid.
+        // Begin the batch with the specified tint based on the building being valid
         batch.begin();
-        if (validPosition) {
+        
+        // Always draw at mouse position, but use issueTint if invalid
+        if (isValidBuildPosition(world, mouse)) {
             batch.setColor(tint);
         } else {
             batch.setColor(issueTint);
         }
 
-        // Draw the building
+        // Draw the building at mouse position
         batch.draw(
             building.getTexture(),
             mouse.x * cellSize,
@@ -213,5 +212,10 @@ public class RenderUtils {
     private static float getCellSize() {
         GameState gameState = GameState.getState();
         return Constants.TILE_SIZE * gameState.scaleFactor;
+    }
+
+    private static boolean isValidBuildPosition(World world, Vector2Int pos) {
+        return pos.x >= 0 && pos.x < world.getWidth() && 
+               pos.y >= 0 && pos.y < world.getHeight();
     }
 }
