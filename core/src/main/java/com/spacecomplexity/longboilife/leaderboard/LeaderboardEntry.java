@@ -2,9 +2,9 @@ package com.spacecomplexity.longboilife.leaderboard;
 
 public class LeaderboardEntry {
     private String username;
-    private int score;
+    private Float score;
     
-    public LeaderboardEntry(String username, int score) {
+    public LeaderboardEntry(String username, Float score) {
         this.username = username;
         this.score = score;
     }
@@ -20,11 +20,11 @@ public class LeaderboardEntry {
         this.username = username; 
     }
 
-    public int getScore() { 
+    public Float getScore() { 
         return score; 
     }
     
-    public void setScore(int score) { 
+    public void setScore(Float score) { 
         this.score = score; 
     }
 }

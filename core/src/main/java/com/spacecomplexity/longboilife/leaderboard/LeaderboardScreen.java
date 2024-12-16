@@ -58,10 +58,6 @@ public class LeaderboardScreen implements Screen {
         dataManager = new LeaderboardDataManager();
         entries = dataManager.loadLeaderboard();
 
-        // Testing whether adding scores to the leaderboard works
-        //List<LeaderboardEntry> newEntries = new ArrayList<>();
-        //newEntries.add(new LeaderboardEntry("Test5", 556300));
-        //dataManager.saveLeaderboard(newEntries);
     }
 
     @Override
