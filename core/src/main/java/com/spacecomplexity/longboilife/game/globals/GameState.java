@@ -10,6 +10,10 @@ import java.util.HashMap;
  */
 public class GameState {
     private static final GameState gameState = new GameState();
+    /**
+     * Whether the game has been started (and has not yet ended).
+     */
+    public boolean active = false;
 
     /**
      * The current scale factor of game for rendering.
@@ -150,6 +154,7 @@ public class GameState {
      * Reset all values to default.
      */
     public void reset() {
+        active = false;
 //        scaleFactor = 1;
 //        uiScaleFactor = 1;
         cameraSpeed = 1400;

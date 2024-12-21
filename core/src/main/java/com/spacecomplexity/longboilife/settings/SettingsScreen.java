@@ -17,6 +17,8 @@ import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.spacecomplexity.longboilife.Main;
 import com.spacecomplexity.longboilife.MainInputManager;
+import com.spacecomplexity.longboilife.game.globals.GameState;
+import com.spacecomplexity.longboilife.game.globals.MainTimer;
 import com.spacecomplexity.longboilife.game.globals.Settings;
 import com.spacecomplexity.longboilife.game.globals.Window;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -44,6 +46,10 @@ public class SettingsScreen implements Screen {
     public SettingsScreen(Main game, Main.ScreenType previousScreen) {
         this.game = game;
         this.previousScreen = previousScreen;
+        
+        // Pauses the game so that when the settings menu is closed the game can know to resume instead of restart
+        GameState.getState().paused = true;
+        MainTimer.getTimerManager().getTimer().pauseTimer();
 
         // Initialise viewport and drawing elements
         viewport = new ScalingViewport(Scaling.fit, Window.DEFAULT_WIDTH, Window.DEFAULT_HEIGHT);
@@ -234,10 +240,17 @@ public class SettingsScreen implements Screen {
         if (Gdx.graphics.isFullscreen()) {
             Gdx.graphics.setWindowedMode(Window.DEFAULT_WIDTH, Window.DEFAULT_HEIGHT);
             fullscreenLabel.setText("Windowed");
+            
+            // Update global variable;
+            Window.isFullscreen = false;
         } else {
             Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
             fullscreenLabel.setText("Fullscreen");
+            
+            // Update global variable;
+            Window.isFullscreen = true;
         }
+        
         // Clear and rebuild stage after changing screen mode
         stage.clear();
         show();

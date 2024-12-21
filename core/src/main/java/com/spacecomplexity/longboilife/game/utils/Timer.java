@@ -1,5 +1,7 @@
 package com.spacecomplexity.longboilife.game.utils;
 
+import com.spacecomplexity.longboilife.game.globals.GameState;
+
 /**
  * Class to represent a simple timer
  */
@@ -49,7 +51,8 @@ public class Timer {
      */
     public void resumeTimer() throws IllegalStateException {
         if (!paused) {
-            throw new IllegalStateException("Timer has not been paused");
+            //throw new IllegalStateException("Timer has not been paused");
+            pauseTimer();
         }
 
         // Calculate the time the timer has been paused for and add this onto the finishing time

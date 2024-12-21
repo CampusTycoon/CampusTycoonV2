@@ -10,12 +10,20 @@ import java.util.HashMap;
  * Class to represent the user settings
  */
 public final class Settings {
+    /**
+     * The current game volume (where 0 is muted and 1 is the max volume).
+     */
+    public static float volume;
+    
+    
     private static HashMap<SETTING, String> DEFAULTS = new HashMap<>() {{
+        put(SETTING.FULLSCREEN, "false");
         put(SETTING.RESOLUTION, "1920x1080");
         put(SETTING.VOLUME, "0.5");
     }};
     
     private static enum SETTING {
+        FULLSCREEN("fullscreen"),
         RESOLUTION("resolution"),
         VOLUME("volume");
 
@@ -43,24 +51,21 @@ public final class Settings {
             // No matching setting found
             return null;
         }
-    }   
-    
-    /**
-     * The current game volume (where 0 is muted and 1 is the max volume).
-     */
-    public static float volume;
+    }
     
     /**
      * Saves the current settings to file.
      */
     public static void save() {
-        // TODO: Make this less hardcoded
         try {
             FileWriter writer = new FileWriter("Settings.txt");
             
             // Clear the file
             writer.write("");
             
+            // Write all settings
+            writer.append(SETTING.FULLSCREEN.id + ":" +
+                Window.isFullscreen + "\n");
             writer.append(SETTING.RESOLUTION.id + ":" + 
                 Window.width + "x" + Window.height + "\n");
             writer.append(SETTING.VOLUME.id + ":" +
@@ -84,7 +89,7 @@ public final class Settings {
                 // Initialise settings file with default values
                 initialiseFile(new FileWriter(settings));
             }
-            // Read all the settings into local memory
+            // Read all the settings into memory
             readFile(new Scanner(settings));
         } catch (IOException e) {
             e.printStackTrace();
@@ -133,10 +138,18 @@ public final class Settings {
         
         // Sets the local value of the corresponding setting to the value read from file
         switch (SETTING.getSetting(identifier)) {
+            case FULLSCREEN:
+                // Set fullscreen
+                Window.isFullscreen = value.equals("true");
+                break;
             case RESOLUTION:
-                // TODO: Let this actually set the resolution somehow
+                // Set window width and height
+                String[] resolution = value.split("x");
+                Window.width = Integer.parseInt(resolution[0]);
+                Window.height = Integer.parseInt(resolution[1]);
                 break;
             case VOLUME:
+                // Set volume (currently does nothing)
                 volume = Float.parseFloat(value);
                 break;
             default:
