@@ -54,12 +54,8 @@ public class GameScreen implements Screen {
         shapeRenderer = new ShapeRenderer();
     }
 
-    /**
-     * Responsible for setting up the game initial state.
-     * Called when the game is first run.
-     */
-    @Override
-    public void show() {
+    
+    public void newGame() {
         gameState.reset();
 
         // Creates a new World object from "map.json" file
@@ -74,7 +70,11 @@ public class GameScreen implements Screen {
         MainTimer.getTimerManager().getTimer().setEvent(() -> {
             EventHandler.getEventHandler().callEvent(EventHandler.Event.GAME_END);
         });
-
+        
+        resumeGame();
+    }
+    
+    public void resumeGame() {
         // Create an input multiplexer to handle input from all sources
         InputMultiplexer inputMultiplexer = new InputMultiplexer(new MainInputManager());
 
@@ -93,10 +93,9 @@ public class GameScreen implements Screen {
 
         // Position camera in the center of the world map
         MainCamera.camera().position.set(new Vector3(
-            world.getWidth() * Constants.TILE_SIZE * gameState.scaleFactor / 2,
-            world.getHeight() * Constants.TILE_SIZE * gameState.scaleFactor / 2,
-            0
-        ));
+                world.getWidth() * Constants.TILE_SIZE * gameState.scaleFactor / 2,
+                world.getHeight() * Constants.TILE_SIZE * gameState.scaleFactor / 2,
+                0));
 
         // Set up an InputManager to handle user inputs
         inputManager = new InputManager(inputMultiplexer);
@@ -105,6 +104,26 @@ public class GameScreen implements Screen {
 
         // Initialise the events performed from this script.
         initialiseEvents();
+        
+        gameState.paused = false;
+        MainTimer.getTimerManager().getTimer().resumeTimer();
+    }
+    
+    /**
+     * Responsible for starting and resuming the game.
+     */
+    @Override
+    public void show() {
+        // Creates a new game if the game is not paused 
+        // (i.e. if the GameState hasn't been set yet or the previous game ended)
+        if (!gameState.paused) {
+            newGame();
+        }
+        // Otherwise resume the current game
+        else {
+            resumeGame();
+        }
+        
     }
 
     /**
