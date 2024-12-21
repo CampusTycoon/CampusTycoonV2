@@ -114,9 +114,8 @@ public class GameScreen implements Screen {
      */
     @Override
     public void show() {
-        // Creates a new game if the game is not paused 
-        // (i.e. if the GameState hasn't been set yet or the previous game ended)
-        if (!gameState.paused) {
+        // Creates a new game if the game has not started yet
+        if (!gameState.active) {
             newGame();
         }
         // Otherwise resume the current game

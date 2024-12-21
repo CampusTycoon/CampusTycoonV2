@@ -240,10 +240,17 @@ public class SettingsScreen implements Screen {
         if (Gdx.graphics.isFullscreen()) {
             Gdx.graphics.setWindowedMode(Window.DEFAULT_WIDTH, Window.DEFAULT_HEIGHT);
             fullscreenLabel.setText("Windowed");
+            
+            // Update global variable;
+            Window.isFullscreen = false;
         } else {
             Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
             fullscreenLabel.setText("Fullscreen");
+            
+            // Update global variable;
+            Window.isFullscreen = true;
         }
+        
         // Clear and rebuild stage after changing screen mode
         stage.clear();
         show();

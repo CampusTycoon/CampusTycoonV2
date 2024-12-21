@@ -36,6 +36,11 @@ public class MenuScreen implements Screen {
 
     public MenuScreen(Main game) {
         this.game = game;
+        
+        // Load user settings
+        Settings.initialise();
+        // Apply current window settings to the application
+        Window.refresh();
 
         // Initialise viewport and drawing elements
         viewport = new ScalingViewport(Scaling.fit, Window.DEFAULT_WIDTH, Window.DEFAULT_HEIGHT);
@@ -47,9 +52,6 @@ public class MenuScreen implements Screen {
 
         // Load UI skin for buttons
         skin = new Skin(Gdx.files.internal("ui/skin/uiskin.json"));
-        
-        // Load user settings
-        Settings.initialise();
     }
 
     @Override

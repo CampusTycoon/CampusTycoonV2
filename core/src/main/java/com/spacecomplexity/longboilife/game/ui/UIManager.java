@@ -80,6 +80,7 @@ public class UIManager {
         // Hide game UI and show end UI
         EventHandler.getEventHandler().createEvent(EventHandler.Event.GAME_END, (params) -> {
             GameState.getState().gameOver = true;
+            GameState.getState().active = false;
             EventHandler.getEventHandler().callEvent(EventHandler.Event.CANCEL_OPERATIONS);
 
             // Run dispose functions on UI elements
