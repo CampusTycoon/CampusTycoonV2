@@ -139,11 +139,17 @@ public final class Settings {
         // Sets the local value of the corresponding setting to the value read from file
         switch (SETTING.getSetting(identifier)) {
             case FULLSCREEN:
+                // Set fullscreen
                 Window.isFullscreen = value.equals("true");
+                break;
             case RESOLUTION:
-                // TODO: Let this actually set the resolution somehow
+                // Set window width and height
+                String[] resolution = value.split("x");
+                Window.width = Integer.parseInt(resolution[0]);
+                Window.height = Integer.parseInt(resolution[1]);
                 break;
             case VOLUME:
+                // Set volume (currently does nothing)
                 volume = Float.parseFloat(value);
                 break;
             default:

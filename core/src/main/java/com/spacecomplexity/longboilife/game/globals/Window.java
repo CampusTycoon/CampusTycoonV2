@@ -44,9 +44,15 @@ public final class Window {
         height = Height;
     }
     
+    /**
+     * Applies the current window settings.
+     */
     public static void refresh() {
         if (isFullscreen) {
             Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+        }
+        else {
+            Gdx.graphics.setWindowedMode(width, height);
         }
     }
 }

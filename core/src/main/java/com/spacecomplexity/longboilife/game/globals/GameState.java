@@ -154,7 +154,7 @@ public class GameState {
      * Reset all values to default.
      */
     public void reset() {
-        active = true;
+        active = false;
 //        scaleFactor = 1;
 //        uiScaleFactor = 1;
         cameraSpeed = 1400;

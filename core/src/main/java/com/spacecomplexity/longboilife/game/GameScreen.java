@@ -123,6 +123,7 @@ public class GameScreen implements Screen {
             resumeGame();
         }
         
+        gameState.active = true;
     }
 
     /**
