@@ -320,7 +320,7 @@ public class GameScreen implements Screen {
         // Do not update satisfaction score if the game is paused or has ended
         if (!gameState.paused && !MainTimer.getTimerManager().getTimer().poll()) {
             // Update the satisfaction score
-            GameUtils.updateSatisfactionScore(world);
+            Satisfaction.updateSatisfactionScore(world);
         }
     }
 
