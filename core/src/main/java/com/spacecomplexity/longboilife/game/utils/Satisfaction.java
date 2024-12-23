@@ -1,24 +1,29 @@
 package com.spacecomplexity.longboilife.game.utils;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.Vector;
 
 import com.badlogic.gdx.Gdx;
 import com.spacecomplexity.longboilife.game.building.Building;
 import com.spacecomplexity.longboilife.game.building.BuildingCategory;
+import com.spacecomplexity.longboilife.game.building.BuildingType;
 import com.spacecomplexity.longboilife.game.globals.Constants;
 import com.spacecomplexity.longboilife.game.globals.GameState;
+import com.spacecomplexity.longboilife.game.pathways.PathwayPositions;
 import com.spacecomplexity.longboilife.game.world.World;
 
 /**
  * A class to handle calculation of satisfaction score.
  */
 public class Satisfaction {
+    private static World world;
+    private static AStar pathfinder;
+    
     /**
      * Struct that stores a building and a distance.
      */
@@ -32,20 +37,43 @@ public class Satisfaction {
         }
     }
     
-    public static int AStarPathfind() {
-        // TODO: Figure out how the heck to implement the A* pathfinding algorithm
-        return -1;
+    public static class AStar {
+        private PriorityQueue<Vector2Int> queue;
+        private int minDistance;
+        private PathwayPositions[][] map;
+        
+        
+        public AStar(PathwayPositions[][] Paths) {
+            this.map = Paths;
+        }
+        
+        public int pathfind(Vector2Int location, Vector2Int goal) {
+            // TODO: Figure out how the heck to implement the A* pathfinding algorithm
+            
+            // Check each neighbour, calculate the heuristic for it
+            // Visit the neighbour (of all neighbours) with the lowest heuristic (check it is valid to travel on first)
+            
+            
+            return -1;
+        }
     }
     
     public static int getBuildingDistance(Vector2Int start, Vector2Int end) {
         // Not sure what this function is for other than function name abstraction
-        return AStarPathfind();
+        
+        
+        return pathfinder.pathfind(start, end);
     }
     
     public static List<BuildingDistance> getBuildingDistances(Vector2Int start, List<Building> buildings) {
         List<BuildingDistance> buildingDistances = new ArrayList<BuildingDistance>();
         
         for (Building building : buildings) {
+            if (building.getType() == BuildingType.ROAD) {
+                // Skip roads
+                continue;
+            }
+            
             // Get the shortest distance from the start to the building position
             int distance = getBuildingDistance(start, building.getPosition());
             
@@ -102,6 +130,7 @@ public class Satisfaction {
          */
 
 
+        pathfinder = new AStar(world.pathways);
         Vector<Building> buildings = world.getBuildings();
 
         // Map containing buildings split into categories

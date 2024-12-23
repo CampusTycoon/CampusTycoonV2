@@ -24,7 +24,7 @@ import java.util.Vector;
 public class World {
     private Tile[][] world;
     public Vector<Building> buildings;
-    private PathwayPositions[][] pathways;
+    public PathwayPositions[][] pathways;
 
     /**
      * Creates a new world loaded from a map JSON file.
