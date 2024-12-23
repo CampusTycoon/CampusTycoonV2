@@ -1,7 +1,10 @@
 package com.spacecomplexity.longboilife.game.utils;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
@@ -17,12 +20,45 @@ import com.spacecomplexity.longboilife.game.world.World;
  */
 public class Satisfaction {
     /**
-     * Update satisfaction score.
-     * <p>
-     * Satisfaction score is calculated using {@link Constants#satisfactoryDistance}.
-     * For each accommodation building a modifier is created which is updated based on the positioning of other
-     * buildings with on {@link Constants#satisfactoryDistance}. After all modifiers are calculated the worst one is
-     * chosen to act as the satisfaction modifier, this then updates the satisfaction velocity.
+     * Struct that stores a building and a distance.
+     */
+    public static class BuildingDistance {
+        public int distance;
+        public Building building;
+        
+        public BuildingDistance(int Distance, Building Building) {
+            this.distance = Distance;
+            this.building = Building;
+        }
+    }
+    
+    public static int AStarPathfind() {
+        // TODO: Figure out how the heck to implement the A* pathfinding algorithm
+        return -1;
+    }
+    
+    public static int getBuildingDistance(Vector2Int start, Vector2Int end) {
+        // Not sure what this function is for other than function name abstraction
+        return AStarPathfind();
+    }
+    
+    public static List<BuildingDistance> getBuildingDistances(Vector2Int start, List<Building> buildings) {
+        List<BuildingDistance> buildingDistances = new ArrayList<BuildingDistance>();
+        
+        for (Building building : buildings) {
+            // Get the shortest distance from the start to the building position
+            int distance = getBuildingDistance(start, building.getPosition());
+            
+            // Add the distance and building to the list
+            BuildingDistance bd = new BuildingDistance(distance, building);
+            buildingDistances.add(bd);
+        }
+        
+        return buildingDistances;
+    }
+    
+    /**
+     * (See explanation within the function for now, will update this later)
      *
      * @param world the world reference for buildings.
      */
@@ -64,20 +100,20 @@ public class Satisfaction {
          *
          * Average the satisfaction score of all accommodation buildings
          */
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
+
         Vector<Building> buildings = world.getBuildings();
 
         // Map containing buildings split into categories
         HashMap<BuildingCategory, Vector<Building>> categorisedBuildings = new HashMap<>();
+        
+        
+        
+        
+        
+        
+        
+        
 
         // Get categories of buildings which will affect satisfaction score
         Set<BuildingCategory> searchBuildingCategories = new HashSet<>(Constants.satisfactoryDistance.keySet());
