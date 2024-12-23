@@ -27,6 +27,53 @@ public class Satisfaction {
      * @param world the world reference for buildings.
      */
     public static void updateSatisfactionScore(World world) {
+        // New implementation of satisfaction score:
+        
+        /** 
+         * Retrieve distance of accommodation building to other utility buildings 
+         *      (via A* pathfinding)
+         *
+         * Check if the building is in range to receive the full amount of satisfaction score
+         *      e.g. if a building is within 50 tiles award the full amount, 
+         *           if its within 100 award half
+         *           if its further than 100 award nothing
+         *
+         * Each utility building will have a different amount of contribution to satisfaction score
+         *      e.g. Lecture hall could be worth 50%
+         *           Greggs could be 5%
+         *           Gym could be 20%
+         *           Library could be 30%
+         *
+         * Each utility building has a cap on the amount it can contribute to satisfaction score
+         * And a bonus to satisfaction score is given for increased variety
+         *      e.g. An accommodation building could look like this when hovered over:
+         *              Satisfaction 100%
+         *              Breakdown:
+         *                  Lecture Hall: +50% (cap)
+         *                  Gym: +20%
+         *                  2x Greggs: +10%
+         *                  Variety Bonus (at least 3 different utility buildings): +20%
+         *           Or like this with events included:
+         *              Satisfaction 15%
+         *              Breakdown:
+         *                  19x Greggs: +20% (cap)
+         *                  Dirty Paths: -5%
+         *                  Alien Invasion: -10%
+         *                  Half-Price Sausage Rolls: +10%
+         *                  etc...
+         *
+         * Average the satisfaction score of all accommodation buildings
+         */
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         Vector<Building> buildings = world.getBuildings();
 
         // Map containing buildings split into categories
