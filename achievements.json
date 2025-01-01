@@ -1,0 +1,18 @@
+[
+{
+	"class": "com.spacecomplexity.longboilife.achievements.Achievement",
+	"id": "highly_satisfied",
+	"title": "Highly Satisfied",
+	"description": "Reach a satisfaction score of 90% or higher",
+	"unlocked": false,
+	"type": "SATISFACTION_SCORE"
+},
+{
+	"class": "com.spacecomplexity.longboilife.achievements.Achievement",
+	"id": "campus_master",
+	"title": "Campus Master",
+	"description": "Build 30 buildings",
+	"unlocked": true,
+	"type": "BUILDING_COUNT"
+}
+]

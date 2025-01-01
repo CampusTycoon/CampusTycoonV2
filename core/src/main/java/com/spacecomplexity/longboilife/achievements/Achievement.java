@@ -9,7 +9,8 @@ public class Achievement {
 
     public enum AchievementType {
         BUILDING_COUNT,
-        SATISFACTION_SCORE
+        SATISFACTION_SCORE,
+        BUDGET
     }
     
     public Achievement(String id, String title, String description, AchievementType type) {

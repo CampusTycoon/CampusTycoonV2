@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.spacecomplexity.longboilife.Main;
 import com.spacecomplexity.longboilife.MainInputManager;
+import com.spacecomplexity.longboilife.achievements.AchievementManager;
 import com.spacecomplexity.longboilife.game.building.Building;
 import com.spacecomplexity.longboilife.game.building.BuildingType;
 import com.spacecomplexity.longboilife.game.globals.Constants;
@@ -158,6 +159,9 @@ public class GameScreen implements Screen {
                 // Build the building at the mouse location and charge the player accordingly
                 world.build(toBuild, mouse);
                 gameState.money -= cost;
+
+                // Check for achievements
+                AchievementManager.getInstance().checkAchievements();
 
                 // Remove the selected building if shift is not held
                 if (!gameState.shiftHeld) {

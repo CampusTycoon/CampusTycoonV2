@@ -6,9 +6,11 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
 import com.spacecomplexity.longboilife.achievements.Achievement;
 import com.spacecomplexity.longboilife.game.globals.GameState;
 import com.spacecomplexity.longboilife.game.building.BuildingType;
+import com.spacecomplexity.longboilife.game.building.BuildingCategory;
 
 public class AchievementManager {
     private static final String ACHIEVEMENTS_FILE = "achievements.json";
@@ -40,7 +42,13 @@ public class AchievementManager {
             "Build 30 buildings",
             Achievement.AchievementType.BUILDING_COUNT
         ));
-        
+
+        achievements.add(new Achievement(
+            "budget_master",
+            "Budget Master",
+            "Never go below £x",
+            Achievement.AchievementType.BUDGET
+        ));
     }
     
     public static AchievementManager getInstance() {
@@ -68,7 +76,7 @@ public class AchievementManager {
     
     private void checkSatisfactionAchievements(Achievement achievement) {
         float satisfactionScore = GameState.getState().satisfactionScore;
-        if (achievement.getId().equals("satisfaction_master") && satisfactionScore >= 1.0f) {
+        if (achievement.getId().equals("satisfaction_master") && satisfactionScore >= 1.0f) { //TODO: Actually implement this with satisfaction score once that's added
             unlockAchievement(achievement);
         }
     }
@@ -76,10 +84,13 @@ public class AchievementManager {
     private void checkBuildingAchievements(Achievement achievement) {
         int totalBuildings = 0;
         for (BuildingType type : BuildingType.values()) {
-            totalBuildings += GameState.getState().getBuildingCount(type);
+            // Skip counting roads/pathways
+            if (type.getCategory() != BuildingCategory.PATHWAY) {
+                totalBuildings += GameState.getState().getBuildingCount(type);
+            }
         }
         
-        if (achievement.getId().equals("building_tycoon") && totalBuildings >= 20) {
+        if (achievement.getId().equals("campus_master") && totalBuildings >= 30) {
             unlockAchievement(achievement);
         }
     }
@@ -87,7 +98,7 @@ public class AchievementManager {
     private void unlockAchievement(Achievement achievement) {
         achievement.setUnlocked(true);
         saveAchievements();
-        // TODO: Show achievement notification
+        Gdx.app.log("Achievement Unlocked", achievement.getTitle() + " - " + achievement.getDescription()); //Troubleshooting
     }
     
     private void saveAchievements() {
@@ -103,11 +114,16 @@ public class AchievementManager {
     private void loadAchievements() {
         try {
             FileHandle file = Gdx.files.local(ACHIEVEMENTS_FILE);
-            if (file.exists()) {
-                List<Achievement> savedAchievements = json.fromJson(ArrayList.class, Achievement.class, file);
-                achievements.clear();
-                achievements.addAll(savedAchievements);
+            if (!file.exists() || file.length() == 0) { //If file doesn't exist or is empty, return an empty ArrayList
+                return;
             }
+            String content = file.readString().trim();
+            if (content.isEmpty()) { //If file is empty, return an empty ArrayList
+                return;
+            }
+            Achievement[] loadedAchievements = json.fromJson(Achievement[].class, file);
+            achievements.clear();
+            achievements.addAll(Arrays.asList(loadedAchievements));
         } catch (Exception e) {
             Gdx.app.error("AchievementManager", "Error loading achievements", e);
         }
