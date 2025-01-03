@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.spacecomplexity.longboilife.Main;
 import com.spacecomplexity.longboilife.MainInputManager;
+import com.spacecomplexity.longboilife.achievements.AchievementManager;
 import com.spacecomplexity.longboilife.game.building.Building;
 import com.spacecomplexity.longboilife.game.building.BuildingType;
 import com.spacecomplexity.longboilife.game.globals.Constants;
@@ -159,6 +160,9 @@ public class GameScreen implements Screen {
                 world.build(toBuild, mouse);
                 gameState.money -= cost;
 
+                // Check for achievements
+                AchievementManager.getInstance().checkAchievements();
+
                 // Remove the selected building if shift is not held
                 if (!gameState.shiftHeld) {
                     gameState.placingBuilding = null;
@@ -188,20 +192,24 @@ public class GameScreen implements Screen {
         eventHandler.createEvent(EventHandler.Event.SELECT_BUILDING, (params) -> {
             // Get the tile at the mouse coordinates
             Tile tile = world.getTile(GameUtils.getMouseOnGrid(world));
+            // If there is no tile here then do nothing
+            if (tile == null) {
+                return null;
+            }
             // Get the building on the tile
             Building selectedBuilding = tile.getBuildingRef();
-
+        
             // If there is no building here then do nothing
             if (selectedBuilding == null) {
                 return null;
             }
-
+        
             // Set the selected building
             gameState.selectedBuilding = selectedBuilding;
-
+        
             // Open the selected building menu
             eventHandler.callEvent(EventHandler.Event.OPEN_SELECTED_MENU);
-
+        
             return null;
         });
 
