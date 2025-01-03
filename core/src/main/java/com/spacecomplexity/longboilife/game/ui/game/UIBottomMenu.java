@@ -16,6 +16,7 @@ import com.spacecomplexity.longboilife.game.globals.MainTimer;
 import com.spacecomplexity.longboilife.game.ui.UIElement;
 import com.spacecomplexity.longboilife.game.utils.EventHandler;
 import com.spacecomplexity.longboilife.game.utils.UIUtils;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 
 /**
  * Class to represent the Bottom Menu UI.
@@ -91,6 +92,7 @@ public class UIBottomMenu extends UIElement {
 
         // Style and place the table
         table.setBackground(skin.getDrawable("panel1"));
+        table.setTouchable(Touchable.enabled);
         placeTable();
 
         // Assign pause and play events

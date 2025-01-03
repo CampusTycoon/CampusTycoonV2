@@ -65,6 +65,9 @@ public class World {
      * @return the {@link Tile} at the specified coordinates.
      */
     public Tile getTile(Vector2Int coordinate) {
+        if (!isInWorld(coordinate)) {
+            return null;
+        }
         return world[coordinate.x][coordinate.y];
     }
 

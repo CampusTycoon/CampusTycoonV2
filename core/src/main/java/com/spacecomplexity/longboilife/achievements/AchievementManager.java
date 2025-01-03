@@ -84,7 +84,7 @@ public class AchievementManager {
     private void checkBuildingAchievements(Achievement achievement) {
         int totalBuildings = 0;
         for (BuildingType type : BuildingType.values()) {
-            // Skip counting roads/pathways
+            // Skip counting roads/pathways6
             if (type.getCategory() != BuildingCategory.PATHWAY) {
                 totalBuildings += GameState.getState().getBuildingCount(type);
             }

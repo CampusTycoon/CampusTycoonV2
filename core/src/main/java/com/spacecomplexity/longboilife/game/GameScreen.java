@@ -192,20 +192,24 @@ public class GameScreen implements Screen {
         eventHandler.createEvent(EventHandler.Event.SELECT_BUILDING, (params) -> {
             // Get the tile at the mouse coordinates
             Tile tile = world.getTile(GameUtils.getMouseOnGrid(world));
+            // If there is no tile here then do nothing
+            if (tile == null) {
+                return null;
+            }
             // Get the building on the tile
             Building selectedBuilding = tile.getBuildingRef();
-
+        
             // If there is no building here then do nothing
             if (selectedBuilding == null) {
                 return null;
             }
-
+        
             // Set the selected building
             gameState.selectedBuilding = selectedBuilding;
-
+        
             // Open the selected building menu
             eventHandler.callEvent(EventHandler.Event.OPEN_SELECTED_MENU);
-
+        
             return null;
         });
 
