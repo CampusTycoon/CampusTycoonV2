@@ -7,7 +7,6 @@ import com.badlogic.gdx.utils.JsonWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
-import com.spacecomplexity.longboilife.achievements.Achievement;
 import com.spacecomplexity.longboilife.game.globals.GameState;
 import com.spacecomplexity.longboilife.game.building.BuildingType;
 import com.spacecomplexity.longboilife.game.building.BuildingCategory;

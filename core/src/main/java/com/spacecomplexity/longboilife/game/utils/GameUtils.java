@@ -2,18 +2,11 @@ package com.spacecomplexity.longboilife.game.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
-import com.spacecomplexity.longboilife.game.building.Building;
-import com.spacecomplexity.longboilife.game.building.BuildingCategory;
 import com.spacecomplexity.longboilife.game.globals.Constants;
 import com.spacecomplexity.longboilife.game.globals.GameState;
 import com.spacecomplexity.longboilife.game.globals.MainCamera;
 import com.spacecomplexity.longboilife.game.globals.Window;
 import com.spacecomplexity.longboilife.game.world.World;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Vector;
 
 /**
  * A class used for game utilities.

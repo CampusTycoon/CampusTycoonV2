@@ -24,7 +24,6 @@ import com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry;
 public class UIOverview extends UIElement {
 
     private LeaderboardDataManager dataManager;
-    private List<LeaderboardEntry> entries;
 
     /**
      * Initialise overview elements.

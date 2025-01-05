@@ -20,7 +20,6 @@ import com.spacecomplexity.longboilife.Main;
 import com.spacecomplexity.longboilife.MainInputManager;
 import com.spacecomplexity.longboilife.game.globals.Window;
 import java.util.List;
-import java.util.ArrayList;
 
 /**
  * Main class to control the menu screen.

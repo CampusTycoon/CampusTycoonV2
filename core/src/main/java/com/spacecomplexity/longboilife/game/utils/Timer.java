@@ -1,7 +1,5 @@
 package com.spacecomplexity.longboilife.game.utils;
 
-import com.spacecomplexity.longboilife.game.globals.GameState;
-
 /**
  * Class to represent a simple timer
  */
