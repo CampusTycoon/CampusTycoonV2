@@ -28,7 +28,11 @@ public class MenuScreen implements Screen {
 
     private Viewport viewport;
 
-    private Texture backgroundTexture;
+    private Texture[] backgroundTextures;
+    private int currentBackgroundIndex = 0;
+    private float backgroundTimer = 0;
+    private static final float BACKGROUND_SWITCH_TIME = 3f; // Switch every 3 seconds
+
     private SpriteBatch batch;
 
     private Stage stage;
@@ -47,8 +51,12 @@ public class MenuScreen implements Screen {
         stage = new Stage(viewport);
         batch = new SpriteBatch();
 
-        // Load background texture
-        backgroundTexture = new Texture(Gdx.files.internal("menu/Plain Black.png"));
+        // Replace single background texture with array of textures
+        backgroundTextures = new Texture[]{
+            new Texture(Gdx.files.internal("ui/Example1.png")),
+            new Texture(Gdx.files.internal("ui/Example2.png")),
+            new Texture(Gdx.files.internal("ui/Example3.png"))
+        };
 
         // Load UI skin for buttons
         skin = new Skin(Gdx.files.internal("ui/skin/uiskin.json"));
@@ -56,6 +64,15 @@ public class MenuScreen implements Screen {
 
     @Override
     public void show() {
+        // Recreate stage if it was disposed
+        if (stage == null) {
+            stage = new Stage(viewport);
+            skin = new Skin(Gdx.files.internal("ui/skin/uiskin.json"));
+        }
+        
+        // Set up input processor
+        Gdx.input.setInputProcessor(stage);
+        
         // Table layout for menu alignment
         Table table = new Table();
         table.setFillParent(true);
@@ -119,15 +136,25 @@ public class MenuScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        // Clear the screen
         ScreenUtils.clear(0, 0, 0, 1f);
 
-        // Draw background image
+        // Update background timer and index
+        backgroundTimer += delta;
+        if (backgroundTimer >= BACKGROUND_SWITCH_TIME) {
+            backgroundTimer = 0;
+            currentBackgroundIndex = (currentBackgroundIndex + 1) % backgroundTextures.length;
+        }
+
+        // Draw current background image
         batch.begin();
-        batch.draw(backgroundTexture, 0, 0, Window.DEFAULT_HEIGHT, Window.DEFAULT_HEIGHT);
+        batch.setProjectionMatrix(viewport.getCamera().combined);
+        batch.draw(backgroundTextures[currentBackgroundIndex], 
+            0, 0,                           // Position
+            viewport.getWorldWidth(),       // Width
+            viewport.getWorldHeight());     // Height
         batch.end();
 
-        // Draw and apply ui
+        // Draw the UI
         stage.act(delta);
         stage.draw();
     }
@@ -150,10 +177,12 @@ public class MenuScreen implements Screen {
 
     @Override
     public void hide() {
+        // Just clear the stage without disposing
         if (stage != null) {
             stage.clear();
         }
-        dispose();
+        // Remove input processor
+        Gdx.input.setInputProcessor(null);
     }
 
     @Override
@@ -166,9 +195,13 @@ public class MenuScreen implements Screen {
             skin.dispose();
             skin = null;
         }
-        if (backgroundTexture != null) {
-            backgroundTexture.dispose();
-            backgroundTexture = null;
+        if (backgroundTextures != null) {
+            for (Texture texture : backgroundTextures) {
+                if (texture != null) {
+                    texture.dispose();
+                }
+            }
+            backgroundTextures = null;
         }
         if (batch != null) {
             batch.dispose();

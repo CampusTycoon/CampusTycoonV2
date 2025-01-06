@@ -14,6 +14,8 @@ public enum BuildingType {
     // Accommodation
     BAND1("Band 1 Accommodation", new Texture("buildings/Band1.png"), new Vector2Int(4, 5), BuildingCategory.ACCOMMODATION, 1000),
     BAND2("Band 2 Accommodation", new Texture("buildings/Band2.png"), new Vector2Int(4, 5), BuildingCategory.ACCOMMODATION, 1000),
+    BAND3("Band 3 Accommodation", new Texture("buildings/Band3.png"), new Vector2Int(4, 5), BuildingCategory.ACCOMMODATION, 1000),
+    BAND4("Band 4 Accommodation", new Texture("buildings/Band4.png"), new Vector2Int(4, 5), BuildingCategory.ACCOMMODATION, 1000),
     // Recreational
     OUTDOORGYM("Outdoor Gym", new Texture("buildings/Outdoor Gym.png"), new Vector2Int(4, 4), BuildingCategory.RECREATIONAL, 1000),
     PARK("Park", new Texture("buildings/Park.png"), new Vector2Int(8, 4), BuildingCategory.RECREATIONAL, 1000),
@@ -23,6 +25,7 @@ public enum BuildingType {
     FOODSTORE("Food Store", new Texture("buildings/Food Store.png"), new Vector2Int(4, 4), BuildingCategory.FOOD, 1000),
     //Educational
     OFFICE("Office", new Texture("buildings/Office.png"), new Vector2Int(6, 6), BuildingCategory.EDUCATIONAL, 1000),
+    LIBRARY("Library", new Texture("buildings/Library.png"), new Vector2Int(4, 5), BuildingCategory.EDUCATIONAL, 1000),
     ;
 
     private final String displayName;
