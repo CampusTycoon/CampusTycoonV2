@@ -63,4 +63,11 @@ public class UITooltip extends UIElement {
     protected void placeTable() {
         // Position is updated in render()
     }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        hideTooltip();  // Make sure tooltip is hidden before disposal
+        table.clear();  // Clear the table contents
+    }
 } 
