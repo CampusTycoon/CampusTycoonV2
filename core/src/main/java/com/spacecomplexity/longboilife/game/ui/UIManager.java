@@ -25,7 +25,7 @@ public class UIManager {
     private Viewport viewport;
 
     private Stage stage;
-    private final Skin skin;
+    private Skin skin;
 
     private UIElement[] uiElements;
 
@@ -140,12 +140,23 @@ public class UIManager {
      * Dispose of all loaded assets.
      */
     public void dispose() {
-        stage.dispose();
-        skin.dispose();
+        if (stage != null) {
+            stage.dispose();
+            stage = null;
+        }
+        
+        if (skin != null) {
+            skin.dispose();
+            skin = null;
+        }
 
-        // Run dispose functions on UI elements
-        for (UIElement uiElement : uiElements) {
-            uiElement.dispose();
+        if (uiElements != null) {
+            for (UIElement uiElement : uiElements) {
+                if (uiElement != null) {
+                    uiElement.dispose();
+                }
+            }
+            uiElements = null;
         }
     }
 }

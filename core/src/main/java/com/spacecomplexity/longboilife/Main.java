@@ -7,6 +7,8 @@ import com.spacecomplexity.longboilife.menu.MenuScreen;
 import com.spacecomplexity.longboilife.settings.SettingsScreen;
 import com.spacecomplexity.longboilife.leaderboard.LeaderboardScreen;
 import java.util.HashMap;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.LifecycleListener;
 
 /**
  * The main class (entry point).
@@ -46,6 +48,22 @@ public class Main extends Game {
 
     @Override
     public void create() {
+        Gdx.app.addLifecycleListener(new LifecycleListener() {
+            @Override
+            public void pause() {}
+
+            @Override
+            public void resume() {}
+
+            @Override
+            public void dispose() {
+                // Properly dispose of the current screen
+                if (screen != null) {
+                    screen.dispose();
+                }
+            }
+        });
+
         // Initially load the menu screen
         switchScreen(ScreenType.MENU);
     }

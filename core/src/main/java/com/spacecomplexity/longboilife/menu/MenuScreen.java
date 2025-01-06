@@ -150,14 +150,29 @@ public class MenuScreen implements Screen {
 
     @Override
     public void hide() {
-
+        if (stage != null) {
+            stage.clear();
+        }
+        dispose();
     }
 
     @Override
     public void dispose() {
-        stage.dispose();
-        skin.dispose();
-        backgroundTexture.dispose();
-        batch.dispose();
+        if (stage != null) {
+            stage.dispose();
+            stage = null;
+        }
+        if (skin != null) {
+            skin.dispose();
+            skin = null;
+        }
+        if (backgroundTexture != null) {
+            backgroundTexture.dispose();
+            backgroundTexture = null;
+        }
+        if (batch != null) {
+            batch.dispose();
+            batch = null;
+        }
     }
 }

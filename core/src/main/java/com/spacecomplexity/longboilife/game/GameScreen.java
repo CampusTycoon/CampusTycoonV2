@@ -363,7 +363,13 @@ public class GameScreen implements Screen {
 
     @Override
     public void hide() {
-        ui.dispose();
+        // Ensure UI is disposed before hiding screen
+        if (ui != null) {
+            ui.dispose();
+        }
+        
+        // Clear input processor to prevent ghost inputs
+        Gdx.input.setInputProcessor(null);
     }
 
     /**
@@ -372,8 +378,24 @@ public class GameScreen implements Screen {
      */
     @Override
     public void dispose() {
-        batch.dispose();
-        shapeRenderer.dispose();
-        ui.dispose();
+        // Dispose of all resources in reverse order of creation
+        if (ui != null) {
+            ui.dispose();
+            ui = null;
+        }
+        
+        if (shapeRenderer != null) {
+            shapeRenderer.dispose();
+            shapeRenderer = null;
+        }
+        
+        if (batch != null) {
+            batch.dispose();
+            batch = null;
+        }
+        
+        if (world != null) {
+            world = null;
+        }
     }
 }

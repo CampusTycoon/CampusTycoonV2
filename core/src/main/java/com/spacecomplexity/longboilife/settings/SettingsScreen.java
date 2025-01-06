@@ -224,16 +224,30 @@ public class SettingsScreen implements Screen {
 
     @Override
     public void hide() {
-        // Clear all actors from the stage when hiding the screen
-        stage.clear();
+        if (stage != null) {
+            stage.clear();
+        }
+        dispose();
     }
 
     @Override
     public void dispose() {
-        stage.dispose();
-        skin.dispose();
-        backgroundTexture.dispose();
-        batch.dispose();
+        if (stage != null) {
+            stage.dispose();
+            stage = null;
+        }
+        if (skin != null) {
+            skin.dispose();
+            skin = null;
+        }
+        if (backgroundTexture != null) {
+            backgroundTexture.dispose();
+            backgroundTexture = null;
+        }
+        if (batch != null) {
+            batch.dispose();
+            batch = null;
+        }
     }
 
     private void toggleFullscreen() {

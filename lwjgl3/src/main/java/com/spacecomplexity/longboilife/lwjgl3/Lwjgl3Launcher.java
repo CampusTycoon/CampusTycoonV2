@@ -2,8 +2,10 @@ package com.spacecomplexity.longboilife.lwjgl3;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowAdapter;
 import com.spacecomplexity.longboilife.Main;
 import com.spacecomplexity.longboilife.game.globals.Window;
+import com.badlogic.gdx.Gdx;
 
 /**
  * Launches the desktop (LWJGL3) application.
@@ -39,6 +41,15 @@ public class Lwjgl3Launcher {
         //// Sets the icon that will be used for the window
         //// You can change these files; they are in lwjgl3/src/main/resources/ .
         configuration.setWindowIcon("CampusTycoon.png");
+
+        // Add window close handler
+        configuration.setWindowListener(new Lwjgl3WindowAdapter() {
+            @Override
+            public boolean closeRequested() {
+                Gdx.app.exit();
+                return false;
+            }
+        });
 
         return configuration;
     }
