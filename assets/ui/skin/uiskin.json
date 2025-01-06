@@ -85,7 +85,12 @@
 			"titleFont": "font-title",
 			"titleFontColor": { "a": 1, "b": 1, "g": 1, "r": 1 },
 			"stageBackground": "list"
-		}
+		},
+    	"tooltip": {
+        	"background": "panel1",
+        	"titleFont": "font-label",
+        	"titleFontColor": { "a": 1, "b": 1, "g": 1, "r": 1 }
+    }
 	},
 	"com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle": {
 		"default": {

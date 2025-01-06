@@ -98,7 +98,7 @@ public class GameScreen implements Screen {
                 0));
 
         // Set up an InputManager to handle user inputs
-        inputManager = new InputManager(inputMultiplexer);
+        inputManager = new InputManager(inputMultiplexer, world);
         // Set the Gdx input processor to handle all our input processes
         Gdx.input.setInputProcessor(inputMultiplexer);
 

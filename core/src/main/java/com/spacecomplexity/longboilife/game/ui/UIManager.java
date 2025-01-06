@@ -69,6 +69,7 @@ public class UIManager {
         // Create our UI elements
         // Note: The order of these is the order that they will be rendered
         uiElements = new UIElement[]{
+            new UITooltip(viewport, table, skin),
             new UIBuildingSelectedMenu(viewport, table, skin),
             new UIBottomMenu(viewport, table, skin),
             new UIClockMenu(viewport, table, skin),

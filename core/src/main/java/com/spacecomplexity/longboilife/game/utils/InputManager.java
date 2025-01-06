@@ -7,16 +7,22 @@ import com.badlogic.gdx.math.Vector3;
 import com.spacecomplexity.longboilife.game.globals.GameState;
 import com.spacecomplexity.longboilife.game.globals.Keybindings;
 import com.spacecomplexity.longboilife.game.globals.MainCamera;
+import com.spacecomplexity.longboilife.game.building.Building;
+import com.spacecomplexity.longboilife.game.tile.Tile;
+import com.spacecomplexity.longboilife.game.utils.GameUtils;
+import com.spacecomplexity.longboilife.game.world.World;
 
 public class InputManager {
     private final GameState gameState = GameState.getState();
+    private final World world;
 
     /**
      * Create an input manager by initialising the input processors and set attributes.
      *
      * @param inputMultiplexer to add the input processor events to the input processing.
      */
-    public InputManager(InputMultiplexer inputMultiplexer) {
+    public InputManager(InputMultiplexer inputMultiplexer, World world) {
+        this.world = world;
         inputMultiplexer.addProcessor(new InputProcessor());
     }
 
@@ -219,6 +225,32 @@ public class InputManager {
             }
 
             return false;
+        }
+
+        /**
+         * Handles mouseMoved events.
+         *
+         * @param screenX The x coordinate, origin is in the upper left corner.
+         * @param screenY The y coordinate, origin is in the upper left corner.
+         * @return true if the event was handled.
+         */
+        @Override
+        public boolean mouseMoved(int screenX, int screenY) {
+            // If game is paused or over, don't show tooltips
+            if (gameState.paused || gameState.gameOver) {
+                gameState.hoveredBuilding = null;
+                return true;
+            }
+
+            // Get the tile at mouse position
+            Tile tile = world.getTile(GameUtils.getMouseOnGrid(world));
+            if (tile != null) {
+                gameState.hoveredBuilding = tile.getBuildingRef();
+            } else {
+                gameState.hoveredBuilding = null;
+            }
+            
+            return true;
         }
     }
 }

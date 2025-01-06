@@ -138,6 +138,12 @@ public class GameState {
     public boolean shiftHeld = false;
 
     /**
+     * If the building is currently hovered over.
+     */
+    public float buildingHoverTime = 0f;
+    public Building hoveredBuilding = null;
+
+    /**
      * Get the singleton instance of the {@link GameState} class.
      *
      * @return The single {@link GameState} class.
@@ -173,5 +179,7 @@ public class GameState {
         satisfactionModifierPositive = false;
         gameOver = false;
         shiftHeld = false;
+        buildingHoverTime = 0f;
+        hoveredBuilding = null;
     }
 }

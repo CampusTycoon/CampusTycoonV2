@@ -2,32 +2,7 @@
 {
 	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
 	"username": "Test5",
-	"score": 1
-},
-{
-	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
-	"username": "Test5",
-	"score": 2
-},
-{
-	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
-	"username": "Test5",
-	"score": 5
-},
-{
-	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
-	"username": "Test5",
-	"score": 8
-},
-{
-	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
-	"username": "Test5",
-	"score": 9
-},
-{
-	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
-	"username": "Test5",
-	"score": 11
+	"score": 16
 },
 {
 	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
@@ -37,6 +12,36 @@
 {
 	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
 	"username": "Test5",
-	"score": 16
+	"score": 11
+},
+{
+	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
+	"username": "Test5",
+	"score": 9
+},
+{
+	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
+	"username": "Test5",
+	"score": 8
+},
+{
+	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
+	"username": "Test5",
+	"score": 5
+},
+{
+	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
+	"username": "Test5",
+	"score": 2
+},
+{
+	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
+	"username": "Test5",
+	"score": 1
+},
+{
+	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
+	"username": "AntoTeo",
+	"score": 0
 }
 ]

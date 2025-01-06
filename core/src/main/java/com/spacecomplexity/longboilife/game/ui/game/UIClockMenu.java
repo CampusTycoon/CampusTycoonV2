@@ -57,6 +57,6 @@ public class UIClockMenu extends UIElement {
 
     @Override
     protected void placeTable() {
-        table.setPosition(0, uiViewport.getWorldHeight() - table.getHeight());
+        table.setPosition(0, uiViewport.getWorldHeight() - UIBuildingCounter.getHeight() - table.getHeight() + 5);
     }
 }

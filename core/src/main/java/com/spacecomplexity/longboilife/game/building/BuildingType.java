@@ -12,17 +12,17 @@ public enum BuildingType {
     // Roads
     ROAD("Road", new Texture("buildings/roads/straight.png"), new Vector2Int(1, 1), BuildingCategory.PATHWAY, 100),
     // Accommodation
-    BAND1("Band 1 Accommodation", new Texture("buildings/Band1.png"), new Vector2Int(4, 5), BuildingCategory.ACCOMMODATION, 100000),
-    BAND2("Band 2 Accommodation", new Texture("buildings/Band2.png"), new Vector2Int(4, 5), BuildingCategory.ACCOMMODATION, 100000),
+    BAND1("Band 1 Accommodation", new Texture("buildings/Band1.png"), new Vector2Int(4, 5), BuildingCategory.ACCOMMODATION, 1000),
+    BAND2("Band 2 Accommodation", new Texture("buildings/Band2.png"), new Vector2Int(4, 5), BuildingCategory.ACCOMMODATION, 1000),
     // Recreational
-    OUTDOORGYM("Outdoor Gym", new Texture("buildings/Outdoor Gym.png"), new Vector2Int(4, 4), BuildingCategory.RECREATIONAL, 100000),
-    PARK("Park", new Texture("buildings/Park.png"), new Vector2Int(8, 4), BuildingCategory.RECREATIONAL, 100000),
-    STATIONERYSTORE("Stationery Store", new Texture("buildings/Stationery Store.png"), new Vector2Int(4, 4), BuildingCategory.RECREATIONAL, 100000),
+    OUTDOORGYM("Outdoor Gym", new Texture("buildings/Outdoor Gym.png"), new Vector2Int(4, 4), BuildingCategory.RECREATIONAL, 1000),
+    PARK("Park", new Texture("buildings/Park.png"), new Vector2Int(8, 4), BuildingCategory.RECREATIONAL, 1000),
+    STATIONERYSTORE("Stationery Store", new Texture("buildings/Stationery Store.png"), new Vector2Int(4, 4), BuildingCategory.RECREATIONAL, 1000),
     //Food
-    CAFETERIA("Cafeteria", new Texture("buildings/Cafeteria.png"), new Vector2Int(6, 6), BuildingCategory.FOOD, 100000),
-    FOODSTORE("Food Store", new Texture("buildings/Food Store.png"), new Vector2Int(4, 4), BuildingCategory.FOOD, 100000),
+    CAFETERIA("Cafeteria", new Texture("buildings/Cafeteria.png"), new Vector2Int(6, 6), BuildingCategory.FOOD, 1000),
+    FOODSTORE("Food Store", new Texture("buildings/Food Store.png"), new Vector2Int(4, 4), BuildingCategory.FOOD, 1000),
     //Educational
-    OFFICE("Office", new Texture("buildings/Office.png"), new Vector2Int(6, 6), BuildingCategory.EDUCATIONAL, 100000),
+    OFFICE("Office", new Texture("buildings/Office.png"), new Vector2Int(6, 6), BuildingCategory.EDUCATIONAL, 1000),
     ;
 
     private final String displayName;
