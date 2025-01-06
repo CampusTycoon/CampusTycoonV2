@@ -71,12 +71,10 @@ public class LeaderboardScreen implements Screen {
         stage.addActor(table);
 
         // Create a table to display one row of labels
-        // TODO: These are currently buttons, but should be labels
         Table labelsRow = new Table();
         labelsRow.setSkin(skin);
-        labelsRow.add(new TextButton("Username", skin, "round")).left();
-        labelsRow.add().expandX();
-        labelsRow.add(new TextButton("Score", skin, "round")).right();
+        labelsRow.add(new Label("Username", skin)).left().width(400);  // Fixed width for username column
+        labelsRow.add(new Label("Score", skin)).right().width(0);    // Fixed width for score column
 
         // Add labels to table
         table.add(labelsRow).expandX().fillX().pad(100);
@@ -86,9 +84,8 @@ public class LeaderboardScreen implements Screen {
         // TODO: Pull all data from leaderboard file, only display top X amount of scores/usernames
         for (LeaderboardEntry entry : entries) {
             Table row = new Table();
-            row.add(new Label(entry.getUsername(), skin)).left();
-            row.add().expandX();
-            row.add(new Label(String.valueOf(entry.getScore()), skin)).right();
+            row.add(new Label(entry.getUsername(), skin)).left().width(400);  // Same width as header
+            row.add(new Label(String.valueOf(entry.getScore()), skin)).right().width(0);  // Same width as header
             table.add(row).expandX().fillX().pad(10);
             table.row();
         }
