@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.JsonWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class LeaderboardDataManager {
     private static final String LEADERBOARD_FILE = "leaderboard.json";
@@ -54,5 +55,12 @@ public class LeaderboardDataManager {
         } catch (Exception e) {
             Gdx.app.error("LeaderboardDataManager", "Error saving leaderboard", e);
         }
+    }
+    
+    public List<LeaderboardEntry> getTopEntries(int limit) {
+        List<LeaderboardEntry> allEntries = loadLeaderboard();
+        return allEntries.stream()
+            .limit(limit)
+            .collect(Collectors.toList());
     }
 } 

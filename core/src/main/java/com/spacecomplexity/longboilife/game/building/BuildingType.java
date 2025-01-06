@@ -12,10 +12,10 @@ public enum BuildingType {
     // Roads
     ROAD("Road", new Texture("buildings/roads/straight.png"), new Vector2Int(1, 1), BuildingCategory.PATHWAY, 100),
     // Accommodation
-    BAND1("Band 1 Accommodation", new Texture("buildings/Band1.png"), new Vector2Int(4, 5), BuildingCategory.ACCOMMODATION, 1000),
-    BAND2("Band 2 Accommodation", new Texture("buildings/Band2.png"), new Vector2Int(4, 5), BuildingCategory.ACCOMMODATION, 1000),
-    BAND3("Band 3 Accommodation", new Texture("buildings/Band3.png"), new Vector2Int(4, 5), BuildingCategory.ACCOMMODATION, 1000),
-    BAND4("Band 4 Accommodation", new Texture("buildings/Band4.png"), new Vector2Int(4, 5), BuildingCategory.ACCOMMODATION, 1000),
+    BAND1("Band 1", new Texture("buildings/Band1.png"), new Vector2Int(4, 5), BuildingCategory.ACCOMMODATION, 1000),
+    BAND2("Band 2", new Texture("buildings/Band2.png"), new Vector2Int(4, 5), BuildingCategory.ACCOMMODATION, 1000),
+    BAND3("Band 3", new Texture("buildings/Band3.png"), new Vector2Int(4, 5), BuildingCategory.ACCOMMODATION, 1000),
+    BAND4("Band 4", new Texture("buildings/Band4.png"), new Vector2Int(4, 5), BuildingCategory.ACCOMMODATION, 1000),
     // Recreational
     OUTDOORGYM("Outdoor Gym", new Texture("buildings/Outdoor Gym.png"), new Vector2Int(4, 4), BuildingCategory.RECREATIONAL, 1000),
     PARK("Park", new Texture("buildings/Park.png"), new Vector2Int(8, 4), BuildingCategory.RECREATIONAL, 1000),

@@ -49,7 +49,7 @@ public class UITooltip extends UIElement {
         // Add building information
         table.add(new Label(building.getType().getDisplayName(), skin, "title")).row();
         table.add(new Label("Type: " + building.getType().getCategory().getDisplayName(), skin)).row();
-        table.add(new Label("Size: " + building.getType().getSize().x + "x" + building.getType().getSize().y, skin)).row();
+        // TODO: Add satisfaction value that building provides
         
         table.pack(); // Resize to fit content
         table.setVisible(true);

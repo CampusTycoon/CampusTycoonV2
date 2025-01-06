@@ -7,9 +7,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.spacecomplexity.longboilife.game.globals.GameState;
 import com.spacecomplexity.longboilife.game.globals.Keybindings;
 import com.spacecomplexity.longboilife.game.globals.MainCamera;
-import com.spacecomplexity.longboilife.game.building.Building;
 import com.spacecomplexity.longboilife.game.tile.Tile;
-import com.spacecomplexity.longboilife.game.utils.GameUtils;
 import com.spacecomplexity.longboilife.game.world.World;
 
 public class InputManager {

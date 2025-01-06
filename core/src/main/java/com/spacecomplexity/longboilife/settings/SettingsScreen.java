@@ -179,12 +179,32 @@ public class SettingsScreen implements Screen {
         table.row();
         table.add(volumeRow).expandX().fillX().padTop(20);
         table.row();
-        table.add(saveRow).padBottom(10);   // TODO: Figure out how to anchor this to the bottom of the screen
+        table.add(saveRow).padBottom(10);
         table.row();
      
         // Position the table correctly
         table.left().pad(50);
         table.top().pad(50);
+
+        // Create menu button table only if coming from game screen
+        if (previousScreen == Main.ScreenType.GAME) {
+            Table menuButtonTable = new Table();
+            menuButtonTable.setFillParent(true);
+            stage.addActor(menuButtonTable);
+
+            // Create menu button
+            TextButton menuButton = new TextButton("Main Menu", skin, "round");
+            menuButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    game.switchScreen(Main.ScreenType.MENU);
+                }
+            });
+
+            // Add button to table and position at bottom center
+            menuButtonTable.bottom().pad(20);
+            menuButtonTable.add(menuButton);
+        }
 
         // Allows UI to capture touch events
         InputMultiplexer inputMultiplexer = new InputMultiplexer(new MainInputManager(), stage);

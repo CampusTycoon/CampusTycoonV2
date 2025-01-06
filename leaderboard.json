@@ -43,5 +43,15 @@
 	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
 	"username": "AntoTeo",
 	"score": 0
+},
+{
+	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
+	"username": "AntoTest",
+	"score": 0
+},
+{
+	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
+	"username": "Test123",
+	"score": 0
 }
 ]

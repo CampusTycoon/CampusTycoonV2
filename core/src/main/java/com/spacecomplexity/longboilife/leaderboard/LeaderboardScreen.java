@@ -55,7 +55,7 @@ public class LeaderboardScreen implements Screen {
         skin = new Skin(Gdx.files.internal("ui/skin/uiskin.json"));
 
         dataManager = new LeaderboardDataManager();
-        entries = dataManager.loadLeaderboard();
+        entries = dataManager.getTopEntries(10);
 
     }
 
