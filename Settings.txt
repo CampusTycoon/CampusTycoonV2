@@ -1,0 +1,2 @@
+resolution:2560x1440
+volume:0.0
