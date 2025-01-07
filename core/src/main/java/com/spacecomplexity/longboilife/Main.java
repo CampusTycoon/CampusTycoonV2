@@ -1,19 +1,18 @@
 package com.spacecomplexity.longboilife;
 
-import java.util.HashMap;
-
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.LifecycleListener;
 import com.badlogic.gdx.Screen;
 import com.spacecomplexity.longboilife.game.GameScreen;
-import com.spacecomplexity.longboilife.leaderboard.LeaderboardScreen;
 import com.spacecomplexity.longboilife.menu.MenuScreen;
 import com.spacecomplexity.longboilife.settings.SettingsScreen;
+import com.spacecomplexity.longboilife.leaderboard.LeaderboardScreen;
+import java.util.HashMap;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.LifecycleListener;
 
 /**
  * The main class (entry point).
- * Responsible for managing and switching screens.
+ * Responsible for managing and switching screens.5
  */
 public class Main extends Game {
     /**
