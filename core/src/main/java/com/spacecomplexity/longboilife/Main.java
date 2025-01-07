@@ -12,7 +12,7 @@ import com.badlogic.gdx.LifecycleListener;
 
 /**
  * The main class (entry point).
- * Responsible for managing and switching screens.
+ * Responsible for managing and switching screens.5
  */
 public class Main extends Game {
     /**
