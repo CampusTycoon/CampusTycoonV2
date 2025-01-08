@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
+import java.util.Stack;
 import java.util.Vector;
 
 import com.badlogic.gdx.Gdx;
@@ -14,14 +15,19 @@ import com.spacecomplexity.longboilife.game.building.BuildingCategory;
 import com.spacecomplexity.longboilife.game.building.BuildingType;
 import com.spacecomplexity.longboilife.game.globals.Constants;
 import com.spacecomplexity.longboilife.game.globals.GameState;
+import com.spacecomplexity.longboilife.game.globals.MainCamera;
 import com.spacecomplexity.longboilife.game.pathways.PathwayPositions;
+import com.spacecomplexity.longboilife.game.tile.Tile;
+import com.spacecomplexity.longboilife.game.tile.TileType;
 import com.spacecomplexity.longboilife.game.world.World;
 
 /**
  * A class to handle calculation of satisfaction score.
  */
 public class Satisfaction {
-    private static World world;
+    // Scuffed way to get around world not being a global
+    private static World world = MainCamera.camera().world;
+    
     private static AStar pathfinder;
     
     /**
@@ -38,8 +44,10 @@ public class Satisfaction {
     }
     
     public static class AStar {
-        private PriorityQueue<Vector2Int> queue;
-        private int minDistance;
+        private PriorityQueue<Cell> queue;
+        private List<Vector2Int> visited;
+        private Stack<Vector2Int> shortestPath;
+        private double minDistance = Double.MAX_VALUE;
         private PathwayPositions[][] map;
         
         
@@ -47,14 +55,125 @@ public class Satisfaction {
             this.map = Paths;
         }
         
-        public int pathfind(Vector2Int location, Vector2Int goal) {
-            // TODO: Figure out how the heck to implement the A* pathfinding algorithm
+        public class Cell implements Comparable<Cell> {
+            private Vector2Int tile;
+            private double heuristic;
             
-            // Check each neighbour, calculate the heuristic for it
-            // Visit the neighbour (of all neighbours) with the lowest heuristic (check it is valid to travel on first)
+            public Cell(Vector2Int Tile, double Heuristic) {
+                this.tile = Tile;
+                this.heuristic = Heuristic;
+            }
+            
+            @Override
+            public int compareTo(Cell other) {
+                return Double.compare(other.heuristic, this.heuristic);
+            }
+        }
+        
+        
+        private Vector2Int[] getNeighbours(Vector2Int tile) {
+            Vector2Int[] neighbours = new Vector2Int[4];
+            
+            neighbours[0] = new Vector2Int(tile.x - 1, tile.y);
+            neighbours[1] = new Vector2Int(tile.x, tile.y + 1);
+            neighbours[2] = new Vector2Int(tile.x + 1, tile.y);
+            neighbours[3] = new Vector2Int(tile.x, tile.y - 1);
+            
+            return neighbours;
+        }
+        
+        private Boolean isTraversable(Vector2Int tileLocation) {
+            Tile tile = world.getTile(tileLocation);
+            Building buildingOnTile = tile.getBuildingRef();
+            
+            // If the tile is water then the tile cannot be traversed
+            if (tile.getType() == TileType.WATER) {
+                return false;
+            }
+            
+            // If there is no building on the tile, or the building on the tile is a road
+            if (buildingOnTile == null ||
+                buildingOnTile.getType() == BuildingType.ROAD) {
+                
+                // Tile is traversable
+                return true;
+            }
+            
+            return false;
+        }
+        
+        private Boolean isVisited(Vector2Int tile) { 
+            return visited.contains(tile);
+        }
+        
+        private Boolean isPlannedToVisit(Vector2Int tile) {
+            return queue.contains(tile);
+        }
+        
+        private double getMoveSpeed(Vector2Int tileLocation) {
+            Tile tile = world.getTile(tileLocation);
+            BuildingType buildingType = tile.getBuildingRef().getType();
+            
+            if (buildingType == BuildingType.ROAD) {
+                // Move twice as fast on roads
+                return 2;
+            }
+            // Else move at normal speed
+            return 1;
+        }
+        
+        private double getHeuristic(Vector2Int tile, Vector2Int goal) {
+            // How many times faster you move while on this tile
+            double moveSpeed = getMoveSpeed(tile);
+            
+            // Grid-based distance away from the goal, taking into account the moveSpeed of the current tile
+            double heuristic = Math.abs(goal.x - tile.x) + Math.abs(goal.y - tile.y) 
+                    + (1 / moveSpeed) - 1;
+            return heuristic;
+        }
+        
+        private void backtrackTo(Vector2Int tile) {
+            while (shortestPath.pop() != tile) {}
+        }
+        
+        public int pathfind(Vector2Int tile, Vector2Int goal) {            
+            if (tile == goal) {
+                return shortestPath.size(); // TODO: Change this to include moveSpeed stuff
+            }
             
             
-            return -1;
+            Boolean backtracking = true;
+            
+            for (Vector2Int neighbour : getNeighbours(tile)) {
+                // If the tile is traversable and hasn't already been added to the queue/visited
+                if (isTraversable(neighbour) && 
+                    !isVisited(neighbour) &&
+                    !isPlannedToVisit(neighbour)) {
+                        // Get distance away from the goal from this tile, taking into account the move speed of that tile (i.e. whether it is a road or not)
+                        double heuristic = getHeuristic(neighbour, goal);
+                        // Add tile to priority queue
+                        queue.add(new Cell(neighbour, heuristic));
+                        
+                        if (heuristic < minDistance) {
+                            backtracking = false;
+                        }
+                }
+            }
+            
+            // Get the tile with the lowest heuristic
+            Vector2Int nextTile = queue.poll().tile;
+            
+            if (backtracking) {
+                // Removes elements from shortestPath until it reaches nextTile
+                backtrackTo(nextTile);
+            }
+            else {
+                // 
+                shortestPath.add(nextTile);
+            }
+            
+            // Continue pathfinding from the best option tile (the one with the lowest heuristic)
+            return pathfind(nextTile, goal);
         }
     }
     

@@ -48,6 +48,10 @@ public final class Window {
      * Applies the current window settings.
      */
     public static void refresh() {
+        if (isFullscreen == null) {
+            return;
+        }
+        
         if (isFullscreen) {
             Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
         }

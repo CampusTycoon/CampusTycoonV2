@@ -14,7 +14,7 @@ import com.spacecomplexity.longboilife.game.world.World;
  */
 public class CameraManager {
     private final OrthographicCamera camera;
-    private World world;
+    public World world;
     private final GameState gameState = GameState.getState();
     public Vector3 position;
     public float zoom;
