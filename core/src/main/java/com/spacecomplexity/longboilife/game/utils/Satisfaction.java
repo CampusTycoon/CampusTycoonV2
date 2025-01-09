@@ -48,11 +48,12 @@ public class Satisfaction {
         private List<Vector2Int> visited;
         private Stack<Vector2Int> shortestPath;
         private double minDistance = Double.MAX_VALUE;
-        private PathwayPositions[][] map;
         
         
-        public AStar(PathwayPositions[][] Paths) {
-            this.map = Paths;
+        public AStar() {
+            queue = new PriorityQueue<Cell>();
+            visited = new ArrayList<Vector2Int>();
+            shortestPath = new Stack<Vector2Int>();
         }
         
         public class Cell implements Comparable<Cell> {
@@ -66,7 +67,7 @@ public class Satisfaction {
             
             @Override
             public int compareTo(Cell other) {
-                return Double.compare(other.heuristic, this.heuristic);
+                return Double.compare(this.heuristic, other.heuristic);
             }
         }
         
@@ -84,6 +85,11 @@ public class Satisfaction {
         
         private Boolean isTraversable(Vector2Int tileLocation) {
             Tile tile = world.getTile(tileLocation);
+            if (tile == null) {
+                // Outside of map
+                return false;
+            }
+            
             Building buildingOnTile = tile.getBuildingRef();
             
             // If the tile is water then the tile cannot be traversed
@@ -112,7 +118,12 @@ public class Satisfaction {
         
         private double getMoveSpeed(Vector2Int tileLocation) {
             Tile tile = world.getTile(tileLocation);
-            BuildingType buildingType = tile.getBuildingRef().getType();
+            Building building = tile.getBuildingRef();
+            if (building == null) {
+                return 1;
+            }
+            
+            BuildingType buildingType = building.getType();
             
             if (buildingType == BuildingType.ROAD) {
                 // Move twice as fast on roads
@@ -133,15 +144,15 @@ public class Satisfaction {
         }
         
         private void backtrackTo(Vector2Int tile) {
-            while (shortestPath.pop() != tile) {}
+            while (!shortestPath.empty() && shortestPath.pop() != tile) {}
         }
         
         public int pathfind(Vector2Int tile, Vector2Int goal) {            
-            if (tile == goal) {
+            if (tile.equals(goal)) {
                 return shortestPath.size(); // TODO: Change this to include moveSpeed stuff
             }
             
-            
+            visited.add(tile);
             Boolean backtracking = true;
             
             for (Vector2Int neighbour : getNeighbours(tile)) {
@@ -149,31 +160,33 @@ public class Satisfaction {
                 if (isTraversable(neighbour) && 
                     !isVisited(neighbour) &&
                     !isPlannedToVisit(neighbour)) {
-                        // Get distance away from the goal from this tile, taking into account the move speed of that tile (i.e. whether it is a road or not)
-                        double heuristic = getHeuristic(neighbour, goal);
-                        // Add tile to priority queue
-                        queue.add(new Cell(neighbour, heuristic));
-                        
-                        if (heuristic < minDistance) {
-                            backtracking = false;
-                        }
+                    
+                    // Get distance away from the goal from this tile, taking into account the move speed of that tile (i.e. whether it is a road or not)
+                    double heuristic = getHeuristic(neighbour, goal);
+                    // Add tile to priority queue
+                    queue.add(new Cell(neighbour, heuristic));
+                    
+                    if (heuristic < minDistance) {
+                        backtracking = false;
+                    }
                 }
             }
             
             // Get the tile with the lowest heuristic
-            Vector2Int nextTile = queue.poll().tile;
+            Cell nextTile = queue.poll();
+            minDistance = nextTile.heuristic;
             
             if (backtracking) {
                 // Removes elements from shortestPath until it reaches nextTile
-                backtrackTo(nextTile);
+                backtrackTo(nextTile.tile);
             }
             else {
                 // 
-                shortestPath.add(nextTile);
+                shortestPath.add(nextTile.tile);
             }
             
             // Continue pathfinding from the best option tile (the one with the lowest heuristic)
-            return pathfind(nextTile, goal);
+            return pathfind(nextTile.tile, goal);
         }
     }
     
@@ -184,17 +197,17 @@ public class Satisfaction {
         return pathfinder.pathfind(start, end);
     }
     
-    public static List<BuildingDistance> getBuildingDistances(Vector2Int start, List<Building> buildings) {
+    public static List<BuildingDistance> getBuildingDistances(Building startBuilding, List<Building> targetBuildings) {
         List<BuildingDistance> buildingDistances = new ArrayList<BuildingDistance>();
         
-        for (Building building : buildings) {
-            if (building.getType() == BuildingType.ROAD) {
-                // Skip roads
-                continue;
-            }
+        for (Building building : targetBuildings) {
+            
+            // Slightly move the start/end positions to be in line with the entrance to buildings
+            Vector2Int start = startBuilding.getPosition().add(new Vector2Int(1, -1));
+            Vector2Int end = building.getPosition().add(new Vector2Int(1, -1));
             
             // Get the shortest distance from the start to the building position
-            int distance = getBuildingDistance(start, building.getPosition());
+            int distance = getBuildingDistance(start, end);
             
             // Add the distance and building to the list
             BuildingDistance bd = new BuildingDistance(distance, building);
@@ -202,6 +215,30 @@ public class Satisfaction {
         }
         
         return buildingDistances;
+    }
+    
+    public static List<Building> getAccommodationBuildings(List<Building> buildings) {
+        List<Building> accommodationBuildings = new ArrayList<Building>();
+        
+        for (Building building : buildings) {
+            if (building.getType().getCategory() == BuildingCategory.ACCOMMODATION) {
+                accommodationBuildings.add(building);
+            }
+        }
+        return accommodationBuildings;
+    }
+    
+    public static List<Building> getUtilityBuildings(List<Building> buildings) {
+        List<Building> utilityBuildings = new ArrayList<Building>();
+        
+        for (Building building : buildings) {
+            if (building.getType().getCategory() != BuildingCategory.ACCOMMODATION
+                && building.getType().getCategory() != BuildingCategory.PATHWAY) {
+                
+                utilityBuildings.add(building);
+            }
+        }
+        return utilityBuildings;
     }
     
     /**
@@ -249,99 +286,19 @@ public class Satisfaction {
          */
 
 
-        pathfinder = new AStar(world.pathways);
+        pathfinder = new AStar();
         Vector<Building> buildings = world.getBuildings();
 
-        // Map containing buildings split into categories
-        HashMap<BuildingCategory, Vector<Building>> categorisedBuildings = new HashMap<>();
+        List<Building> accommodationBuildings = getAccommodationBuildings(buildings);
+        List<Building> utilityBuildings = getUtilityBuildings(buildings);
         
-        
-        
-        
-        
-        
-        
-        
-
-        // Get categories of buildings which will affect satisfaction score
-        Set<BuildingCategory> searchBuildingCategories = new HashSet<>(Constants.satisfactoryDistance.keySet());
-        // Temporarily add accommodation category so that accommodation buildings will be split out of the main building array
-        searchBuildingCategories.add(BuildingCategory.ACCOMMODATION);
-        // Initialise empty vectors
-        for (BuildingCategory category : searchBuildingCategories) {
-            categorisedBuildings.put(category, new Vector<>());
-        }
-        // Split buildings into categories
-        for (Building building : buildings) {
-            BuildingCategory category = building.getType().getCategory();
-            if (searchBuildingCategories.contains(category)) {
-                categorisedBuildings.get(category).add(building);
+        for (Building accommodation : accommodationBuildings) {
+            List<BuildingDistance> buildingDistances = getBuildingDistances(accommodation, utilityBuildings);
+            
+            double satisfaction = 0;
+            for (BuildingDistance bd : buildingDistances) {
+                // Calculate the amount of satisfaction gained for this building being this distance away
             }
         }
-        // Remove the accommodation category
-        searchBuildingCategories.remove(BuildingCategory.ACCOMMODATION);
-
-        // Check if any categories are empty, hence missing required buildings
-        boolean emptyCategory = false;
-        for (BuildingCategory category : searchBuildingCategories) {
-            if (categorisedBuildings.get(category).isEmpty()) {
-                emptyCategory = true;
-            }
-        }
-
-        // If there is are not required buildings this will be the default satisfaction modifier
-        float satisfactionModifier = -2000f;
-
-        if (!emptyCategory) {
-            // Get the maximum distance if items were placed on other sides of the map
-            float mapMax = new Vector2Int(world.getWidth(), world.getHeight()).mag();
-            satisfactionModifier = Float.MAX_VALUE;
-
-            // For every accommodation building
-            for (Building accomidationBuilding : categorisedBuildings.get(BuildingCategory.ACCOMMODATION)) {
-                float modifier = 0;
-
-                // Go through each other category of building
-                for (BuildingCategory category : searchBuildingCategories) {
-                    float closest = mapMax;
-                    // Find the closest of this category of building
-                    for (Building building : categorisedBuildings.get(category)) {
-                        float distance = (accomidationBuilding.getPosition().subtract(building.getPosition())).mag();
-                        if (distance < closest) {
-                            closest = distance;
-                        }
-                    }
-
-                    // Update the modifier by the constants defined with the satisfactory distance from the category
-                    modifier += Constants.satisfactoryDistance.get(category) - closest;
-
-                }
-
-                // Set the overall satisfaction modifier to the worst modifier from all accommodations
-                satisfactionModifier = Math.min(satisfactionModifier, modifier);
-            }
-        }
-
-        GameState gameState = GameState.getState();
-        
-        // Update whether the last satisfaction modifier was positive
-        boolean newSatisfactionModifierPositive = satisfactionModifier >= 0;
-        if (newSatisfactionModifierPositive != gameState.satisfactionModifierPositive) {
-            // Reset satisfaction velocity direction flips
-            gameState.satisfactionScoreVelocity = 0;
-        }
-        gameState.satisfactionModifierPositive = newSatisfactionModifierPositive;
-
-        // Increase satisfaction velocity based on the satisfaction modifier
-        float newSatisfactionVelocity = gameState.satisfactionScoreVelocity + (satisfactionModifier / 1000000f);
-        // Limit satisfaction velocity to -1% to 1%
-        newSatisfactionVelocity = Math.max(-0.01f, Math.min(newSatisfactionVelocity, 0.01f));
-        gameState.satisfactionScoreVelocity = newSatisfactionVelocity;
-
-        // Update satisfaction score with velocity
-        float newSatisfactionScore = gameState.satisfactionScore + gameState.satisfactionScoreVelocity * Gdx.graphics.getDeltaTime();
-        // Limit satisfaction score between 0% and 10% * number of accommodation buildings
-        newSatisfactionScore = Math.max(0, Math.min(newSatisfactionScore, Math.min(categorisedBuildings.get(BuildingCategory.ACCOMMODATION).size() * 0.1f, 1f)));
-        gameState.satisfactionScore = newSatisfactionScore;
     }
 }
