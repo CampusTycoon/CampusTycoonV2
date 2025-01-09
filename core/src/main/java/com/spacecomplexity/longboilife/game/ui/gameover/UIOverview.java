@@ -38,13 +38,17 @@ public class UIOverview extends UIElement {
         // Initialize the data manager
         this.dataManager = new LeaderboardDataManager();
 
-        String overview = String.format("Game Over\r\nSatisfaction Score: %.2f%%", GameState.getState().satisfactionScore * 100);
+        // Create label for game over text
+        Label gameOverLabel = new Label("Game Over", skin);
+        gameOverLabel.setFontScale(1f);
 
-        // Initialise label
-        Label label = new Label(overview, skin);
-        label.setAlignment(Align.center);
-        label.setFontScale(1.2f);
-        label.setColor(Color.WHITE);
+        // Format satisfaction score to 2 decimal places and ensure it's capped at 100
+        double satisfactionScore = Math.min(100, GameState.getState().satisfactionScore);
+        satisfactionScore = Math.round(satisfactionScore * 100.0) / 100.0;
+
+        // Create label for satisfaction score
+        Label scoreLabel = new Label(String.format("Satisfaction Score: %.2f%%", satisfactionScore), skin);
+        scoreLabel.setFontScale(1f);
 
         // Add username text field
         Label usernameLabel = new Label("Enter username:", skin);
@@ -53,7 +57,7 @@ public class UIOverview extends UIElement {
         usernameField.setMessageText("Enter your username");
 
         // Initialise button
-        TextButton button = new TextButton("Menu", skin);
+        TextButton button = new TextButton("Submit", skin);
         button.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -72,17 +76,19 @@ public class UIOverview extends UIElement {
         });
 
         // Place elements onto table
-        table.add(label).align(Align.center);
+        table.add(gameOverLabel).pad(10);
+        table.row();
+        table.add(scoreLabel).pad(10);
         table.row();
         table.add(usernameLabel).padTop(10).align(Align.center);
         table.row();
-        table.add(usernameField).width(200).padTop(5).align(Align.center);
+        table.add(usernameField).width(200).padTop(5).padBottom(5).align(Align.center);
         table.row();
-        table.add(button).padTop(10).align(Align.center);
+        table.add(button).padBottom(10).align(Align.center);
 
         // Style and place the table
         table.setBackground(skin.getDrawable("panel1"));
-        table.setSize(220, 160); // Increased height to accommodate new elements
+        table.setSize(220, 190);
         placeTable();
     }
 

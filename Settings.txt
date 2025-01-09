@@ -1,2 +1,3 @@
-resolution:2560x1440
+fullscreen:false
+resolution:1080x720
 volume:0.0

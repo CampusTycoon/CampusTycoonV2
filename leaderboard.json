@@ -1,6 +1,41 @@
 [
 {
 	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
+	"username": "AntoTest6",
+	"score": 101.01755
+},
+{
+	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
+	"username": "Test19",
+	"score": 100
+},
+{
+	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
+	"username": "AntoTest7",
+	"score": 98.36066
+},
+{
+	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
+	"username": "Brh",
+	"score": 81.63
+},
+{
+	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
+	"username": "AntoTeo",
+	"score": 66.67
+},
+{
+	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
+	"username": "Finally",
+	"score": 62.07
+},
+{
+	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
+	"username": "Meh",
+	"score": 38.89
+},
+{
+	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
 	"username": "Test5",
 	"score": 16
 },

@@ -66,11 +66,13 @@ public class Timer {
      * @return the time left in ms.
      */
     public long getTimeLeft() {
+        long timeLeft;
         if (paused) {
-            return finishTime - onPauseTime;
+            timeLeft = finishTime - onPauseTime;
+        } else {
+            timeLeft = finishTime - System.currentTimeMillis();
         }
-
-        return finishTime - System.currentTimeMillis();
+        return Math.max(0, timeLeft);  // Never return negative values
     }
 
     /**

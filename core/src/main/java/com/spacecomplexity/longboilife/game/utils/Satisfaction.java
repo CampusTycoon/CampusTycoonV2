@@ -509,6 +509,12 @@ public class Satisfaction {
         // And requires you to have at least 5 accommodation buildings to get maximum score (100%)
         double averageSatisfaction = totalSatisfaction / (0.8 * accommodationBuildings.size() + 1);
         
+        // Clamp the final satisfaction score to 100%
+        averageSatisfaction = Math.min(100, averageSatisfaction);
+        
+        // Round to 2 decimal places
+        averageSatisfaction = Math.round(averageSatisfaction * 100.0) / 100.0;
+        
         // Update game state with the new satisfaction score!
         GameState.getState().satisfactionScore = averageSatisfaction;
     }
