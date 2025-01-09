@@ -10,7 +10,6 @@ import java.util.Arrays;
 import com.spacecomplexity.longboilife.game.globals.GameState;
 import com.spacecomplexity.longboilife.game.building.BuildingType;
 import com.spacecomplexity.longboilife.game.building.BuildingCategory;
-import com.spacecomplexity.longboilife.achievements.notification.Notification;
 import com.spacecomplexity.longboilife.game.ui.UIManager;
 
 public class AchievementManager {
@@ -69,7 +68,9 @@ public class AchievementManager {
                     case BUILDING_COUNT:
                         checkBuildingAchievements(achievement);
                         break;
-                    // Add more cases for different achievement types
+                    case BUDGET:
+                        checkBudgetAchievements(achievement);
+                        break;
                 }
             }
         }
@@ -94,6 +95,10 @@ public class AchievementManager {
         if (achievement.getId().equals("campus_master") && totalBuildings >= 30) {
             unlockAchievement(achievement);
         }
+    }
+    
+    private void checkBudgetAchievements(Achievement achievement) {
+        // TODO: Implement budget achievement logic
     }
     
     private void unlockAchievement(Achievement achievement) {

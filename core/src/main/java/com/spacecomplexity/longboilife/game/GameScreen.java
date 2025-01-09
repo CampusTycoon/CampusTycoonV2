@@ -66,7 +66,7 @@ public class GameScreen implements Screen {
         }
 
         // Create a new timer for 5 minutes
-        MainTimer.getTimerManager().getTimer().setTimer(1 * 3000 * 1000);
+        MainTimer.getTimerManager().getTimer().setTimer(1 * 300 * 1000);
         MainTimer.getTimerManager().getTimer().setEvent(() -> {
             EventHandler.getEventHandler().callEvent(EventHandler.Event.GAME_END);
         });
@@ -233,15 +233,21 @@ public class GameScreen implements Screen {
 
         // Sell the selected building
         eventHandler.createEvent(EventHandler.Event.SELL_BUILDING, (params) -> {
+            // Get the refund amount before nulling the reference
+            float refund = gameState.selectedBuilding.getType().getCost() * Constants.sellCostRecovery;
+            
             // Delete the building
             world.demolish(gameState.selectedBuilding);
-            // Refund the specified amount
-            gameState.money += gameState.selectedBuilding.getType().getCost() * Constants.sellCostRecovery;
-            // Deselect the removed building
+            
+            // Add the refund
+            gameState.money += refund;
+            
+            // Update satisfaction score
+            Satisfaction.updateSatisfactionScore(world);
+            
+            // Finally, deselect the building
             gameState.selectedBuilding = null;
             
-            Satisfaction.updateSatisfactionScore(world);
-
             return null;
         });
 
@@ -271,7 +277,12 @@ public class GameScreen implements Screen {
 
         // Return to the menu
         eventHandler.createEvent(EventHandler.Event.RETURN_MENU, (params) -> {
-            game.switchScreen(Main.ScreenType.MENU);
+            // If the game is over, go to leaderboard instead of menu
+            if (gameState.gameOver) {
+                game.openLeaderboard(Main.ScreenType.GAME);
+            } else {
+                game.switchScreen(Main.ScreenType.MENU);
+            }
 
             return null;
         });
@@ -332,6 +343,27 @@ public class GameScreen implements Screen {
 
         // Render the UI
         ui.render();
+
+        if (!gameState.paused && gameState.active) {
+            // Update profit timer
+            gameState.updateProfitTimer(delta);
+            
+            // Check if 5 seconds have passed
+            if (gameState.getProfitTimer() >= GameState.PROFIT_INTERVAL) {
+                // Calculate profit from all buildings
+                float totalProfit = 0;
+                for (BuildingType type : BuildingType.values()) {
+                    int count = gameState.getBuildingCount(type);
+                    totalProfit += count * type.getProfitPerTick();
+                }
+                
+                // Add profit to money
+                gameState.money += totalProfit;
+                
+                // Reset timer
+                gameState.updateProfitTimer(-GameState.PROFIT_INTERVAL);
+            }
+        }
     }
 
     /**

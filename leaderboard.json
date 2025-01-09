@@ -16,6 +16,11 @@
 },
 {
 	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
+	"username": "LeaderboardTest2",
+	"score": 86.49
+},
+{
+	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
 	"username": "Brh",
 	"score": 81.63
 },
@@ -87,6 +92,31 @@
 {
 	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
 	"username": "Test123",
+	"score": 0
+},
+{
+	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
+	"username": "hghg",
+	"score": 0
+},
+{
+	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
+	"username": "",
+	"score": 0
+},
+{
+	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
+	"username": "",
+	"score": 0
+},
+{
+	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
+	"username": "",
+	"score": 0
+},
+{
+	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
+	"username": "",
 	"score": 0
 }
 ]

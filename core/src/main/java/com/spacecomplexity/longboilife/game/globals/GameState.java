@@ -133,6 +133,9 @@ public class GameState {
     public float buildingHoverTime = 0f;
     public Building hoveredBuilding = null;
 
+    private float profitTimer = 0f;
+    public static final float PROFIT_INTERVAL = 5f; // 5 seconds
+
     /**
      * Get the singleton instance of the {@link GameState} class.
      *
@@ -169,5 +172,23 @@ public class GameState {
         shiftHeld = false;
         buildingHoverTime = 0f;
         hoveredBuilding = null;
+        profitTimer = 0f;
+    }
+
+    public float calculateTotalProfit() {
+        float totalProfit = 0;
+        for (BuildingType type : BuildingType.values()) {
+            int count = getBuildingCount(type);
+            totalProfit += count * type.getProfitPerTick();
+        }
+        return totalProfit;
+    }
+
+    public float getProfitTimer() {
+        return profitTimer;
+    }
+
+    public void updateProfitTimer(float delta) {
+        profitTimer += delta;
     }
 }

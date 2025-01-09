@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.spacecomplexity.longboilife.Main;
 import com.spacecomplexity.longboilife.MainInputManager;
 import com.spacecomplexity.longboilife.game.globals.Window;
+import com.spacecomplexity.longboilife.game.globals.GameState;
 import java.util.List;
 
 /**
@@ -90,14 +91,25 @@ public class LeaderboardScreen implements Screen {
             table.row();
         }
         
-        // Initialise back button
-        TextButton backButton = new TextButton("Back", skin, "round");
-        backButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.switchScreen(previousScreen);
-            }
-        });
+        // Create back/menu button based on game state
+        TextButton backButton;
+        if (previousScreen == Main.ScreenType.GAME && GameState.getState().gameOver) {
+            backButton = new TextButton("Main Menu", skin, "round");
+            backButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    game.switchScreen(Main.ScreenType.MENU);
+                }
+            });
+        } else {
+            backButton = new TextButton("Back", skin, "round");
+            backButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    game.switchScreen(previousScreen);
+                }
+            });
+        }
 
         // Add buttons to table with bottom alignment
         table.row();  // Move to next row
