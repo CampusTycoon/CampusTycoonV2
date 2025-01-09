@@ -183,6 +183,8 @@ public class GameScreen implements Screen {
                 gameState.movingBuilding = null;
                 gameState.placingBuilding = null;
             }
+            
+            Satisfaction.updateSatisfactionScore(world);
 
             return null;
         });
@@ -237,6 +239,8 @@ public class GameScreen implements Screen {
             gameState.money += gameState.selectedBuilding.getType().getCost() * Constants.sellCostRecovery;
             // Deselect the removed building
             gameState.selectedBuilding = null;
+            
+            Satisfaction.updateSatisfactionScore(world);
 
             return null;
         });
@@ -259,6 +263,8 @@ public class GameScreen implements Screen {
 
             // Close the menu
             eventHandler.callEvent(EventHandler.Event.CLOSE_SELECTED_MENU);
+            
+            Satisfaction.updateSatisfactionScore(world);
 
             return null;
         });
@@ -322,13 +328,6 @@ public class GameScreen implements Screen {
 
         // Render the UI
         ui.render();
-
-        // Poll the timer to run the event if the timer has expired
-        // Do not update satisfaction score if the game is paused or has ended
-        if (!gameState.paused && !MainTimer.getTimerManager().getTimer().poll()) {
-            // Update the satisfaction score
-            Satisfaction.updateSatisfactionScore(world);
-        }
     }
 
     /**

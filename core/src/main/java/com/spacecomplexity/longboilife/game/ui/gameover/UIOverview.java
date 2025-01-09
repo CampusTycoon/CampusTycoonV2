@@ -59,7 +59,7 @@ public class UIOverview extends UIElement {
             public void clicked(InputEvent event, float x, float y) {
                 // Getting username and score which will be saved to Leaderboard JSON file
                 String username = usernameField.getText();
-                Float userScore = GameState.getState().satisfactionScore;
+                Float userScore = (float)GameState.getState().satisfactionScore;
 
                 // Adding user's username and score to the leaderboard JSON file
                 List<LeaderboardEntry> newEntries = new ArrayList<>();

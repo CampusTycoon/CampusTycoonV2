@@ -3,6 +3,7 @@ package com.spacecomplexity.longboilife.game.utils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Set;
@@ -299,13 +300,149 @@ public class Satisfaction {
         return utilityBuildings;
     }
     
+    private static Map<BuildingType, List<Double>> getBuildingTypeList(List<BuildingDistance> buildingDistances) {
+        Map<BuildingType, List<Double>> buildingTypes = new HashMap<BuildingType, List<Double>>();
+        
+        for (BuildingDistance bd : buildingDistances) {
+            BuildingType type = bd.building.getType();
+            
+            if (!buildingTypes.containsKey(type)) {
+                buildingTypes.put(type, new ArrayList<Double>());
+            }
+            buildingTypes.get(type).add(bd.distance);
+        }
+        
+        return buildingTypes;
+    }
+    
+    private static double calculateBuildingSatisfaction(BuildingType building, List<Double> distances) {
+        BuildingCategory category = building.getCategory();
+        
+        
+        // The maximum distance a building can be to award satisfaction
+        // Anything under half of this value is awarded the full amount, and anything above is awarded an amount that decreases linearly with distance
+        double range = 50;
+        
+        // The amount each building contributes to the satisfaction score
+        double contriubtion = 0;
+        
+        // The maximum amount of satisfaction this type of building can give
+        double cap = 0;
+        
+        
+        switch (category) {
+            case EDUCATIONAL:
+                switch (building) {
+                    case OFFICE:
+                        contriubtion = 20;
+                        cap = 30;
+                        break;
+                        
+                    case LIBRARY:
+                        contriubtion = 40;
+                        cap = 40;
+                        break;
+                        
+                    default:
+                        break;
+                }
+                break;
+                
+            case FOOD:
+                switch (building) {
+                    case CAFETERIA:
+                        contriubtion = 15;
+                        cap = 30;
+                        break;
+                        
+                    case FOODSTORE:
+                        contriubtion = 20;
+                        cap = 20;
+                        break;
+                        
+                    default:
+                        break;
+                }
+                break;
+                
+            case RECREATIONAL:
+                switch (building) {
+                    case OUTDOORGYM:
+                        contriubtion = 15;
+                        cap = 20;
+                        break;
+                        
+                    case PARK:
+                        contriubtion = 20;
+                        cap = 20;
+                        break;
+                        
+                    case STATIONERYSTORE:
+                        contriubtion = 10;
+                        cap = 20;
+                        break;
+                        
+                    default:
+                        break;
+                }
+                break;
+            
+            default:
+                break;
+        }
+        
+        
+        double satisfaction = 0;
+        for (Double distance : distances) {
+            
+            // 1 if below range/2, 0 if above range, otherwise between 0 and 1 dependant on distance
+            double rangeMultiplier = 1;
+            if (distance > range) {
+                rangeMultiplier = 0;
+            }
+            else if (distance > 0.5 * range) {
+                rangeMultiplier = Math.max(0, 1 - (distance - 0.5 * range) / (0.5 * range));
+            }
+                
+            satisfaction += contriubtion * rangeMultiplier;
+        }
+        return Math.min(cap, satisfaction);
+    }
+    
+    private static double getSatisfactionScore(List<BuildingDistance> buildingDistances) {
+        // A dictionary of each type of building, and its distances from the accommodation building
+        Map<BuildingType, List<Double>> buildingTypes = getBuildingTypeList(buildingDistances);
+        
+        // A list of the types of buildings that have contriubted to satisfaction score
+        List<BuildingType> buildingContributors = new ArrayList<BuildingType>();
+        
+        
+        double satisfaction = 0;
+        for (BuildingType type : buildingTypes.keySet()) {
+            // Gets the satisfaction score associated with this amount of this type of buildings at these specific distances
+            satisfaction += calculateBuildingSatisfaction(type, buildingTypes.get(type));
+            
+            if (satisfaction > 0) {
+                // If a type of building contributed to the satisfaction score then it is added to this list so that the variety bonus can be calculated
+                buildingContributors.add(type);
+            }
+        }
+        
+        if (buildingContributors.size() >= 4) {
+            // Variety bonus
+            satisfaction += 20;
+        }
+        
+        return satisfaction;
+    }
+    
     /**
-     * (See explanation within the function for now, will update this later)
+     * (See explanation within the function)
      *
      * @param world the world reference for buildings.
      */
     public static void updateSatisfactionScore(World world) {
-        // New implementation of satisfaction score:
+        // Implementation of satisfaction score:
         
         /** 
          * Retrieve distance of accommodation building to other utility buildings 
@@ -340,23 +477,39 @@ public class Satisfaction {
          *                  Half-Price Sausage Rolls: +10%
          *                  etc...
          *
-         * Average the satisfaction score of all accommodation buildings
+         * Average the satisfaction score of all accommodation buildings 
+         * (with a little bit more complicated formula)
          */
 
 
         pathfinder = new AStar();
         Vector<Building> buildings = world.getBuildings();
 
+        // Gets a list of all the accommodation buildings
         List<Building> accommodationBuildings = getAccommodationBuildings(buildings);
+        // Gets a list of all non-accommodation and non-road buildings
         List<Building> utilityBuildings = getUtilityBuildings(buildings);
         
+        
+        double totalSatisfaction = 0;
         for (Building accommodation : accommodationBuildings) {
+            // Gets the distances from the accommodation building to each utility building
             List<BuildingDistance> buildingDistances = getBuildingDistances(accommodation, utilityBuildings);
             
-            double satisfaction = 0;
-            for (BuildingDistance bd : buildingDistances) {
-                // Calculate the amount of satisfaction gained for this building being this distance away
-            }
+            // Calculates the satisfaction score based on the number, type, and distances of each building
+            double satisfaction = getSatisfactionScore(buildingDistances);
+            // Clamp satisfaction to 100%
+            satisfaction = Math.min(100, satisfaction);
+            
+            totalSatisfaction += satisfaction;
         }
+        
+        // SatisfactionScore = total satisfaction / (0.8 * accommodation building count + 1)
+        // This formula makes it easier to score higher satisfaction scores with more accommodation buildings
+        // And requires you to have at least 5 accommodation buildings to get maximum score (100%)
+        double averageSatisfaction = totalSatisfaction / (0.8 * accommodationBuildings.size() + 1);
+        
+        // Update game state with the new satisfaction score!
+        GameState.getState().satisfactionScore = averageSatisfaction;
     }
 }

@@ -48,7 +48,7 @@ public class GameState {
     /**
      * The current satisfaction score.
      */
-    public float satisfactionScore;
+    public double satisfactionScore;
 
     /**
      * The building selected to be placed.
@@ -118,16 +118,6 @@ public class GameState {
     }
 
     /**
-     * The value that the satisfaction score changes by each second.
-     */
-    public float satisfactionScoreVelocity = 0;
-
-    /**
-     * If the last satisfaction modifier calculated was positive.
-     */
-    public boolean satisfactionModifierPositive = false;
-
-    /**
      * If the game has ended
      */
     public boolean gameOver = false;
@@ -168,15 +158,13 @@ public class GameState {
         cameraScrollZoomSpeed = 4;
 //        fullscreen = false;
         money = 800000;
-        satisfactionScore = 0f;
+        satisfactionScore = 0.0;
         placingBuilding = null;
         selectedBuilding = null;
         movingBuilding = null;
         buildMenuOpen = false;
         paused = false;
         buildingsCount = new HashMap<>();
-        satisfactionScoreVelocity = 0;
-        satisfactionModifierPositive = false;
         gameOver = false;
         shiftHeld = false;
         buildingHoverTime = 0f;

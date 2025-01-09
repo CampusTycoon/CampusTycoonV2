@@ -74,8 +74,8 @@ public class AchievementManager {
     }
     
     private void checkSatisfactionAchievements(Achievement achievement) {
-        float satisfactionScore = GameState.getState().satisfactionScore;
-        if (achievement.getId().equals("satisfaction_master") && satisfactionScore >= 1.0f) { //TODO: Actually implement this with satisfaction score once that's added
+        double satisfactionScore = GameState.getState().satisfactionScore;
+        if (achievement.getId().equals("satisfaction_master") && satisfactionScore >= 1.0) { //TODO: Actually implement this with satisfaction score once that's added
             unlockAchievement(achievement);
         }
     }
