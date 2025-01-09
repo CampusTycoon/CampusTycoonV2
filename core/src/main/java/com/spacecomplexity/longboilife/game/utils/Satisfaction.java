@@ -56,6 +56,13 @@ public class Satisfaction {
             shortestPath = new Stack<Vector2Int>();
         }
         
+        public void reset() {
+            queue = new PriorityQueue<Cell>();
+            visited = new ArrayList<Vector2Int>();
+            shortestPath = new Stack<Vector2Int>();
+            minDistance = Double.MAX_VALUE;
+        }
+        
         public class Cell implements Comparable<Cell> {
             private Vector2Int tile;
             private double heuristic;
@@ -147,9 +154,26 @@ public class Satisfaction {
             while (!shortestPath.empty() && shortestPath.pop() != tile) {}
         }
         
+        private double getPathLength() {
+            if (shortestPath.empty()) {
+                // No possible path was found
+                return Double.MAX_VALUE;
+            }
+            
+            
+            double length = 0;
+            
+            for (Vector2Int tile : shortestPath) {
+                double moveSpeed = getMoveSpeed(tile);
+                length += 1 / moveSpeed;
+            }
+            
+            return length;
+        }
+        
         public double pathfind(Vector2Int tile, Vector2Int goal) {            
             if (tile.equals(goal)) {
-                return shortestPath.size(); // TODO: Change this to include moveSpeed stuff
+                return getPathLength();
             }
             
             visited.add(tile);
@@ -172,11 +196,15 @@ public class Satisfaction {
                 }
             }
             
-            if (queue.isEmpty() || minDistance > 100 && minDistance != Double.MAX_VALUE) {
+            if (queue.isEmpty()) {
                 // No possible path
                 // Should raise a warning to the player for the accommodation building
                 // i.e. something like "Warning! Students cannot reach this building."
                 return Double.MAX_VALUE;
+            }
+            if (minDistance > 200 && minDistance != Double.MAX_VALUE) {
+                // Shortest possible path is way too long
+                return minDistance;
             }
             
             // Get the tile with the lowest heuristic
@@ -188,7 +216,6 @@ public class Satisfaction {
                 backtrackTo(nextTile.tile);
             }
             else {
-                // 
                 shortestPath.add(nextTile.tile);
             }
             
@@ -198,8 +225,8 @@ public class Satisfaction {
     }
     
     public static double getBuildingDistance(Vector2Int start, Vector2Int end) {
-        // Not sure what this function is for other than function name abstraction
-        
+        // Clears the leftover data from any previous pathfinding operations
+        pathfinder.reset();
         
         return pathfinder.pathfind(start, end);
     }
