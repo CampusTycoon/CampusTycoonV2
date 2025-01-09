@@ -10,6 +10,8 @@ import java.util.Arrays;
 import com.spacecomplexity.longboilife.game.globals.GameState;
 import com.spacecomplexity.longboilife.game.building.BuildingType;
 import com.spacecomplexity.longboilife.game.building.BuildingCategory;
+import com.spacecomplexity.longboilife.achievements.notification.Notification;
+import com.spacecomplexity.longboilife.game.ui.UIManager;
 
 public class AchievementManager {
     private static final String ACHIEVEMENTS_FILE = "achievements.json";
@@ -97,7 +99,16 @@ public class AchievementManager {
     private void unlockAchievement(Achievement achievement) {
         achievement.setUnlocked(true);
         saveAchievements();
-        Gdx.app.log("Achievement Unlocked", achievement.getTitle() + " - " + achievement.getDescription()); //Troubleshooting
+        
+        // Show notification
+        if (UIManager.getInstance() != null) {
+            UIManager.getInstance().showAchievementNotification(
+                achievement.getTitle(),
+                achievement.getDescription()
+            );
+        }
+        
+        Gdx.app.log("Achievement Unlocked", achievement.getTitle() + " - " + achievement.getDescription());
     }
     
     private void saveAchievements() {
@@ -113,14 +124,14 @@ public class AchievementManager {
     private void loadAchievements() {
         try {
             FileHandle file = Gdx.files.local(ACHIEVEMENTS_FILE);
-            if (!file.exists() || file.length() == 0) { //If file doesn't exist or is empty, return an empty ArrayList
+            if (!file.exists() || file.length() == 0) {
                 return;
             }
             String content = file.readString().trim();
-            if (content.isEmpty()) { //If file is empty, return an empty ArrayList
+            if (content.isEmpty()) {
                 return;
             }
-            Achievement[] loadedAchievements = json.fromJson(Achievement[].class, file);
+            Achievement[] loadedAchievements = json.fromJson(Achievement[].class, content);
             achievements.clear();
             achievements.addAll(Arrays.asList(loadedAchievements));
         } catch (Exception e) {

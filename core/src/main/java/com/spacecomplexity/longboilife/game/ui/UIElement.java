@@ -10,6 +10,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 public abstract class UIElement {
     protected Viewport uiViewport;
     protected Table table;
+    protected Table parentTable;
+    protected final Skin skin;
 
     /**
      * Initialise base UI elements
@@ -20,6 +22,8 @@ public abstract class UIElement {
      */
     public UIElement(Viewport uiViewport, Table parentTable, Skin skin) {
         this.uiViewport = uiViewport;
+        this.parentTable = parentTable;
+        this.skin = skin;
 
         // Initialise table container
         table = new Table(skin);

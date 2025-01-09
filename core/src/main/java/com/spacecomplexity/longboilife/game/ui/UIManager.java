@@ -17,6 +17,7 @@ import com.spacecomplexity.longboilife.game.globals.Window;
 import com.spacecomplexity.longboilife.game.ui.game.*;
 import com.spacecomplexity.longboilife.game.ui.gameover.UIOverview;
 import com.spacecomplexity.longboilife.game.utils.EventHandler;
+import com.spacecomplexity.longboilife.achievements.notification.Notification;
 
 /**
  * Class to manage the UI in the game.
@@ -29,12 +30,19 @@ public class UIManager {
 
     private UIElement[] uiElements;
 
+    private static UIManager instance;
+
+    public static UIManager getInstance() {
+        return instance;
+    }
+
     /**
      * Initialise UI elements needed for the game.
      *
      * @param inputMultiplexer to add the UI events to the input processing
      */
     public UIManager(InputMultiplexer inputMultiplexer) {
+        instance = this;  // Set instance in constructor
         // Initialise viewport for rescaling
         viewport = new ScalingViewport(Scaling.fit, Window.DEFAULT_WIDTH, Window.DEFAULT_HEIGHT);
 
@@ -76,6 +84,7 @@ public class UIManager {
             new UISatisfactionMenu(viewport, table, skin),
             new UIMoneyMenu(viewport, table, skin),
             new UIBuildingCounter(viewport, table, skin),
+            new Notification(viewport, table, skin)
         };
 
         // Hide game UI and show end UI
@@ -157,6 +166,15 @@ public class UIManager {
                 }
             }
             uiElements = null;
+        }
+    }
+
+    public void showAchievementNotification(String title, String description) {
+        for (UIElement element : uiElements) {
+            if (element instanceof Notification) {
+                ((Notification) element).showAchievementUnlock(title, description);
+                break;
+            }
         }
     }
 }
