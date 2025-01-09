@@ -34,10 +34,10 @@ public class Satisfaction {
      * Struct that stores a building and a distance.
      */
     public static class BuildingDistance {
-        public int distance;
+        public double distance;
         public Building building;
         
-        public BuildingDistance(int Distance, Building Building) {
+        public BuildingDistance(double Distance, Building Building) {
             this.distance = Distance;
             this.building = Building;
         }
@@ -112,7 +112,7 @@ public class Satisfaction {
             return visited.contains(tile);
         }
         
-        private Boolean isPlannedToVisit(Vector2Int tile) {
+        private Boolean isPlannedToVisit(Cell tile) {
             return queue.contains(tile);
         }
         
@@ -147,7 +147,7 @@ public class Satisfaction {
             while (!shortestPath.empty() && shortestPath.pop() != tile) {}
         }
         
-        public int pathfind(Vector2Int tile, Vector2Int goal) {            
+        public double pathfind(Vector2Int tile, Vector2Int goal) {            
             if (tile.equals(goal)) {
                 return shortestPath.size(); // TODO: Change this to include moveSpeed stuff
             }
@@ -159,7 +159,7 @@ public class Satisfaction {
                 // If the tile is traversable and hasn't already been added to the queue/visited
                 if (isTraversable(neighbour) && 
                     !isVisited(neighbour) &&
-                    !isPlannedToVisit(neighbour)) {
+                    !isPlannedToVisit(new Cell(neighbour, getHeuristic(neighbour, goal)))) {
                     
                     // Get distance away from the goal from this tile, taking into account the move speed of that tile (i.e. whether it is a road or not)
                     double heuristic = getHeuristic(neighbour, goal);
@@ -170,6 +170,13 @@ public class Satisfaction {
                         backtracking = false;
                     }
                 }
+            }
+            
+            if (queue.isEmpty() || minDistance > 100 && minDistance != Double.MAX_VALUE) {
+                // No possible path
+                // Should raise a warning to the player for the accommodation building
+                // i.e. something like "Warning! Students cannot reach this building."
+                return Double.MAX_VALUE;
             }
             
             // Get the tile with the lowest heuristic
@@ -190,7 +197,7 @@ public class Satisfaction {
         }
     }
     
-    public static int getBuildingDistance(Vector2Int start, Vector2Int end) {
+    public static double getBuildingDistance(Vector2Int start, Vector2Int end) {
         // Not sure what this function is for other than function name abstraction
         
         
@@ -207,7 +214,8 @@ public class Satisfaction {
             Vector2Int end = building.getPosition().add(new Vector2Int(1, -1));
             
             // Get the shortest distance from the start to the building position
-            int distance = getBuildingDistance(start, end);
+            double distance = getBuildingDistance(start, end);
+            System.out.println(building.getType().name() + ": " + distance);
             
             // Add the distance and building to the list
             BuildingDistance bd = new BuildingDistance(distance, building);
