@@ -76,6 +76,29 @@ public class Satisfaction {
             public int compareTo(Cell other) {
                 return Double.compare(this.heuristic, other.heuristic);
             }
+            
+            @Override
+            public boolean equals(Object other) {
+                if (other == null) {
+                    return false;
+                }
+                
+                if (other.getClass() != this.getClass()) {
+                    return false;
+                }
+                
+                Cell cell = (Cell)other;
+                if (cell.tile == null) {
+                    return false;
+                }
+                
+                if (cell.tile.x == this.tile.x && 
+                    cell.tile.y == this.tile.y) {
+                    return true;
+                }
+                
+                return false;
+            }
         }
         
         
@@ -90,7 +113,7 @@ public class Satisfaction {
             return neighbours;
         }
         
-        private Boolean isTraversable(Vector2Int tileLocation) {
+        private boolean isTraversable(Vector2Int tileLocation) {
             Tile tile = world.getTile(tileLocation);
             if (tile == null) {
                 // Outside of map
@@ -115,11 +138,11 @@ public class Satisfaction {
             return false;
         }
         
-        private Boolean isVisited(Vector2Int tile) { 
+        private boolean isVisited(Vector2Int tile) { 
             return visited.contains(tile);
         }
         
-        private Boolean isPlannedToVisit(Cell tile) {
+        private boolean isPlannedToVisit(Cell tile) {
             return queue.contains(tile);
         }
         
@@ -144,7 +167,7 @@ public class Satisfaction {
             // How many times faster you move while on this tile
             double moveSpeed = getMoveSpeed(tile);
             
-            // Grid-based distance away from the goal, taking into account the moveSpeed of the current tile
+            // Grid-based distance away from the goal, taking into account the moveSpeed of the current tile (and assuming default move speed for all other tiles)
             double heuristic = Math.abs(goal.x - tile.x) + Math.abs(goal.y - tile.y) 
                     + (1 / moveSpeed) - 1;
             return heuristic;
@@ -171,13 +194,13 @@ public class Satisfaction {
             return length;
         }
         
-        public double pathfind(Vector2Int tile, Vector2Int goal) {            
+        public double pathfind(Vector2Int tile, Vector2Int goal) {
             if (tile.equals(goal)) {
                 return getPathLength();
             }
             
             visited.add(tile);
-            Boolean backtracking = true;
+            boolean backtracking = true;
             
             for (Vector2Int neighbour : getNeighbours(tile)) {
                 // If the tile is traversable and hasn't already been added to the queue/visited
@@ -190,7 +213,8 @@ public class Satisfaction {
                     // Add tile to priority queue
                     queue.add(new Cell(neighbour, heuristic));
                     
-                    if (heuristic < minDistance) {
+                    double nextShortest = queue.peek().heuristic;
+                    if (heuristic <= nextShortest) {
                         backtracking = false;
                     }
                 }
@@ -242,7 +266,6 @@ public class Satisfaction {
             
             // Get the shortest distance from the start to the building position
             double distance = getBuildingDistance(start, end);
-            System.out.println(building.getType().name() + ": " + distance);
             
             // Add the distance and building to the list
             BuildingDistance bd = new BuildingDistance(distance, building);
