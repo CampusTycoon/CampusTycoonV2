@@ -191,4 +191,8 @@ public class GameState {
     public void updateProfitTimer(float delta) {
         profitTimer += delta;
     }
+
+    public float getBudget() {
+        return money;
+    }
 }

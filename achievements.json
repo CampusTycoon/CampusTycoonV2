@@ -3,8 +3,9 @@
 	"class": "com.spacecomplexity.longboilife.achievements.Achievement",
 	"id": "highly_satisfied",
 	"title": "Highly Satisfied",
-	"description": "Reach a satisfaction score of 90% or higher",
+	"description": "Satisfaction score of 90% or more",
 	"unlocked": false,
+	"failed": false,
 	"type": "SATISFACTION_SCORE"
 },
 {
@@ -12,15 +13,17 @@
 	"id": "campus_master",
 	"title": "Campus Master",
 	"description": "Build 30 buildings",
-	"unlocked": true,
+	"unlocked": false,
+	"failed": false,
 	"type": "BUILDING_COUNT"
 },
 {
 	"class": "com.spacecomplexity.longboilife.achievements.Achievement",
 	"id": "budget_master",
 	"title": "Budget Master",
-	"description": "Never go below £x",
-	"unlocked": false,
+	"description": "Never go below £400,000",
+	"unlocked": true,
+	"failed": false,
 	"type": "BUDGET"
 }
 ]

@@ -10,13 +10,17 @@ import java.util.Arrays;
 import com.spacecomplexity.longboilife.game.globals.GameState;
 import com.spacecomplexity.longboilife.game.building.BuildingType;
 import com.spacecomplexity.longboilife.game.building.BuildingCategory;
-import com.spacecomplexity.longboilife.game.ui.UIManager;
+import com.spacecomplexity.longboilife.achievements.notification.Notification;
+import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class AchievementManager {
     private static final String ACHIEVEMENTS_FILE = "achievements.json";
     private static AchievementManager instance;
     private final List<Achievement> achievements;
     private final Json json;
+    private Notification notification;
     
     private AchievementManager() {
         achievements = new ArrayList<>();
@@ -28,11 +32,15 @@ public class AchievementManager {
         loadAchievements();
     }
     
+    public void initializeNotification(Viewport viewport, Table parentTable, Skin skin) {
+        notification = new Notification(viewport, parentTable, skin);
+    }
+    
     private void initializeAchievements() {
         achievements.add(new Achievement(
             "highly_satisfied",
             "Highly Satisfied",
-            "Reach a satisfaction score of 90% or higher",
+            "Satisfaction score of 90% or more",
             Achievement.AchievementType.SATISFACTION_SCORE
         ));
         
@@ -46,7 +54,7 @@ public class AchievementManager {
         achievements.add(new Achievement(
             "budget_master",
             "Budget Master",
-            "Never go below £x",
+            "Never go below £400,000",
             Achievement.AchievementType.BUDGET
         ));
     }
@@ -71,6 +79,7 @@ public class AchievementManager {
                     case BUDGET:
                         checkBudgetAchievements(achievement);
                         break;
+                    // Add more cases for different achievement types
                 }
             }
         }
@@ -78,7 +87,7 @@ public class AchievementManager {
     
     private void checkSatisfactionAchievements(Achievement achievement) {
         double satisfactionScore = GameState.getState().satisfactionScore;
-        if (achievement.getId().equals("satisfaction_master") && satisfactionScore >= 1.0) { //TODO: Actually implement this with satisfaction score once that's added
+        if (achievement.getId().equals("highly_satisfied") && satisfactionScore >= 90.0) {
             unlockAchievement(achievement);
         }
     }
@@ -98,22 +107,25 @@ public class AchievementManager {
     }
     
     private void checkBudgetAchievements(Achievement achievement) {
-        // TODO: Implement budget achievement logic
+        double currentBudget = GameState.getState().getBudget();
+        if (achievement.getId().equals("budget_master")) {
+            if (currentBudget < 400000) {
+                // If budget drops below 400,000, mark the achievement as failed
+                achievement.setFailed(true);
+            } else if (!achievement.isFailed() && GameState.getState().gameOver) {
+                // Only award the achievement if the game is over and we never dropped below 400,000
+                unlockAchievement(achievement);
+            }
+        }
     }
     
     private void unlockAchievement(Achievement achievement) {
         achievement.setUnlocked(true);
         saveAchievements();
-        
-        // Show notification
-        if (UIManager.getInstance() != null) {
-            UIManager.getInstance().showAchievementNotification(
-                achievement.getTitle(),
-                achievement.getDescription()
-            );
+        if (notification != null) {
+            notification.showAchievementUnlock(achievement.getTitle(), achievement.getDescription());
         }
-        
-        Gdx.app.log("Achievement Unlocked", achievement.getTitle() + " - " + achievement.getDescription());
+        Gdx.app.log("Achievement Unlocked", achievement.getTitle() + " - " + achievement.getDescription()); //Troubleshooting
     }
     
     private void saveAchievements() {
@@ -129,14 +141,14 @@ public class AchievementManager {
     private void loadAchievements() {
         try {
             FileHandle file = Gdx.files.local(ACHIEVEMENTS_FILE);
-            if (!file.exists() || file.length() == 0) {
+            if (!file.exists() || file.length() == 0) { //If file doesn't exist or is empty, return an empty ArrayList
                 return;
             }
             String content = file.readString().trim();
-            if (content.isEmpty()) {
+            if (content.isEmpty()) { //If file is empty, return an empty ArrayList
                 return;
             }
-            Achievement[] loadedAchievements = json.fromJson(Achievement[].class, content);
+            Achievement[] loadedAchievements = json.fromJson(Achievement[].class, file);
             achievements.clear();
             achievements.addAll(Arrays.asList(loadedAchievements));
         } catch (Exception e) {

@@ -17,7 +17,9 @@ import com.spacecomplexity.longboilife.game.globals.Window;
 import com.spacecomplexity.longboilife.game.ui.game.*;
 import com.spacecomplexity.longboilife.game.ui.gameover.UIOverview;
 import com.spacecomplexity.longboilife.game.utils.EventHandler;
-import com.spacecomplexity.longboilife.achievements.notification.Notification;
+import com.spacecomplexity.longboilife.achievements.AchievementManager;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.spacecomplexity.longboilife.game.utils.UIUtils;
 
 /**
  * Class to manage the UI in the game.
@@ -30,19 +32,12 @@ public class UIManager {
 
     private UIElement[] uiElements;
 
-    private static UIManager instance;
-
-    public static UIManager getInstance() {
-        return instance;
-    }
-
     /**
      * Initialise UI elements needed for the game.
      *
      * @param inputMultiplexer to add the UI events to the input processing
      */
     public UIManager(InputMultiplexer inputMultiplexer) {
-        instance = this;  // Set instance in constructor
         // Initialise viewport for rescaling
         viewport = new ScalingViewport(Scaling.fit, Window.DEFAULT_WIDTH, Window.DEFAULT_HEIGHT);
 
@@ -84,25 +79,46 @@ public class UIManager {
             new UISatisfactionMenu(viewport, table, skin),
             new UIMoneyMenu(viewport, table, skin),
             new UIBuildingCounter(viewport, table, skin),
-            new Notification(viewport, table, skin)
         };
+
+        // Initialize achievement notifications
+        AchievementManager.getInstance().initializeNotification(viewport, table, skin);
 
         // Hide game UI and show end UI
         EventHandler.getEventHandler().createEvent(EventHandler.Event.GAME_END, (params) -> {
             GameState.getState().gameOver = true;
             GameState.getState().active = false;
+            
+            // Cancel all operations and close building mode/menus
             EventHandler.getEventHandler().callEvent(EventHandler.Event.CANCEL_OPERATIONS);
+            GameState.getState().buildMenuOpen = false;
+            GameState.getState().placingBuilding = null;
+            
+            // Disable all UI interaction
+            UIUtils.disableAllActors(stage);
 
-            // Run dispose functions on UI elements
-            for (UIElement uiElement : uiElements) {
-                uiElement.dispose();
-            }
-            table.clear();
+            // Check achievements before any UI changes
+            AchievementManager.getInstance().checkAchievements();
 
-            // Create the new end elements
-            uiElements = new UIElement[]{
-                new UIOverview(viewport, table, skin),
-            };
+            // Add a delay to allow the achievement notification to show
+            stage.addAction(Actions.sequence(
+                Actions.delay(4f), // Wait for notification to finish (3s display + 0.5s fade out + buffer)
+                Actions.run(() -> {
+                    // Run dispose functions on UI elements
+                    for (UIElement uiElement : uiElements) {
+                        uiElement.dispose();
+                    }
+                    table.clear();
+
+                    // Create the new end elements
+                    uiElements = new UIElement[]{
+                        new UIOverview(viewport, table, skin),
+                    };
+                    
+                    // Re-enable UI interaction for the game over screen
+                    UIUtils.enableAllActors(stage);
+                })
+            ));
 
             return null;
         });
@@ -166,15 +182,6 @@ public class UIManager {
                 }
             }
             uiElements = null;
-        }
-    }
-
-    public void showAchievementNotification(String title, String description) {
-        for (UIElement element : uiElements) {
-            if (element instanceof Notification) {
-                ((Notification) element).showAchievementUnlock(title, description);
-                break;
-            }
         }
     }
 }

@@ -5,6 +5,7 @@ public class Achievement {
     private final String title;
     private final String description;
     private boolean unlocked;
+    private boolean failed;
     private final AchievementType type;
 
     public enum AchievementType {
@@ -18,6 +19,7 @@ public class Achievement {
         this.title = title;
         this.description = description;
         this.unlocked = false;
+        this.failed = false;
         this.type = type;
     }
     
@@ -46,5 +48,11 @@ public class Achievement {
         return type;
     }
 
+    public boolean isFailed() {
+        return failed;
+    }
 
+    public void setFailed(boolean failed) {
+        this.failed = failed;
+    }
 }
