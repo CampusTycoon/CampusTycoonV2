@@ -136,9 +136,8 @@ public class MenuScreen implements Screen {
                 @Override
                 public boolean keyDown(int keycode) {
                     if (keycode == Keys.ESCAPE) {
-                        // Exit the game when ESC is pressed on menu screen
-                        Gdx.app.exit();
-                        return true;
+                        // Do nothing when ESC is pressed on menu screen1
+                        return true; // Return true to indicate we handled the key press
                     }
                     return super.keyDown(keycode);
                 }
