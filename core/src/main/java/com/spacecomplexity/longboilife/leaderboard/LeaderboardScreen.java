@@ -5,6 +5,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -19,7 +20,6 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.spacecomplexity.longboilife.Main;
 import com.spacecomplexity.longboilife.MainInputManager;
 import com.spacecomplexity.longboilife.game.globals.Window;
-import com.spacecomplexity.longboilife.game.globals.GameState;
 import java.util.List;
 
 /**
@@ -31,7 +31,11 @@ public class LeaderboardScreen implements Screen {
 
     private Viewport viewport;
 
-    private Texture backgroundTexture;
+    private Texture[] backgroundTextures;
+    private int currentBackgroundIndex = 0;
+    private float backgroundTimer = 0;
+    private static final float BACKGROUND_SWITCH_TIME = 3f;
+
     private SpriteBatch batch;
 
     private Stage stage;
@@ -39,6 +43,9 @@ public class LeaderboardScreen implements Screen {
 
     private LeaderboardDataManager dataManager;
     private List<LeaderboardEntry> entries;
+
+    private ShaderProgram blurShader;
+    private static final float BLUR_RADIUS = 2.5f;
 
     public LeaderboardScreen(Main game, Main.ScreenType previousScreen) {
         this.game = game;
@@ -49,15 +56,39 @@ public class LeaderboardScreen implements Screen {
         stage = new Stage(viewport);
         batch = new SpriteBatch();
 
-        // Load background texture
-        backgroundTexture = new Texture(Gdx.files.internal("menu/Plain Black.png"));
+        // Load and compile shaders
+        ShaderProgram.pedantic = false;
+        try {
+            String vertexShader = Gdx.files.internal("core/src/main/resources/shaders/blur.vert").readString();
+            String fragmentShader = Gdx.files.internal("core/src/main/resources/shaders/blur.frag").readString();
+            
+            if (vertexShader == null || fragmentShader == null) {
+                throw new RuntimeException("Failed to load shader files");
+            }
+            
+            blurShader = new ShaderProgram(vertexShader, fragmentShader);
+            
+            if (!blurShader.isCompiled()) {
+                Gdx.app.error("Shader", "Shader compilation failed:\n" + blurShader.getLog());
+                throw new RuntimeException("Shader compilation failed: " + blurShader.getLog());
+            }
+        } catch (Exception e) {
+            Gdx.app.error("Shader", "Failed to load shaders: " + e.getMessage());
+            throw new RuntimeException("Failed to load shaders", e);
+        }
+
+        // Load background textures
+        backgroundTextures = new Texture[]{
+            new Texture(Gdx.files.internal("ui/Example1.png")),
+            new Texture(Gdx.files.internal("ui/Example2.png")),
+            new Texture(Gdx.files.internal("ui/Example3.png"))
+        };
 
         // Load UI skin for buttons
         skin = new Skin(Gdx.files.internal("ui/skin/uiskin.json"));
 
         dataManager = new LeaderboardDataManager();
         entries = dataManager.getTopEntries(10);
-
     }
 
     @Override
@@ -65,55 +96,68 @@ public class LeaderboardScreen implements Screen {
         // Clear any existing actors before setting up new ones
         stage.clear();
 
-        // Table layout for menu alignment
-        Table table = new Table();
-        table.setFillParent(true);
-        table.top(); // Align table contents to the top
-        stage.addActor(table);
+        // Create main container table with background
+        Table containerTable = new Table();
+        containerTable.setFillParent(true);
+        containerTable.center(); // Center the content
+        stage.addActor(containerTable);
+
+        // Create content table for leaderboard entries
+        Table contentTable = new Table();
+        contentTable.setSkin(skin);
+        contentTable.setBackground(skin.getDrawable("panel1")); // Add background to the content table
 
         // Create a table to display one row of labels
         Table labelsRow = new Table();
         labelsRow.setSkin(skin);
-        labelsRow.add(new Label("Username", skin)).left().width(400);  // Fixed width for username column
-        labelsRow.add(new Label("Score", skin)).right().width(0);    // Fixed width for score column
-
-        // Add labels to table
-        table.add(labelsRow).expandX().fillX().pad(100);
-        table.row();
         
+        // Create header buttons with equal width and spacing between them
+        TextButton usernameButton = new TextButton("Username", skin, "round");
+        TextButton scoreButton = new TextButton("Score", skin, "round");
+        
+        // Add buttons to the row with spacing
+        labelsRow.add(usernameButton).width(200).padRight(100);  // Fixed equal width with padding between
+        labelsRow.add(scoreButton).width(200);                   // Same fixed width
+        
+        // Add labels to content table with some extra padding at the bottom
+        contentTable.add(labelsRow).expandX().fillX().pad(20).padBottom(30);
+        contentTable.row();
+
         // Add entries to the table
-        // TODO: Pull all data from leaderboard file, only display top X amount of scores/usernames
         for (LeaderboardEntry entry : entries) {
             Table row = new Table();
-            row.add(new Label(entry.getUsername(), skin)).left().width(400);  // Same width as header
-            row.add(new Label(String.valueOf(entry.getScore()), skin)).right().width(0);  // Same width as header
-            table.add(row).expandX().fillX().pad(10);
-            table.row();
-        }
-        
-        // Create back/menu button based on game state
-        TextButton backButton;
-        if (previousScreen == Main.ScreenType.GAME && GameState.getState().gameOver) {
-            backButton = new TextButton("Main Menu", skin, "round");
-            backButton.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    game.switchScreen(Main.ScreenType.MENU);
-                }
-            });
-        } else {
-            backButton = new TextButton("Back", skin, "round");
-            backButton.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    game.switchScreen(previousScreen);
-                }
-            });
+            // Create a container for username that matches the header button width
+            Table usernameCell = new Table();
+            usernameCell.add(new Label(entry.getUsername(), skin)).center();
+            
+            // Create a container for score that matches the header button width
+            Table scoreCell = new Table();
+            scoreCell.add(new Label(String.valueOf(entry.getScore()), skin)).center();
+            
+            // Add the cells with the same widths and spacing as the headers
+            row.add(usernameCell).width(200).padRight(100);
+            row.add(scoreCell).width(200);
+            
+            contentTable.add(row).expandX().fillX().pad(10);
+            contentTable.row();
         }
 
+        // Add the content table to the container with some padding
+        containerTable.add(contentTable).width(600).pad(50);
+        containerTable.row();
+
+        // Initialise back button
+        TextButton backButton = new TextButton("Back", skin, "round");
+        backButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.switchScreen(previousScreen);
+            }
+        });
+
         // Add buttons to table with bottom alignment
-        table.row();  // Move to next row
-        table.add(backButton).colspan(2).padBottom(10);  // colspan(2) makes button span both columns
+        containerTable.row();  // Move to next row
+        containerTable.add(backButton).colspan(2).padBottom(10);  // colspan(2) makes button span both columns
 
         // Allows UI to capture touch events
         InputMultiplexer inputMultiplexer = new InputMultiplexer(new MainInputManager(), stage);
@@ -125,10 +169,28 @@ public class LeaderboardScreen implements Screen {
         // Clear the screen
         ScreenUtils.clear(0, 0, 0, 1f);
 
-        // Draw background image
+        // Update background timer and index
+        backgroundTimer += delta;
+        if (backgroundTimer >= BACKGROUND_SWITCH_TIME) {
+            backgroundTimer = 0;
+            currentBackgroundIndex = (currentBackgroundIndex + 1) % backgroundTextures.length;
+        }
+
+        // Draw current background image with blur shader
+        batch.setShader(blurShader);
+        blurShader.bind();
+        blurShader.setUniformf("u_blur_radius", BLUR_RADIUS);
+
         batch.begin();
-        batch.draw(backgroundTexture, 0, 0, Window.DEFAULT_HEIGHT, Window.DEFAULT_HEIGHT);
+        batch.setProjectionMatrix(viewport.getCamera().combined);
+        batch.draw(backgroundTextures[currentBackgroundIndex], 
+            0, 0,
+            viewport.getWorldWidth(),
+            viewport.getWorldHeight());
         batch.end();
+
+        // Reset shader for UI elements
+        batch.setShader(null);
 
         // Draw and apply ui
         stage.act(delta);
@@ -169,13 +231,20 @@ public class LeaderboardScreen implements Screen {
             skin.dispose();
             skin = null;
         }
-        if (backgroundTexture != null) {
-            backgroundTexture.dispose();
-            backgroundTexture = null;
+        if (backgroundTextures != null) {
+            for (Texture texture : backgroundTextures) {
+                if (texture != null) {
+                    texture.dispose();
+                }
+            }
+            backgroundTextures = null;
         }
         if (batch != null) {
             batch.dispose();
             batch = null;
+        }
+        if (blurShader != null) {
+            blurShader.dispose();
         }
     }
 }
