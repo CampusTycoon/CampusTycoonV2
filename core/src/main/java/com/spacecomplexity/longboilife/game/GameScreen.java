@@ -66,7 +66,7 @@ public class GameScreen implements Screen {
         }
 
         // Create a new timer for 5 minutes
-        MainTimer.getTimerManager().getTimer().setTimer(1 * 30 * 1000);
+        MainTimer.getTimerManager().getTimer().setTimer(1 * 300 * 1000);
         MainTimer.getTimerManager().getTimer().setEvent(() -> {
             EventHandler.getEventHandler().callEvent(EventHandler.Event.GAME_END);
         });

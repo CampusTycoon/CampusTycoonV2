@@ -4,7 +4,7 @@
 	"id": "highly_satisfied",
 	"title": "Highly Satisfied",
 	"description": "Satisfaction score of 90% or more",
-	"unlocked": false,
+	"unlocked": true,
 	"failed": false,
 	"type": "SATISFACTION_SCORE"
 },
@@ -22,8 +22,8 @@
 	"id": "budget_master",
 	"title": "Budget Master",
 	"description": "Never go below £400,000",
-	"unlocked": true,
-	"failed": false,
+	"unlocked": false,
+	"failed": true,
 	"type": "BUDGET"
 }
 ]

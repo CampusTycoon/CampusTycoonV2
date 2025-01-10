@@ -1,8 +1,5 @@
 package com.spacecomplexity.longboilife.game.ui.game;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -10,12 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.spacecomplexity.longboilife.game.building.Building;
-import com.spacecomplexity.longboilife.game.building.BuildingCategory;
 import com.spacecomplexity.longboilife.game.globals.GameState;
-import com.spacecomplexity.longboilife.game.globals.MainCamera;
 import com.spacecomplexity.longboilife.game.ui.UIElement;
-import com.spacecomplexity.longboilife.game.utils.Satisfaction;
-import com.spacecomplexity.longboilife.game.utils.Vector2Int;
 
 public class UITooltip extends UIElement {
     private static final float HOVER_DELAY = 0.5f; // 0.5 seconds
