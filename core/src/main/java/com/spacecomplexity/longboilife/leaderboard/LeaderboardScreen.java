@@ -21,6 +21,8 @@ import com.spacecomplexity.longboilife.Main;
 import com.spacecomplexity.longboilife.MainInputManager;
 import com.spacecomplexity.longboilife.game.globals.Window;
 import java.util.List;
+import com.badlogic.gdx.Input.Keys;
+import com.spacecomplexity.longboilife.game.globals.GameState;
 
 /**
  * Main class to control the menu screen.
@@ -96,6 +98,28 @@ public class LeaderboardScreen implements Screen {
         // Clear any existing actors before setting up new ones
         stage.clear();
 
+        // Create a custom input processor that handles ESC key
+        InputMultiplexer inputMultiplexer = new InputMultiplexer(
+            new MainInputManager() {
+                @Override
+                public boolean keyDown(int keycode) {
+                    if (keycode == Keys.ESCAPE) {
+                        // If we came from game screen and the game is over, go to menu
+                        if (previousScreen == Main.ScreenType.GAME && GameState.getState().gameOver) {
+                            game.switchScreen(Main.ScreenType.MENU);
+                        } else {
+                            // Otherwise, go back to previous screen
+                            game.switchScreen(previousScreen);
+                        }
+                        return true;
+                    }
+                    return super.keyDown(keycode);
+                }
+            }, 
+            stage
+        );
+        Gdx.input.setInputProcessor(inputMultiplexer);
+
         // Create main container table with background
         Table containerTable = new Table();
         containerTable.setFillParent(true);
@@ -151,17 +175,19 @@ public class LeaderboardScreen implements Screen {
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.switchScreen(previousScreen);
+                // If we came from game screen and the game is over, go to menu
+                if (previousScreen == Main.ScreenType.GAME && GameState.getState().gameOver) {
+                    game.switchScreen(Main.ScreenType.MENU);
+                } else {
+                    // Otherwise, go back to previous screen
+                    game.switchScreen(previousScreen);
+                }
             }
         });
 
         // Add buttons to table with bottom alignment
         containerTable.row();  // Move to next row
         containerTable.add(backButton).colspan(2).padBottom(10);  // colspan(2) makes button span both columns
-
-        // Allows UI to capture touch events
-        InputMultiplexer inputMultiplexer = new InputMultiplexer(new MainInputManager(), stage);
-        Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
     @Override

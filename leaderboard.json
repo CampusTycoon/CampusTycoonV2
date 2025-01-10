@@ -118,5 +118,15 @@
 	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
 	"username": "",
 	"score": 0
+},
+{
+	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
+	"username": "PLEASE",
+	"score": 0
+},
+{
+	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
+	"username": "asdf",
+	"score": 0
 }
 ]

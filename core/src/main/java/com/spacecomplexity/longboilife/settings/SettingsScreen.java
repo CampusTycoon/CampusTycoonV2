@@ -28,6 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.spacecomplexity.longboilife.game.GameScreen;
+import com.badlogic.gdx.Input.Keys;
 
 /**
  * Main class to control the menu screen.
@@ -265,8 +266,22 @@ public class SettingsScreen implements Screen {
             menuButtonTable.add(menuButton);
         }
 
-        // Allows UI to capture touch events
-        InputMultiplexer inputMultiplexer = new InputMultiplexer(new MainInputManager(), stage);
+        // Create a custom input processor that handles ESC key
+        InputMultiplexer inputMultiplexer = new InputMultiplexer(
+            new MainInputManager() {
+                @Override
+                public boolean keyDown(int keycode) {
+                    if (keycode == Keys.ESCAPE) {
+                        // Save settings and return to previous screen
+                        Settings.save();
+                        game.switchScreen(previousScreen);
+                        return true;
+                    }
+                    return super.keyDown(keycode);
+                }
+            }, 
+            stage
+        );
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
 

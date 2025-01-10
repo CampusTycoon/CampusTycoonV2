@@ -19,6 +19,7 @@ import com.spacecomplexity.longboilife.Main;
 import com.spacecomplexity.longboilife.MainInputManager;
 import com.spacecomplexity.longboilife.game.globals.Settings;
 import com.spacecomplexity.longboilife.game.globals.Window;
+import com.badlogic.gdx.Input.Keys;
 
 /**
  * Main class to control the menu screen.
@@ -129,8 +130,21 @@ public class MenuScreen implements Screen {
         // Position the table correctly
         table.pad(150).padBottom((Window.DEFAULT_HEIGHT / 2) - 40).bottom().right();
 
-        // Allows UI to capture touch events
-        InputMultiplexer inputMultiplexer = new InputMultiplexer(new MainInputManager(), stage);
+        // Create a custom input processor that handles ESC key
+        InputMultiplexer inputMultiplexer = new InputMultiplexer(
+            new MainInputManager() {
+                @Override
+                public boolean keyDown(int keycode) {
+                    if (keycode == Keys.ESCAPE) {
+                        // Exit the game when ESC is pressed on menu screen
+                        Gdx.app.exit();
+                        return true;
+                    }
+                    return super.keyDown(keycode);
+                }
+            }, 
+            stage
+        );
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
