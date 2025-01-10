@@ -1,9 +1,9 @@
 package com.spacecomplexity.longboilife.game.building;
 
+import java.util.stream.Stream;
+
 import com.badlogic.gdx.graphics.Texture;
 import com.spacecomplexity.longboilife.game.utils.Vector2Int;
-
-import java.util.stream.Stream;
 
 /**
  * Contains a list of all buildings, including their default data.
@@ -24,7 +24,7 @@ public enum BuildingType {
     CAFETERIA("Cafeteria", new Texture("buildings/Cafeteria.png"), new Vector2Int(6, 6), BuildingCategory.FOOD, 50000, 800),
     FOODSTORE("Food Store", new Texture("buildings/Food Store.png"), new Vector2Int(4, 4), BuildingCategory.FOOD, 35000, 600),
     // Educational - high income from tuition
-    OFFICE("Office", new Texture("buildings/Office.png"), new Vector2Int(6, 6), BuildingCategory.EDUCATIONAL, 150000, 2000),
+    OFFICE("Study Space", new Texture("buildings/Office.png"), new Vector2Int(6, 6), BuildingCategory.EDUCATIONAL, 150000, 2000),
     LIBRARY("Library", new Texture("buildings/Library.png"), new Vector2Int(4, 5), BuildingCategory.EDUCATIONAL, 180000, 2500),
     ;
 

@@ -1,11 +1,6 @@
 [
 {
 	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
-	"username": "AntoTest6",
-	"score": 101.01755
-},
-{
-	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
 	"username": "Test19",
 	"score": 100
 },
@@ -28,6 +23,11 @@
 	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
 	"username": "Brh",
 	"score": 81.63
+},
+{
+	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
+	"username": "EthanTestingForAnto",
+	"score": 71.43
 },
 {
 	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
