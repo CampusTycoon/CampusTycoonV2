@@ -5,6 +5,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -34,7 +35,11 @@ public class SettingsScreen implements Screen {
 
     private Viewport viewport;
 
-    private Texture backgroundTexture;
+    private Texture[] backgroundTextures;
+    private int currentBackgroundIndex = 0;
+    private float backgroundTimer = 0;
+    private static final float BACKGROUND_SWITCH_TIME = 3f;
+
     private SpriteBatch batch;
 
     private Stage stage;
@@ -42,6 +47,9 @@ public class SettingsScreen implements Screen {
 
     private TextButton fullscreenLabel;
     private TextButton resolutionLabel;
+
+    private ShaderProgram blurShader;
+    private static final float BLUR_RADIUS = 2.5f;
 
     public SettingsScreen(Main game, Main.ScreenType previousScreen) {
         this.game = game;
@@ -56,8 +64,33 @@ public class SettingsScreen implements Screen {
         stage = new Stage(viewport);
         batch = new SpriteBatch();
 
-        // Load background texture
-        backgroundTexture = new Texture(Gdx.files.internal("menu/Plain black.png"));
+        // Load background textures
+        backgroundTextures = new Texture[]{
+            new Texture(Gdx.files.internal("ui/Example1.png")),
+            new Texture(Gdx.files.internal("ui/Example2.png")),
+            new Texture(Gdx.files.internal("ui/Example3.png"))
+        };
+
+        // Load and compile shaders
+        ShaderProgram.pedantic = false;
+        try {
+            String vertexShader = Gdx.files.internal("core/src/main/resources/shaders/blur.vert").readString();
+            String fragmentShader = Gdx.files.internal("core/src/main/resources/shaders/blur.frag").readString();
+            
+            if (vertexShader == null || fragmentShader == null) {
+                throw new RuntimeException("Failed to load shader files");
+            }
+            
+            blurShader = new ShaderProgram(vertexShader, fragmentShader);
+            
+            if (!blurShader.isCompiled()) {
+                Gdx.app.error("Shader", "Shader compilation failed:\n" + blurShader.getLog());
+                throw new RuntimeException("Shader compilation failed: " + blurShader.getLog());
+            }
+        } catch (Exception e) {
+            Gdx.app.error("Shader", "Failed to load shaders: " + e.getMessage());
+            throw new RuntimeException("Failed to load shaders", e);
+        }
 
         // Load UI skin for buttons
         skin = new Skin(Gdx.files.internal("ui/skin/uiskin.json"));
@@ -216,10 +249,28 @@ public class SettingsScreen implements Screen {
         // Clear the screen
         ScreenUtils.clear(0, 0, 0, 1f);
 
-        // Draw background image
+        // Update background timer and index
+        backgroundTimer += delta;
+        if (backgroundTimer >= BACKGROUND_SWITCH_TIME) {
+            backgroundTimer = 0;
+            currentBackgroundIndex = (currentBackgroundIndex + 1) % backgroundTextures.length;
+        }
+
+        // Draw current background image with blur shader
+        batch.setShader(blurShader);
+        blurShader.bind();
+        blurShader.setUniformf("u_blur_radius", BLUR_RADIUS);
+
         batch.begin();
-        batch.draw(backgroundTexture, 0, 0, Window.DEFAULT_HEIGHT, Window.DEFAULT_HEIGHT);
+        batch.setProjectionMatrix(viewport.getCamera().combined);
+        batch.draw(backgroundTextures[currentBackgroundIndex], 
+            0, 0,
+            viewport.getWorldWidth(),
+            viewport.getWorldHeight());
         batch.end();
+
+        // Reset shader for UI elements
+        batch.setShader(null);
 
         // Draw and apply ui
         stage.act(delta);
@@ -260,13 +311,21 @@ public class SettingsScreen implements Screen {
             skin.dispose();
             skin = null;
         }
-        if (backgroundTexture != null) {
-            backgroundTexture.dispose();
-            backgroundTexture = null;
+        if (backgroundTextures != null) {
+            for (Texture texture : backgroundTextures) {
+                if (texture != null) {
+                    texture.dispose();
+                }
+            }
+            backgroundTextures = null;
         }
         if (batch != null) {
             batch.dispose();
             batch = null;
+        }
+        if (blurShader != null) {
+            blurShader.dispose();
+            blurShader = null;
         }
     }
 
