@@ -25,6 +25,9 @@ import com.spacecomplexity.longboilife.game.globals.Window;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.utils.BufferUtils;
+import com.spacecomplexity.longboilife.game.GameScreen;
 
 /**
  * Main class to control the menu screen.
@@ -50,6 +53,7 @@ public class SettingsScreen implements Screen {
 
     private ShaderProgram blurShader;
     private static final float BLUR_RADIUS = 2.5f;
+    private Texture gameScreenTexture;  // Added to store game screen capture
 
     public SettingsScreen(Main game, Main.ScreenType previousScreen) {
         this.game = game;
@@ -64,12 +68,34 @@ public class SettingsScreen implements Screen {
         stage = new Stage(viewport);
         batch = new SpriteBatch();
 
-        // Load background textures
-        backgroundTextures = new Texture[]{
-            new Texture(Gdx.files.internal("ui/Example1.png")),
-            new Texture(Gdx.files.internal("ui/Example2.png")),
-            new Texture(Gdx.files.internal("ui/Example3.png"))
-        };
+        // Only load background textures if not coming from game screen
+        if (previousScreen != Main.ScreenType.GAME) {
+            backgroundTextures = new Texture[]{
+                new Texture(Gdx.files.internal("ui/Example1.png")),
+                new Texture(Gdx.files.internal("ui/Example2.png")),
+                new Texture(Gdx.files.internal("ui/Example3.png"))
+            };
+        } else {
+            // Capture the game screen
+            int w = Gdx.graphics.getWidth();
+            int h = Gdx.graphics.getHeight();
+
+            // Get the game screen instance
+            GameScreen gameScreen = game.getCurrentGameScreen();
+            if (gameScreen != null) {
+                // Render the world without UI
+                gameScreen.renderWorldOnly();
+                
+                // Capture the frame buffer
+                byte[] pixels = ScreenUtils.getFrameBufferPixels(0, 0, w, h, true);
+                
+                // Create a new texture from the pixels
+                Pixmap pixmap = new Pixmap(w, h, Pixmap.Format.RGBA8888);
+                BufferUtils.copy(pixels, 0, pixmap.getPixels(), pixels.length);
+                gameScreenTexture = new Texture(pixmap);
+                pixmap.dispose();
+            }
+        }
 
         // Load and compile shaders
         ShaderProgram.pedantic = false;
@@ -249,25 +275,40 @@ public class SettingsScreen implements Screen {
         // Clear the screen
         ScreenUtils.clear(0, 0, 0, 1f);
 
-        // Update background timer and index
-        backgroundTimer += delta;
-        if (backgroundTimer >= BACKGROUND_SWITCH_TIME) {
-            backgroundTimer = 0;
-            currentBackgroundIndex = (currentBackgroundIndex + 1) % backgroundTextures.length;
+        if (previousScreen == Main.ScreenType.GAME && gameScreenTexture != null) {
+            // Draw captured game screen with blur shader
+            batch.setShader(blurShader);
+            blurShader.bind();
+            blurShader.setUniformf("u_blur_radius", BLUR_RADIUS);
+
+            batch.begin();
+            batch.setProjectionMatrix(viewport.getCamera().combined);
+            batch.draw(gameScreenTexture, 
+                0, 0,
+                viewport.getWorldWidth(),
+                viewport.getWorldHeight());
+            batch.end();
+        } else {
+            // Update background timer and index
+            backgroundTimer += delta;
+            if (backgroundTimer >= BACKGROUND_SWITCH_TIME) {
+                backgroundTimer = 0;
+                currentBackgroundIndex = (currentBackgroundIndex + 1) % backgroundTextures.length;
+            }
+
+            // Draw current background image with blur shader
+            batch.setShader(blurShader);
+            blurShader.bind();
+            blurShader.setUniformf("u_blur_radius", BLUR_RADIUS);
+
+            batch.begin();
+            batch.setProjectionMatrix(viewport.getCamera().combined);
+            batch.draw(backgroundTextures[currentBackgroundIndex], 
+                0, 0,
+                viewport.getWorldWidth(),
+                viewport.getWorldHeight());
+            batch.end();
         }
-
-        // Draw current background image with blur shader
-        batch.setShader(blurShader);
-        blurShader.bind();
-        blurShader.setUniformf("u_blur_radius", BLUR_RADIUS);
-
-        batch.begin();
-        batch.setProjectionMatrix(viewport.getCamera().combined);
-        batch.draw(backgroundTextures[currentBackgroundIndex], 
-            0, 0,
-            viewport.getWorldWidth(),
-            viewport.getWorldHeight());
-        batch.end();
 
         // Reset shader for UI elements
         batch.setShader(null);
@@ -311,14 +352,6 @@ public class SettingsScreen implements Screen {
             skin.dispose();
             skin = null;
         }
-        if (backgroundTextures != null) {
-            for (Texture texture : backgroundTextures) {
-                if (texture != null) {
-                    texture.dispose();
-                }
-            }
-            backgroundTextures = null;
-        }
         if (batch != null) {
             batch.dispose();
             batch = null;
@@ -326,6 +359,16 @@ public class SettingsScreen implements Screen {
         if (blurShader != null) {
             blurShader.dispose();
             blurShader = null;
+        }
+        if (gameScreenTexture != null) {
+            gameScreenTexture.dispose();
+            gameScreenTexture = null;
+        }
+        if (backgroundTextures != null) {
+            for (Texture texture : backgroundTextures) {
+                texture.dispose();
+            }
+            backgroundTextures = null;
         }
     }
 

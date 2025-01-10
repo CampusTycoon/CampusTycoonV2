@@ -433,4 +433,27 @@ public class GameScreen implements Screen {
             world = null;
         }
     }
+
+    /**
+     * Renders the game world without UI elements for screen capture.
+     */
+    public void renderWorldOnly() {
+        // Clear the screen
+        ScreenUtils.clear(0, 0, 0, 1f);
+
+        // Applies viewport transformations and updates camera ready for rendering
+        viewport.apply();
+        MainCamera.camera().update();
+        // Update the SpriteBatch and ShapeRenderer to match the updates camera
+        batch.setProjectionMatrix(MainCamera.camera().getCombinedMatrix());
+        shapeRenderer.setProjectionMatrix(MainCamera.camera().getCombinedMatrix());
+
+        // Darkened the world when paused
+        Color worldTint = gameState.paused ? Color.LIGHT_GRAY : Color.WHITE;
+
+        // Draw the world tiles
+        RenderUtils.drawWorld(batch, world, worldTint);
+        // Draw the worlds buildings
+        RenderUtils.drawBuildings(batch, world, worldTint);
+    }
 }

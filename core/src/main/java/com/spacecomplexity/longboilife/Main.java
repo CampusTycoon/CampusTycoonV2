@@ -110,6 +110,15 @@ public class Main extends Game {
         }
     }
 
+    /**
+     * Get the current game screen instance if it exists.
+     * @return The current GameScreen instance, or null if not in game.
+     */
+    public GameScreen getCurrentGameScreen() {
+        Screen currentScreen = screens.get(ScreenType.GAME);
+        return currentScreen instanceof GameScreen ? (GameScreen) currentScreen : null;
+    }
+
     @Override
     public void dispose() {
         for (Screen screen : screens.values()) {
