@@ -13,6 +13,7 @@ import com.spacecomplexity.longboilife.game.building.BuildingType;
 import com.spacecomplexity.longboilife.game.globals.GameState;
 import com.spacecomplexity.longboilife.game.ui.UIElement;
 import com.spacecomplexity.longboilife.game.utils.EventHandler;
+import com.spacecomplexity.longboilife.game.utils.Events;
 import com.spacecomplexity.longboilife.game.utils.Vector2Int;
 
 import java.text.NumberFormat;
@@ -44,7 +45,7 @@ public class UIBuildMenu extends UIElement {
         closeMenu();
 
         // Close menu when receiving an event to do so
-        EventHandler.getEventHandler().createEvent(EventHandler.Event.CLOSE_BUILD_MENU, (params) -> {
+        EventHandler.getEventHandler().createEvent(Events.Event.CLOSE_BUILD_MENU, (params) -> {
             closeMenu();
             return null;
         });
@@ -82,7 +83,7 @@ public class UIBuildMenu extends UIElement {
             button.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    EventHandler.getEventHandler().callEvent(EventHandler.Event.CANCEL_OPERATIONS);
+                    EventHandler.getEventHandler().callEvent(Events.Event.CANCEL_OPERATIONS);
 
                     GameState.getState().placingBuilding = building;
                 }

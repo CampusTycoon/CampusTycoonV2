@@ -12,6 +12,7 @@ import com.spacecomplexity.longboilife.game.globals.Constants;
 import com.spacecomplexity.longboilife.game.globals.GameState;
 import com.spacecomplexity.longboilife.game.globals.MainCamera;
 import com.spacecomplexity.longboilife.game.ui.UIElement;
+import com.spacecomplexity.longboilife.game.utils.Events;
 import com.spacecomplexity.longboilife.game.utils.EventHandler;
 
 import java.text.NumberFormat;
@@ -48,7 +49,7 @@ public class UIBuildingSelectedMenu extends UIElement {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 // Call the events to sell the selected building
-                eventHandler.callEvent(EventHandler.Event.MOVE_BUILDING);
+                eventHandler.callEvent(Events.Event.MOVE_BUILDING);
             }
         });
 
@@ -60,7 +61,7 @@ public class UIBuildingSelectedMenu extends UIElement {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 // Call the events to sell the selected building
-                eventHandler.callEvent(EventHandler.Event.SELL_BUILDING);
+                eventHandler.callEvent(Events.Event.SELL_BUILDING);
 
                 closeMenu();
             }
@@ -79,13 +80,13 @@ public class UIBuildingSelectedMenu extends UIElement {
         closeMenu();
 
         // Open menu when receiving an event to do so
-        eventHandler.createEvent(EventHandler.Event.OPEN_SELECTED_MENU, (params) -> {
+        eventHandler.createEvent(Events.Event.OPEN_SELECTED_MENU, (params) -> {
             openMenu();
             return null;
         });
 
         // Close menu when receiving an event to do so
-        eventHandler.createEvent(EventHandler.Event.CLOSE_SELECTED_MENU, (params) -> {
+        eventHandler.createEvent(Events.Event.CLOSE_SELECTED_MENU, (params) -> {
             closeMenu();
             return null;
         });

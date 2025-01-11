@@ -2,54 +2,46 @@ package com.spacecomplexity.longboilife.game.utils;
 
 import java.util.function.Function;
 
+import com.spacecomplexity.longboilife.game.utils.Events.GameEvent;
+import com.spacecomplexity.longboilife.game.world.World;
+import com.spacecomplexity.longboilife.Main;
+import com.spacecomplexity.longboilife.game.utils.Events.Event;
+
 /**
- * CLass to manage events which can be called from anywhere within the game.
+ * Class to manage events which can be called from anywhere within the game.
  */
 public class EventHandler {
-    public enum Event {
-        BUILD,
-        SELECT_BUILDING,
-        CANCEL_OPERATIONS,
-        SELL_BUILDING,
-        MOVE_BUILDING,
-        PAUSE_GAME,
-        RESUME_GAME,
-        OPEN_SELECTED_MENU,
-        CLOSE_SELECTED_MENU,
-        CLOSE_BUILD_MENU,
-        GAME_END,
-        RETURN_MENU,
-        OPEN_SETTINGS,
-        ;
-
-        private Function<Object[], Object> callback;
-
-        private void setCallback(Function<Object[], Object> callback) {
-            this.callback = callback;
-        }
-
-        private Function<Object[], Object> getCallback() {
-            return callback;
-        }
-    }
-
     private static final EventHandler eventHandler = new EventHandler();
+    
+    public void initialiseEvents(Main game, World world) {
+        Events events = new Events(game, world);
+        events.initialiseEvents();
+    }
 
     /**
      * Create an event.
      *
-     * @param event    the enum the event, needed when called.
-     * @param callback the event method, this is what will be executed.
+     * @param event    the event.
+     * @param callback the event method, the function that will be executed on any calls.
      */
     public void createEvent(Event event, Function<Object[], Object> callback) {
+        event.setCallback(callback);
+    }
+    /**
+     * Create an event.
+     *
+     * @param event    the event.
+     * @param callback the event method, the function that will be executed on any calls.
+     */
+    public void createEvent(GameEvent event, Function<Object[], Object> callback) {
         event.setCallback(callback);
     }
 
     /**
      * Call a previously defined event.
      *
-     * @param event  the enum of the event defined.
-     * @param params the parameter to pass to the event.
+     * @param event  the event given to call.
+     * @param params the parameter(s) to pass to the event.
      * @return what the original event would return, this will need to be cast as we cannot know the type here.
      * @throws IllegalArgumentException if the event has not been defined.
      */
@@ -58,7 +50,27 @@ public class EventHandler {
 
         // If the callback is not defined then throw an error
         if (callback == null) {
-            throw new IllegalArgumentException("No event defined for: \"" + event.name() + "\"");
+            throw new IllegalArgumentException("No method defined for calling event: \"" + event.name() + "\"");
+        }
+
+        // Execute the callback and return the result
+        return callback.apply(params);
+    }
+    
+    /**
+     * Call a previously defined game event.
+     *
+     * @param event  the game event given to call.
+     * @param params the parameter(s) to pass to the event.
+     * @return what the original event would return, this will need to be cast as we cannot know the type here.
+     * @throws IllegalArgumentException if the event has not been defined.
+     */
+    public Object callEvent(GameEvent event, Object... params) throws IllegalArgumentException {
+        Function<Object[], Object> callback = event.getCallback();
+
+        // If the callback is not defined then throw an error
+        if (callback == null) {
+            throw new IllegalArgumentException("No method defined for calling event: \"" + event.name() + "\"");
         }
 
         // Execute the callback and return the result

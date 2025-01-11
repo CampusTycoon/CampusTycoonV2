@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.spacecomplexity.longboilife.game.globals.GameState;
 import com.spacecomplexity.longboilife.game.ui.UIElement;
+import com.spacecomplexity.longboilife.game.utils.Events;
 import com.spacecomplexity.longboilife.game.utils.EventHandler;
 import java.util.List;
 import java.util.ArrayList;
@@ -70,7 +71,7 @@ public class UIOverview extends UIElement {
                 dataManager.saveLeaderboard(newEntries);
                 
                 // Return to menu once button is clicked
-                EventHandler.getEventHandler().callEvent(EventHandler.Event.RETURN_MENU);
+                EventHandler.getEventHandler().callEvent(Events.Event.RETURN_MENU);
             }
         });
 
