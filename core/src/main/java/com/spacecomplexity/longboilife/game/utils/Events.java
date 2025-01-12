@@ -145,9 +145,8 @@ public class Events {
         });
         
         GameEvent.FIRE.setProbabilityCalc((params) -> {
-            // Get the amount of buildings in the world (removing roads first)
-            Vector<Building> buildings = new Vector<Building>(world.getBuildings());
-            buildings.removeIf(building -> building.getType().getCategory() == BuildingCategory.PATHWAY);
+            // Get the amount of buildings in the world (excluding roads)
+            Vector<Building> buildings = getBuildings();
             int buildingCount = buildings.size();
             
             if (buildingCount == 0) {
@@ -156,7 +155,7 @@ public class Events {
             }
             // Else return c * the square root of the building count
             // Allows the probability of a fire to increase with building count but not get out of hand
-            return 0.6 * Math.sqrt(buildingCount);
+            return 0.75 * Math.sqrt(buildingCount);
         });
         
         GameEvent.WEATHER.setProbabilityCalc((params) -> {
@@ -172,7 +171,21 @@ public class Events {
         });
         
         GameEvent.HALF_PRICE.setProbabilityCalc((params) -> {
-            return 1.0;
+            Vector<Building> buildings = getBuildings();
+            
+            // Check if the world currently has any food buildings placed down
+            int foodCount = 0;
+            for (Building building : buildings) {
+                if (building.getType().getCategory() == BuildingCategory.FOOD) {
+                    foodCount++;
+                }
+            }
+            
+            if (foodCount > 0) {
+                return 2.0 * foodCount;
+            }
+            
+            return 0.0;
         });
         
         GameEvent.BUDGET_CUT.setProbabilityCalc((params) -> {
@@ -182,12 +195,12 @@ public class Events {
             // Budget cuts start off very unlikely and increase in likelyhood as the game progresses
             // Assumes a game lasts 5 minutes (300000 milliseconds)
             if (timeLeft < 150000) {
-                return 1.2;
+                return 1.5;
             }
             else if (timeLeft < 225000) {
-                return 0.6;
+                return 0.75;
             }
-            return 0.1;
+            return 0.2;
         });
     }
     
@@ -367,15 +380,12 @@ public class Events {
         
         // Arson :)
         eventHandler.createEvent(GameEvent.FIRE, (params) -> {
-            Vector<Building> buildings = new Vector<Building>(world.getBuildings());
+            Vector<Building> buildings = getBuildings();
             
             if (buildings.isEmpty()) { 
                 // No buildings to set on fire :(
                 return null;
             }
-            
-            // I don't remember if roads count as buildings so just remove them all in case they do
-            buildings.removeIf(building -> building.getType().getCategory() == BuildingCategory.PATHWAY);
             
             // Gets a random building (to be set on fire)
             Building randomBuilding = buildings.get(rng.nextInt(0, buildings.size()));
@@ -410,6 +420,8 @@ public class Events {
                     "\n\nYou lost a " + randomBuilding.getType().getDisplayName() + ".";
             }
             
+            System.out.println(message);
+            
             // Create popup UI
             
             // Destroy building
@@ -434,11 +446,28 @@ public class Events {
             return null;
         });
         
+        // Greggs sausage rolls my beloved <3
         eventHandler.createEvent(GameEvent.HALF_PRICE, (params) -> {
+            String message = "Greggs™ have started a sale in York." +
+                "\nSausage rolls are now half-price!" +
+                "\nThe students are *very* happy." +
+                "\n\n+10% Satisfaction score to any current accommodation buildings.";
+            
+            System.out.println(message);
+            
+            // Create popup UI
+            
+            // Adds a satisfaction bonus of 10% to any existing accommodation buildings that don't already have the bonus
+            Satisfaction.halfPriceEvent();
+            
+            // Update satisfaction score
+            Satisfaction.updateSatisfactionScore(world);
+            
             return null;
         });
         
         
+        // All my homies hate the government budget cuts
         eventHandler.createEvent(GameEvent.BUDGET_CUT, (params) -> {
             // Randomly picks between 50k, 75, and 100k to be lost
             double amountCut = rng.nextInt(2, 5) * 25000;
@@ -460,5 +489,19 @@ public class Events {
         
         
         initialiseEventProbabilities();
+    }
+    
+    /**
+     * Retrieves the list of buildings currently placed in the world.
+     * @return all buildings- excluding roads.
+     */
+    private Vector<Building> getBuildings() {
+        // Get all buildings (a new copy to ensure no pointer shenanigans)
+        Vector<Building> buildings = new Vector<Building>(world.getBuildings());
+        
+        // Remove roads
+        buildings.removeIf(building -> building.getType().getCategory() == BuildingCategory.PATHWAY);
+        
+        return buildings;
     }
 }

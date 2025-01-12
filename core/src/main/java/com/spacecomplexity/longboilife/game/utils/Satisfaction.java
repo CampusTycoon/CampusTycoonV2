@@ -497,16 +497,20 @@ public class Satisfaction {
             
             // Calculates the satisfaction score based on the number, type, and distances of each building
             double satisfaction = getSatisfactionScore(buildingDistances);
-            // Clamp satisfaction to 100%
-            satisfaction = Math.min(100, satisfaction);
+            
+            // Adds (or subtracts) the cumulative bonuses given by any active events
+            satisfaction += getSatisfactionEventModifiers(accommodation);
+            
+            // Clamp satisfaction between 0 and 100%
+            satisfaction = Math.min(100, Math.max(0, satisfaction));
             
             totalSatisfaction += satisfaction;
         }
         
         // SatisfactionScore = total satisfaction / (0.8 * accommodation building count + 1)
         // This formula makes it easier to score higher satisfaction scores with more accommodation buildings
-        // And requires you to have at least 5 accommodation buildings to get maximum score (100%)
-        double averageSatisfaction = totalSatisfaction / (0.8 * accommodationBuildings.size() + 1);
+        // And requires you to have at least 4 accommodation buildings to get maximum score (100%)
+        double averageSatisfaction = totalSatisfaction / (0.75 * accommodationBuildings.size() + 1);
         
         // Clamp the final satisfaction score to 100%
         averageSatisfaction = Math.min(100, averageSatisfaction);
@@ -516,5 +520,25 @@ public class Satisfaction {
         
         // Update game state with the new satisfaction score!
         GameState.getState().satisfactionScore = averageSatisfaction;
+    }
+    
+    private static double getSatisfactionEventModifiers(Building accommodation) {
+        return accommodation.getSatisfactionModifier();
+    }
+    
+    public static void halfPriceEvent() {
+        Vector<Building> buildings = world.getBuildings();
+        
+        // Gets a list of all the accommodation buildings
+        List<Building> accommodationBuildings = getAccommodationBuildings(buildings);
+        
+        for (Building accommodation : accommodationBuildings) {
+            // If the building doesn't already have the event triggered
+            if (!accommodation.getSatisfactionInfo().contains("Half-price sausage rolls")) {
+                // Adds a satisfaction modifier of 10% to the building
+                accommodation.setSatisfactionModifier(accommodation.getSatisfactionModifier() + 10);
+                accommodation.setSatisfactionInfo(accommodation.getSatisfactionInfo() + "\nHalf-price sausage rolls: +10%");
+            }
+        }
     }
 }
