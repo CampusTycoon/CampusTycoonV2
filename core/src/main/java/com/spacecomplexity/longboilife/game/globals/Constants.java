@@ -42,7 +42,7 @@ public class Constants {
     /**
      * The rate at which events occur compared to normal (1.0)
      */
-    public static final double EVENT_FREQUENCY = 1.0;
+    public static final double EVENT_FREQUENCY = 32.0;
     
     /**
      * The proportion of money the user will get back form selling the building.

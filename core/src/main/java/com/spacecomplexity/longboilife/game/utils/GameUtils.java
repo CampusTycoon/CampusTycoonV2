@@ -59,16 +59,20 @@ public class GameUtils {
         
         // Check if there are any roads next to the top and bottom sides of the building 
         for (int x = pos.x; x <= pos.x + width; x++) {
-            if (world.pathways[x][pos.y - 1] != null ||
-            world.pathways[x][pos.y + height + 1] != null) {
+            if (pos.y - 1 >= 0 && world.pathways[x][pos.y - 1] != null) {
+                roadIsAdjacent = true;
+            }
+            if (pos.y + height + 1 <= 63 && world.pathways[x][pos.y + height + 1] != null) {
                 roadIsAdjacent = true;
             }
         }
         
         // Check if there are any roads next to the left and right sides of the building 
         for (int y = pos.y; y <= pos.y + height; y++) {
-            if (world.pathways[y][pos.x - 1] != null ||
-            world.pathways[y][pos.x + width + 1] != null) {
+            if (pos.x - 1 >= 0 && world.pathways[pos.x - 1][y] != null) {
+                roadIsAdjacent = true;
+            }
+            if (pos.x + width + 1 <= 63 && world.pathways[pos.x + width + 1][y] != null) {
                 roadIsAdjacent = true;
             }
         }

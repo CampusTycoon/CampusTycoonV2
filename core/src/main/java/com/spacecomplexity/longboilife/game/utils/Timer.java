@@ -34,6 +34,7 @@ public class Timer {
         finishTime = System.currentTimeMillis() + duration;
         paused = false;
         eventCalled = false;
+        lastEventPoll = duration;
     }
 
     /**

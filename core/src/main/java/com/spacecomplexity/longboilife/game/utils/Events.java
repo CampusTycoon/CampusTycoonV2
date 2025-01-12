@@ -141,7 +141,7 @@ public class Events {
     
     private void initialiseEventProbabilities() {
         GameEvent.LONG_BOI.setProbabilityCalc((params) -> {
-            return 1;
+            return 1.0;
         });
         
         GameEvent.FIRE.setProbabilityCalc((params) -> {
@@ -152,7 +152,7 @@ public class Events {
             
             if (buildingCount == 0) {
                 // No buildings to set on fire :(
-                return 0;
+                return 0.0;
             }
             // Else return c * the square root of the building count
             // Allows the probability of a fire to increase with building count but not get out of hand
@@ -160,19 +160,19 @@ public class Events {
         });
         
         GameEvent.WEATHER.setProbabilityCalc((params) -> {
-            return 1;
+            return 1.0;
         });
         
         GameEvent.OVERPOPULATION.setProbabilityCalc((params) -> {
-            return 1;
+            return 1.0;
         });
         
         GameEvent.DIRTY_BUILDING.setProbabilityCalc((params) -> {
-            return 1;
+            return 1.0;
         });
         
         GameEvent.HALF_PRICE.setProbabilityCalc((params) -> {
-            return 1;
+            return 1.0;
         });
         
         GameEvent.BUDGET_CUT.setProbabilityCalc((params) -> {
@@ -447,7 +447,7 @@ public class Events {
                 "The government have cut funding from the education sector" +
                 "\n...again." +
                 "\n" +
-                "\n You have lost £" + String.format("%,", amountCut) + ".";
+                "\n You have lost £" + String.format("%,d", amountCut) + ".";
                 
             System.out.println(message);
             
