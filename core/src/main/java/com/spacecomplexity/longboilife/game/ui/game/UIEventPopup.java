@@ -26,7 +26,6 @@ public class UIEventPopup extends UIElement {
     private void close() {
         // Close the popup
     }
-
     @Override
     protected void placeTable() {
         

@@ -117,12 +117,23 @@ public class MenuScreen implements Screen {
             }
         });
 
+        // Initialise controls button
+        TextButton controlsButton = new TextButton("Controls", skin, "round");
+        controlsButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.openControls(Main.ScreenType.MENU);
+            }
+        });
+
         // Add buttons to table
         table.add(playButton);
         table.row();
         table.add(settingsButton).padTop(10);
         table.row();
         table.add(leaderboardButton).padTop(10);
+        table.row();
+        table.add(controlsButton).padTop(10);
         table.row();
         table.add(exitButton).padTop(10);
 
