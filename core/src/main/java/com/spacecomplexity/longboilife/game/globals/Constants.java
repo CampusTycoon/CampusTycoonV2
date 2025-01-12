@@ -40,6 +40,11 @@ public class Constants {
     public static final float MAX_ZOOM = 0.5f;
 
     /**
+     * The rate at which events occur compared to normal (1.0)
+     */
+    public static final double EVENT_FREQUENCY = 1.0;
+    
+    /**
      * The proportion of money the user will get back form selling the building.
      */
     public static float sellCostRecovery = 0.5f;

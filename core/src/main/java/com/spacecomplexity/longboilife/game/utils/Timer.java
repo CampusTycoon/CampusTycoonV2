@@ -10,6 +10,8 @@ public class Timer {
 
     private boolean eventCalled;
     private Runnable event;
+    
+    private long lastEventPoll;
 
     /**
      * Create a new timer object.
@@ -100,5 +102,15 @@ public class Timer {
         }
 
         return false;
+    }
+    
+    public void pollGameEvents() {
+        long timeLeft = getTimeLeft();
+        
+        // If the game is not paused, not ended, and at least a second has passed since the last event poll
+        if (!paused && timeLeft > 0 && lastEventPoll - timeLeft >= 1000) {
+            lastEventPoll = timeLeft;
+            Events.pollEventTriggers();
+        }
     }
 }

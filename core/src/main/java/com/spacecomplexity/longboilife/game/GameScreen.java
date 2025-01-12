@@ -141,6 +141,8 @@ public class GameScreen implements Screen {
             MainTimer.getTimerManager().getTimer().poll();
         }
         
+        MainTimer.getTimerManager().getTimer().pollGameEvents();
+        
         // Call to handles any constant input
         inputManager.handleContinuousInput();
 

@@ -4,6 +4,13 @@ import java.util.function.Function;
 import java.util.Random;
 import java.util.Vector;
 import java.util.Locale;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Arrays;
+import java.util.Collections;
 
 import com.spacecomplexity.longboilife.Main;
 import com.spacecomplexity.longboilife.achievements.AchievementManager;
@@ -12,6 +19,7 @@ import com.spacecomplexity.longboilife.game.building.BuildingCategory;
 import com.spacecomplexity.longboilife.game.building.BuildingType;
 import com.spacecomplexity.longboilife.game.globals.Constants;
 import com.spacecomplexity.longboilife.game.globals.GameState;
+import com.spacecomplexity.longboilife.game.globals.MainTimer;
 import com.spacecomplexity.longboilife.game.tile.Tile;
 import com.spacecomplexity.longboilife.game.world.World;
 
@@ -20,8 +28,8 @@ public class Events {
     private Main game;
     private World world;
     
-    Random rng = new Random();
-    Locale locale = new Locale("en", "UK");
+    private static Random rng = new Random();
+    private static Locale locale = new Locale("en", "UK");
     
     public Events(Main Game, World World) {
         this.game = Game;
@@ -58,14 +66,13 @@ public class Events {
     }
     
     public enum GameEvent {
-        HALF_PRICE,
-        ALIENS,
         LONG_BOI,
         FIRE,
         OVERPOPULATION,
         WEATHER,
-        BUDGET_CUT,
-        DIRTY_BUILDING
+        DIRTY_BUILDING,
+        HALF_PRICE,
+        BUDGET_CUT
         ;
 
         private Function<Object[], Object> callback;
@@ -77,15 +84,112 @@ public class Events {
         public Function<Object[], Object> getCallback() {
             return callback;
         }
+        
+        private Function<Object[], Object> probabilityCalc;
+
+        public void setProbabilityCalc(Function<Object[], Object> probabilityCalc) {
+            this.probabilityCalc = probabilityCalc;
+        }
+
+        public Function<Object[], Object> getProbabilityCalc() {
+            return probabilityCalc;
+        }
     }
     
     
-    public void pollEventTriggers() {
-        // Create some kind of function thing (like callback) to work out the probability for each event at any given time
-        // Somehow decide the probability of any event happening (this may or may not be difficult to do properly, I will sleep on it)
-        // Use the probabilities of each event to choose which event actually happens
+    public static void pollEventTriggers() {
+        // Get the probabilities of each event occuring at this time
+        Map<GameEvent, Double> eventProbabilities = getGameEventProbabilities();
+        
+        // Shuffle the event list so that there is no bias to event probability due to list ordering
+        List<Object> events = Arrays.asList(eventProbabilities.keySet().toArray());
+        Collections.shuffle(events);
+        
+        for (Object event : events) {
+            // Get the probability of the event
+            GameEvent gameEvent = (GameEvent)event;
+            double eventProbability = eventProbabilities.get(gameEvent);
+            
+            double randomValue = rng.nextDouble(0, 1024 / Constants.EVENT_FREQUENCY);
+            
+            // If the randomly generated value is within the probability range of the event, call the event
+            // Essentially the event will have a eventProbability * EVENT_FREQUENCY / 1024 chance of occuring each poll
+            if (randomValue < eventProbability) {
+                EventHandler.getEventHandler().callEvent(gameEvent);
+                
+                // Return after calling the event, as calling two events in one poll makes no sense
+                return;
+            }
+        }
     }
     
+    private static Map<GameEvent, Double> getGameEventProbabilities() {
+        Map<GameEvent, Double> probabilities = new HashMap<GameEvent,Double>();
+        
+        for (GameEvent event : GameEvent.values()) {
+            Function<Object[], Object> calc = event.getProbabilityCalc();
+            
+            Object[] params = new Object[0]; // We don't need any parameters
+            double probability = (double)calc.apply(params);
+            
+            probabilities.put(event, probability);
+        }
+        
+        return probabilities;
+    }
+    
+    
+    private void initialiseEventProbabilities() {
+        GameEvent.LONG_BOI.setProbabilityCalc((params) -> {
+            return 1;
+        });
+        
+        GameEvent.FIRE.setProbabilityCalc((params) -> {
+            // Get the amount of buildings in the world (not including roads)
+            Vector<Building> buildings = world.getBuildings();
+            buildings.removeIf(building -> building.getType().getCategory() == BuildingCategory.PATHWAY);
+            int buildingCount = buildings.size();
+            
+            if (buildingCount == 0) {
+                // No buildings to set on fire :(
+                return 0;
+            }
+            // Else return c * the square root of the building count
+            // Allows the probability of a fire to increase with building count but not get out of hand
+            return 0.6 * Math.sqrt(buildingCount);
+        });
+        
+        GameEvent.WEATHER.setProbabilityCalc((params) -> {
+            return 1;
+        });
+        
+        GameEvent.OVERPOPULATION.setProbabilityCalc((params) -> {
+            return 1;
+        });
+        
+        GameEvent.DIRTY_BUILDING.setProbabilityCalc((params) -> {
+            return 1;
+        });
+        
+        GameEvent.HALF_PRICE.setProbabilityCalc((params) -> {
+            return 1;
+        });
+        
+        GameEvent.BUDGET_CUT.setProbabilityCalc((params) -> {
+            // The remaining time left in the game, in milliseconds
+            long timeLeft = MainTimer.getTimerManager().getTimer().getTimeLeft();
+            
+            // Budget cuts start off very unlikely and increase in likelyhood as the game progresses
+            // Assumes a game lasts 5 minutes (300000 milliseconds)
+            if (timeLeft < 150000) {
+                return 1.2;
+            }
+            else if (timeLeft < 225000) {
+                return 0.6;
+            }
+            return 0.1;
+        });
+    }
     
     public void initialiseEvents() {
         EventHandler eventHandler = EventHandler.getEventHandler();
@@ -260,10 +364,6 @@ public class Events {
             return null;
         });
         
-        eventHandler.createEvent(GameEvent.ALIENS, (params) -> {
-            return null;
-        });
-        
         
         // Arson :)
         eventHandler.createEvent(GameEvent.FIRE, (params) -> {
@@ -357,5 +457,8 @@ public class Events {
             
             return null;
         });
+        
+        
+        initialiseEventProbabilities();
     }
 }
