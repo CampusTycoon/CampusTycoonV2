@@ -80,6 +80,13 @@ public class Events {
     }
     
     
+    public void pollEventTriggers() {
+        // Create some kind of function thing (like callback) to work out the probability for each event at any given time
+        // Somehow decide the probability of any event happening (this may or may not be difficult to do properly, I will sleep on it)
+        // Use the probabilities of each event to choose which event actually happens
+    }
+    
+    
     public void initialiseEvents() {
         EventHandler eventHandler = EventHandler.getEventHandler();
         
@@ -256,6 +263,7 @@ public class Events {
         eventHandler.createEvent(GameEvent.ALIENS, (params) -> {
             return null;
         });
+        
         
         // Arson :)
         eventHandler.createEvent(GameEvent.FIRE, (params) -> {
