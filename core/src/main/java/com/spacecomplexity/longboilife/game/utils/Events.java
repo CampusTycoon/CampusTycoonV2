@@ -67,9 +67,7 @@ public class Events {
     }
     
     public enum GameEvent {
-        LONG_BOI,
         FIRE,
-        OVERPOPULATION,
         WEATHER,
         DIRTY_BUILDING,
         HALF_PRICE,
@@ -141,10 +139,6 @@ public class Events {
     
     
     private void initialiseEventProbabilities() {
-        GameEvent.LONG_BOI.setProbabilityCalc((params) -> {
-            return 1.5;
-        });
-        
         GameEvent.FIRE.setProbabilityCalc((params) -> {
             // Get the amount of buildings in the world (excluding roads)
             Vector<Building> buildings = getBuildings();
@@ -160,11 +154,12 @@ public class Events {
         });
         
         GameEvent.WEATHER.setProbabilityCalc((params) -> {
-            return 1.0;
-        });
-        
-        GameEvent.OVERPOPULATION.setProbabilityCalc((params) -> {
-            return 1.0;
+            SEASON season = MainTimer.getTimerManager().getTimer().getSeason();
+            if (season == SEASON.WINTER || season == SEASON.SUMMER) {
+                return 1.5;
+            }
+            
+            return 0.0;
         });
         
         GameEvent.DIRTY_BUILDING.setProbabilityCalc((params) -> {
@@ -391,12 +386,6 @@ public class Events {
         
         
         
-        
-        eventHandler.createEvent(GameEvent.LONG_BOI, (params) -> {
-            return null;
-        });
-        
-        
         // Arson :)
         eventHandler.createEvent(GameEvent.FIRE, (params) -> {
             Vector<Building> buildings = getBuildings();
@@ -441,7 +430,7 @@ public class Events {
             
             System.out.println(message);
             
-            // Create popup UI
+            // CREATE EVENT POPUP UI HERE
             
             // Destroy building
             world.demolish(randomBuilding);
@@ -486,11 +475,8 @@ public class Events {
                     "\n\n-5% Student satisfaction.";
             }
             
-            return null;
-        });
-        
-        
-        eventHandler.createEvent(GameEvent.OVERPOPULATION, (params) -> {
+            // CREATE EVENT POPUP UI HERE
+            
             return null;
         });
         
@@ -502,7 +488,7 @@ public class Events {
         
         System.out.println(message);
         
-        // Create popup UI
+        // CREATE EVENT POPUP UI HERE
         
         // Adds a satisfaction reduction of 10% to any existing accommodation buildings that don't already have the reduction
         Satisfaction.dirtyBuildingEvent();
@@ -522,7 +508,7 @@ public class Events {
             
             System.out.println(message);
             
-            // Create popup UI
+            // CREATE EVENT POPUP UI HERE
             
             // Adds a satisfaction bonus of 10% to any existing accommodation buildings that don't already have the bonus
             Satisfaction.halfPriceEvent();
@@ -547,7 +533,7 @@ public class Events {
                 
             System.out.println(message);
             
-            // Create popup UI
+            // CREATE EVENT POPUP UI HERE
             
             gameState.money -= amountCut;
             
