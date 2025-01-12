@@ -2,11 +2,13 @@ package com.spacecomplexity.longboilife.game.utils;
 
 import java.util.function.Function;
 import java.util.Random;
+import java.util.Vector;
 import java.util.Locale;
 
 import com.spacecomplexity.longboilife.Main;
 import com.spacecomplexity.longboilife.achievements.AchievementManager;
 import com.spacecomplexity.longboilife.game.building.Building;
+import com.spacecomplexity.longboilife.game.building.BuildingCategory;
 import com.spacecomplexity.longboilife.game.building.BuildingType;
 import com.spacecomplexity.longboilife.game.globals.Constants;
 import com.spacecomplexity.longboilife.game.globals.GameState;
@@ -255,8 +257,58 @@ public class Events {
             return null;
         });
         
-        
+        // Arson :)
         eventHandler.createEvent(GameEvent.FIRE, (params) -> {
+            Vector<Building> buildings = world.getBuildings();
+            
+            if (buildings.isEmpty()) { 
+                // No buildings to set on fire :(
+                return null;
+            }
+            
+            // I don't remember if roads count as buildings so just remove them all in case they do
+            buildings.removeIf(building -> building.getType().getCategory() == BuildingCategory.PATHWAY);
+            
+            // Gets a random building (to be set on fire)
+            Building randomBuilding = buildings.get(rng.nextInt(0, buildings.size()));
+            
+            String message = "Oh no!" +
+                "\nA chemistry student set fire to a building (accidentally?)";
+            
+            // Checks if there are any roads adjacent to the building
+            // If there are then gives an advantage to the chance of firefighters saving the building
+            Boolean advantage = GameUtils.roadAdjacent(world, randomBuilding);
+            Boolean advantageRoll = false;
+            if (advantage) {
+                advantageRoll = rng.nextBoolean();
+            }
+            
+            // With advantage, this is essentially flipping two coins and winning if either is heads (true)
+            // Without advantage, its just a 50/50
+            Boolean buildingSaved = rng.nextBoolean() || advantageRoll;
+            
+            if (buildingSaved) {
+                message += "\n\nThankfully firefighters managed to arrive on the scene quick enough to put out the fire before any major damage occured." +
+                    "\nYay!";
+                return null;
+            }
+            else if (!buildingSaved && advantage) {
+                message += "\n\nDespite the best efforts of the firefighters, the fire moved too quickly, and the building was destroyed." +
+                    "\n\nYou lost a " + randomBuilding.getType().getDisplayName() + ".";
+            }
+            else {
+                message += "\n\nUnfortunately, the firefighters got really lost, and the building was destroyed before they could arrive." +
+                    "\n(Maybe they would have arrived quicker if the building was easier to access?)" +
+                    "\n\nYou lost a " + randomBuilding.getType().getDisplayName() + ".";
+            }
+            
+            // Create popup UI
+            
+            // Destroy building
+            world.demolish(randomBuilding);
+            
+            // Update satisfaction score
+            Satisfaction.updateSatisfactionScore(world);
             
             return null;
         });
@@ -287,9 +339,13 @@ public class Events {
                 "The government have cut funding from the education sector" +
                 "\n...again." +
                 "\n" +
-                "\n You have lost £" + String.format("%,", amountCut);
+                "\n You have lost £" + String.format("%,", amountCut) + ".";
                 
+            System.out.println(message);
             
+            // Create popup UI
+            
+            gameState.money -= amountCut;
             
             return null;
         });
