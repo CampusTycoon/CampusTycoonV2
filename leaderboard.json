@@ -6,6 +6,11 @@
 },
 {
 	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
+	"username": "AntoEventsTest",
+	"score": 100
+},
+{
+	"class": "com.spacecomplexity.longboilife.leaderboard.LeaderboardEntry",
 	"username": "AntoTest7",
 	"score": 98.36066
 },

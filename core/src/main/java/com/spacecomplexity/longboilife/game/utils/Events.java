@@ -3,12 +3,9 @@ package com.spacecomplexity.longboilife.game.utils;
 import java.util.function.Function;
 import java.util.Random;
 import java.util.Vector;
-import java.util.Locale;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Map.Entry;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -30,7 +27,6 @@ public class Events {
     private World world;
     
     private static Random rng = new Random();
-    private static Locale locale = new Locale("en", "UK");
     
     public Events(Main Game, World World) {
         this.game = Game;
@@ -115,6 +111,7 @@ public class Events {
             // Essentially the event will have a eventProbability * EVENT_FREQUENCY / 1024 chance of occuring each poll
             if (randomValue < eventProbability) {
                 EventHandler.getEventHandler().callEvent(gameEvent);
+                GameState.getState().incrementEventCount();
                 
                 // Return after calling the event, as calling two events in one poll makes no sense
                 return;
@@ -416,6 +413,7 @@ public class Events {
             if (buildingSaved) {
                 message += "\n\nThankfully firefighters managed to arrive on the scene quick enough to put out the fire before any major damage occured." +
                     "\nYay!";
+                game.getUIManager().getEventPopup().showEvent(message);
                 return null;
             }
             else if (!buildingSaved && advantage) {
@@ -428,9 +426,8 @@ public class Events {
                     "\n\nYou lost a " + randomBuilding.getType().getDisplayName() + ".";
             }
             
-            System.out.println(message);
-            
-            // CREATE EVENT POPUP UI HERE
+            // Show event popup
+            game.getUIManager().getEventPopup().showEvent(message);
             
             // Destroy building
             world.demolish(randomBuilding);
@@ -454,6 +451,8 @@ public class Events {
                         "\n\n+5% Student satisfaction.";
                     
                     Satisfaction.lightSnowEvent();
+                    // Update satisfaction score
+                    Satisfaction.updateSatisfactionScore(world);
                 }
                 else if (averageDistance > 50) {
                     message = "A heavy blanket of snow has descended upon the campus." +
@@ -461,6 +460,8 @@ public class Events {
                         "\n\n-5% Student satisfaction.";
                     
                     Satisfaction.heavySnowEvent();
+                    // Update satisfaction score
+                    Satisfaction.updateSatisfactionScore(world);
                 }
                 else {
                     // The students have to travel pretty far in the snow but its not far enough for them to be upset, but nor is it short enough for them to be happy
@@ -473,30 +474,34 @@ public class Events {
                     "\nAuthorities advise everyone to stay inside and in the shade as much as possible." +
                     "\nUnfortunately, lectures still need to be attended in-person." +
                     "\n\n-5% Student satisfaction.";
+                
+                Satisfaction.heatwaveEvent();
+                // Update satisfaction score
+                Satisfaction.updateSatisfactionScore(world);
             }
             
-            // CREATE EVENT POPUP UI HERE
+            // Show event popup
+            game.getUIManager().getEventPopup().showEvent(message);
             
             return null;
         });
         
         eventHandler.createEvent(GameEvent.DIRTY_BUILDING, (params) -> {
             String message = "The local students have been out partying *way* too much." +
-            "\nThey keep leaving their empty bottles of vodka all over the place!" +
-            "\nThe campus has never looked so unclean..." +
-            "\n\n-10% Satisfaction to one accommodation block.";
-        
-        System.out.println(message);
-        
-        // CREATE EVENT POPUP UI HERE
-        
-        // Adds a satisfaction reduction of 10% to any existing accommodation buildings that don't already have the reduction
-        Satisfaction.dirtyBuildingEvent();
-        
-        // Update satisfaction score
-        Satisfaction.updateSatisfactionScore(world);
-        
-        return null;
+                "\nThey keep leaving their empty bottles of vodka all over the place!" +
+                "\nThe campus has never looked so unclean..." +
+                "\n\n-10% Satisfaction to one accommodation block.";
+            
+            // Show event popup
+            game.getUIManager().getEventPopup().showEvent(message);
+            
+            // Adds a satisfaction reduction of 10% to any existing accommodation buildings that don't already have the reduction
+            Satisfaction.dirtyBuildingEvent();
+            
+            // Update satisfaction score
+            Satisfaction.updateSatisfactionScore(world);
+            
+            return null;
         });
         
         // Greggs sausage rolls my beloved <3
@@ -506,9 +511,8 @@ public class Events {
                 "\nThe students are *very* happy." +
                 "\n\n+10% Student satisfaction.";
             
-            System.out.println(message);
-            
-            // CREATE EVENT POPUP UI HERE
+            // Show event popup
+            game.getUIManager().getEventPopup().showEvent(message);
             
             // Adds a satisfaction bonus of 10% to any existing accommodation buildings that don't already have the bonus
             Satisfaction.halfPriceEvent();
@@ -530,10 +534,9 @@ public class Events {
                 "\n...again." +
                 "\n" +
                 "\n You have lost £" + String.format("%,.2f", amountCut) + ".";
-                
-            System.out.println(message);
             
-            // CREATE EVENT POPUP UI HERE
+            // Show event popup
+            game.getUIManager().getEventPopup().showEvent(message);
             
             gameState.money -= amountCut;
             

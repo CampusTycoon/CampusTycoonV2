@@ -137,6 +137,11 @@ public class GameState {
     public static final float PROFIT_INTERVAL = 5f; // 5 seconds
 
     /**
+     * The total number of events that occurred during the game
+     */
+    public int totalEvents = 0;
+
+    /**
      * Get the singleton instance of the {@link GameState} class.
      *
      * @return The single {@link GameState} class.
@@ -194,5 +199,13 @@ public class GameState {
 
     public float getBudget() {
         return money;
+    }
+
+    public void incrementEventCount() {
+        totalEvents++;
+    }
+
+    public int getTotalEvents() {
+        return totalEvents;
     }
 }

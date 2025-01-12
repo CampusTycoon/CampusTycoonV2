@@ -10,6 +10,7 @@ import com.spacecomplexity.longboilife.controls.ControlsScreen;
 import java.util.HashMap;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.LifecycleListener;
+import com.spacecomplexity.longboilife.game.ui.UIManager;
 
 /**
  * The main class (entry point).
@@ -47,6 +48,7 @@ public class Main extends Game {
     }
 
     private HashMap<ScreenType, Screen> screens = new HashMap<>();
+    private GameScreen gameScreen;
 
     @Override
     public void create() {
@@ -81,9 +83,17 @@ public class Main extends Game {
             try {
                 Screen newScreen = screen.getScreenClass().getConstructor(Main.class).newInstance(this);
                 screens.put(screen, newScreen);
+                
+                // Set gameScreen reference if this is a GameScreen
+                if (newScreen instanceof GameScreen) {
+                    gameScreen = (GameScreen) newScreen;
+                }
             } catch (Exception e) {
                 throw new RuntimeException("Failed to create screen: " + screen.name(), e);
             }
+        } else if (screen == ScreenType.GAME) {
+            // Make sure gameScreen is set even when reusing existing screen
+            gameScreen = (GameScreen) screens.get(screen);
         }
 
         // Switch to the screen
@@ -130,6 +140,13 @@ public class Main extends Game {
     public GameScreen getCurrentGameScreen() {
         Screen currentScreen = screens.get(ScreenType.GAME);
         return currentScreen instanceof GameScreen ? (GameScreen) currentScreen : null;
+    }
+
+    public UIManager getUIManager() {
+        if (gameScreen != null) {
+            return gameScreen.getUIManager();
+        }
+        return null;
     }
 
     @Override

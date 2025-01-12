@@ -50,6 +50,13 @@ public class UITooltip extends UIElement {
         table.add(new Label(building.getType().getDisplayName(), skin, "title")).row();
         table.add(new Label("Type: " + building.getType().getCategory().getDisplayName(), skin)).row();
         
+        // Add satisfaction info if it exists
+        String satisfactionInfo = building.getSatisfactionInfo();
+        if (satisfactionInfo != null && !satisfactionInfo.isEmpty()) {
+            table.add(new Label("Satisfaction Modifiers:", skin)).row();
+            table.add(new Label(satisfactionInfo, skin)).row();
+        }
+        
         table.pack();
         table.setVisible(true);
     }

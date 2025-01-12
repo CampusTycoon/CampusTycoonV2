@@ -295,4 +295,8 @@ public class GameScreen implements Screen {
         // Draw the worlds buildings
         RenderUtils.drawBuildings(batch, world, worldTint);
     }
+
+    public UIManager getUIManager() {
+        return ui;
+    }
 }

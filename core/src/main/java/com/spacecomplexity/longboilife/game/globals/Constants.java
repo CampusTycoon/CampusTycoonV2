@@ -46,8 +46,9 @@ public class Constants {
 
     /**
      * The rate at which events occur compared to normal (1.0)
+     * Setting it to 0.8 should mean that there are 2.4 expected events per game.
      */
-    public static final double EVENT_FREQUENCY = 128.0;
+    public static final double EVENT_FREQUENCY = 8.8;
 
     /**
      * The proportion of money the user will get back form selling the building.

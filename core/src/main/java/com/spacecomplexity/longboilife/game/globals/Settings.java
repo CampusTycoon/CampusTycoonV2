@@ -113,7 +113,6 @@ public final class Settings {
     
     /**
      * Reads all the settings into memory.
-     * <p>TODO: If a parameter cannot be found, it will be added with the default value.
      */
     private static void readFile(Scanner reader) {
         while (reader.hasNextLine()) {

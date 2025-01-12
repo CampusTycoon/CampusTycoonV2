@@ -510,8 +510,9 @@ public class Satisfaction {
             // Calculates the satisfaction score based on the number, type, and distances of each building
             double satisfaction = getSatisfactionScore(buildingDistances);
             
-            // Adds (or subtracts) the cumulative bonuses given by any active events
-            satisfaction += getSatisfactionEventModifiers(accommodation);
+            // Apply event modifiers as percentage modifiers
+            double eventModifier = getSatisfactionEventModifiers(accommodation);
+            satisfaction = satisfaction * (1 + eventModifier/100.0);
             
             // Clamp satisfaction between 0 and 100%
             satisfaction = Math.min(100, Math.max(0, satisfaction));

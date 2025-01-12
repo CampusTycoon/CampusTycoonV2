@@ -32,6 +32,7 @@ public class UIManager {
     private Skin skin;
 
     private UIElement[] uiElements;
+    private UIEventPopup eventPopup;
 
     /**
      * Initialise UI elements needed for the game.
@@ -72,7 +73,9 @@ public class UIManager {
 
         // Create our UI elements
         // Note: The order of these is the order that they will be rendered
+        eventPopup = new UIEventPopup(viewport, table, skin);
         uiElements = new UIElement[]{
+            eventPopup,
             new UITooltip(viewport, table, skin),
             new UIBuildingSelectedMenu(viewport, table, skin),
             new UIBottomMenu(viewport, table, skin),
@@ -89,6 +92,9 @@ public class UIManager {
         EventHandler.getEventHandler().createEvent(Events.Event.GAME_END, (params) -> {
             GameState.getState().gameOver = true;
             GameState.getState().active = false;
+            
+            // Log total events that occurred
+            System.out.println("Total events during game: " + GameState.getState().getTotalEvents());
             
             // Cancel all operations and close building mode/menus
             EventHandler.getEventHandler().callEvent(Events.Event.CANCEL_OPERATIONS);
@@ -184,5 +190,9 @@ public class UIManager {
             }
             uiElements = null;
         }
+    }
+
+    public UIEventPopup getEventPopup() {
+        return eventPopup;
     }
 }
