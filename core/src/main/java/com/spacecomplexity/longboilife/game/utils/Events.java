@@ -1,6 +1,8 @@
 package com.spacecomplexity.longboilife.game.utils;
 
 import java.util.function.Function;
+import java.util.Random;
+import java.util.Locale;
 
 import com.spacecomplexity.longboilife.Main;
 import com.spacecomplexity.longboilife.achievements.AchievementManager;
@@ -15,6 +17,9 @@ public class Events {
     private GameState gameState = GameState.getState();
     private Main game;
     private World world;
+    
+    Random rng = new Random();
+    Locale locale = new Locale("en", "UK");
     
     public Events(Main Game, World World) {
         this.game = Game;
@@ -36,6 +41,7 @@ public class Events {
         GAME_END,
         RETURN_MENU,
         OPEN_SETTINGS,
+        CLOSE_EVENT_POPUP
         ;
 
         private Function<Object[], Object> callback;
@@ -238,7 +244,53 @@ public class Events {
         });
         
         
+        
+        
+        
+        eventHandler.createEvent(GameEvent.LONG_BOI, (params) -> {
+            return null;
+        });
+        
         eventHandler.createEvent(GameEvent.ALIENS, (params) -> {
+            return null;
+        });
+        
+        
+        eventHandler.createEvent(GameEvent.FIRE, (params) -> {
+            
+            return null;
+        });
+        
+        eventHandler.createEvent(GameEvent.WEATHER, (params) -> {
+            return null;
+        });
+        
+        
+        eventHandler.createEvent(GameEvent.OVERPOPULATION, (params) -> {
+            return null;
+        });
+        
+        eventHandler.createEvent(GameEvent.DIRTY_BUILDING, (params) -> {
+            return null;
+        });
+        
+        eventHandler.createEvent(GameEvent.HALF_PRICE, (params) -> {
+            return null;
+        });
+        
+        
+        eventHandler.createEvent(GameEvent.BUDGET_CUT, (params) -> {
+            // Randomly picks between 50k, 75, and 100k to be lost
+            double amountCut = rng.nextInt(2, 5) * 25000;
+            
+            String message = 
+                "The government have cut funding from the education sector" +
+                "\n...again." +
+                "\n" +
+                "\n You have lost £" + String.format("%,", amountCut);
+                
+            
+            
             return null;
         });
     }
