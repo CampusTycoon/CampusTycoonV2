@@ -40,10 +40,15 @@ public class Constants {
     public static final float MAX_ZOOM = 0.5f;
 
     /**
+     * The number of seconds each game lasts for.
+     */
+    public static final int GAME_LENGTH = 300;
+
+    /**
      * The rate at which events occur compared to normal (1.0)
      */
     public static final double EVENT_FREQUENCY = 128.0;
-    
+
     /**
      * The proportion of money the user will get back form selling the building.
      */

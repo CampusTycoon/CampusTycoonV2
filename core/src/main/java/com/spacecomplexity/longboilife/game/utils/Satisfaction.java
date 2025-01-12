@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Stack;
 import java.util.Vector;
+import java.util.Random;
 
 import com.spacecomplexity.longboilife.game.building.Building;
 import com.spacecomplexity.longboilife.game.building.BuildingCategory;
@@ -295,6 +296,17 @@ public class Satisfaction {
         return utilityBuildings;
     }
     
+    public static List<Building> getEducationBuildings(List<Building> buildings) {
+        List<Building> educationBuildings = new ArrayList<Building>();
+        
+        for (Building building : buildings) {
+            if (building.getType().getCategory() == BuildingCategory.EDUCATIONAL) {
+                educationBuildings.add(building);
+            }
+        }
+        return educationBuildings;
+    }
+    
     private static Map<BuildingType, List<Double>> getBuildingTypeList(List<BuildingDistance> buildingDistances) {
         Map<BuildingType, List<Double>> buildingTypes = new HashMap<BuildingType, List<Double>>();
         
@@ -522,8 +534,34 @@ public class Satisfaction {
         GameState.getState().satisfactionScore = averageSatisfaction;
     }
     
+    
     private static double getSatisfactionEventModifiers(Building accommodation) {
         return accommodation.getSatisfactionModifier();
+    }
+    
+    private static void addSatisfactionEventModifiers(List<Building> buildings, double satisfactionModifier, String satisfactionInfo) {
+        for (Building building : buildings) {
+            addSatisfactionEventModifier(building, satisfactionModifier, satisfactionInfo);
+        }
+    }
+    
+    private static void addSatisfactionEventModifier(Building building, double satisfactionModifier, String satisfactionInfo) {
+        
+        // If the building doesn't already have the event triggered
+        if (!building.getSatisfactionInfo().contains(satisfactionInfo)) {
+            // Adds the satisfaction modifier to the building
+            building.setSatisfactionModifier(building.getSatisfactionModifier() + satisfactionModifier);
+            
+            // Formats the satisfaction modifier info string
+            String sign = "+";
+            if (satisfactionModifier < 0) {
+                sign = "-";
+            }
+            String info = satisfactionInfo + ": " + sign + satisfactionModifier;
+            
+            // Adds the satisfaction info string to the end of the building's satisfaction info
+            building.setSatisfactionInfo(building.getSatisfactionInfo() + "\n" + info);
+        }
     }
     
     public static void halfPriceEvent() {
@@ -532,13 +570,75 @@ public class Satisfaction {
         // Gets a list of all the accommodation buildings
         List<Building> accommodationBuildings = getAccommodationBuildings(buildings);
         
+        // Adds a satisfaction bonus of 10% to all currently built accommodation buildings
+        addSatisfactionEventModifiers(accommodationBuildings, 10, "Half-price sausage rolls");
+    }
+    
+    public static void dirtyBuildingEvent() {
+        Vector<Building> buildings = world.getBuildings();
+        
+        // Gets a list of all the accommodation buildings
+        List<Building> accommodationBuildings = getAccommodationBuildings(buildings);
+        int accommodationCount = accommodationBuildings.size();
+        
+        // Gets a random accommodation building
+        Random rng = new Random();
+        Building randomAccommodation = accommodationBuildings.get(rng.nextInt(accommodationCount));
+        
+        // Adds a satisfaction penalty of 10% to the accommodation building
+        addSatisfactionEventModifier(randomAccommodation, -10, "Drunk students");
+    }
+    
+    public static double snowEventDistance() {
+        Vector<Building> buildings = world.getBuildings();
+        
+        // Gets a list of all the accommodation buildings
+        List<Building> accommodationBuildings = getAccommodationBuildings(buildings);
+        
+        // Gets a list of all the education buildings
+        List<Building> educationBuildings = getEducationBuildings(buildings);
+        
+        double totalDistance = 0;
         for (Building accommodation : accommodationBuildings) {
-            // If the building doesn't already have the event triggered
-            if (!accommodation.getSatisfactionInfo().contains("Half-price sausage rolls")) {
-                // Adds a satisfaction modifier of 10% to the building
-                accommodation.setSatisfactionModifier(accommodation.getSatisfactionModifier() + 10);
-                accommodation.setSatisfactionInfo(accommodation.getSatisfactionInfo() + "\nHalf-price sausage rolls: +10%");
+            List<BuildingDistance> bds = getBuildingDistances(accommodation, educationBuildings);
+            
+            double shortestDistance = Double.MAX_VALUE;
+            for (BuildingDistance bd : bds) {
+                if (bd.distance < shortestDistance) {
+                    shortestDistance = bd.distance;
+                }
             }
+            
+            totalDistance += shortestDistance;
         }
+        
+        return totalDistance / accommodationBuildings.size();
+    }
+    
+    public static void lightSnowEvent() {
+        Vector<Building> buildings = world.getBuildings();
+        
+        // Gets a list of all the accommodation buildings
+        List<Building> accommodationBuildings = getAccommodationBuildings(buildings);
+        
+        addSatisfactionEventModifiers(accommodationBuildings, 5, "Snow");
+    }
+    
+    public static void heavySnowEvent() {
+        Vector<Building> buildings = world.getBuildings();
+        
+        // Gets a list of all the accommodation buildings
+        List<Building> accommodationBuildings = getAccommodationBuildings(buildings);
+        
+        addSatisfactionEventModifiers(accommodationBuildings, -5, "Heavy snow");
+    }
+    
+    public static void heatwaveEvent() {
+        Vector<Building> buildings = world.getBuildings();
+        
+        // Gets a list of all the accommodation buildings
+        List<Building> accommodationBuildings = getAccommodationBuildings(buildings);
+        
+        addSatisfactionEventModifiers(accommodationBuildings, -5, "Heatwave");
     }
 }

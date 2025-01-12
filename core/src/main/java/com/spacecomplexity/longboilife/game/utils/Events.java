@@ -21,6 +21,7 @@ import com.spacecomplexity.longboilife.game.globals.Constants;
 import com.spacecomplexity.longboilife.game.globals.GameState;
 import com.spacecomplexity.longboilife.game.globals.MainTimer;
 import com.spacecomplexity.longboilife.game.tile.Tile;
+import com.spacecomplexity.longboilife.game.utils.Timer.SEASON;
 import com.spacecomplexity.longboilife.game.world.World;
 
 public class Events {
@@ -141,7 +142,7 @@ public class Events {
     
     private void initialiseEventProbabilities() {
         GameEvent.LONG_BOI.setProbabilityCalc((params) -> {
-            return 1.0;
+            return 1.5;
         });
         
         GameEvent.FIRE.setProbabilityCalc((params) -> {
@@ -167,7 +168,21 @@ public class Events {
         });
         
         GameEvent.DIRTY_BUILDING.setProbabilityCalc((params) -> {
-            return 1.0;
+            Vector<Building> buildings = getBuildings();
+            
+            // Check if the world currently has any accommodation buildings placed down
+            int accommodationCount = 0;
+            for (Building building : buildings) {
+                if (building.getType().getCategory() == BuildingCategory.ACCOMMODATION) {
+                    accommodationCount++;
+                }
+            }
+            
+            if (accommodationCount > 0) {
+                return 1.0 * accommodationCount;
+            }
+            
+            return 0.0;
         });
         
         GameEvent.HALF_PRICE.setProbabilityCalc((params) -> {
@@ -175,13 +190,17 @@ public class Events {
             
             // Check if the world currently has any food buildings placed down
             int foodCount = 0;
+            int accommodationCount = 0;
             for (Building building : buildings) {
                 if (building.getType().getCategory() == BuildingCategory.FOOD) {
                     foodCount++;
                 }
+                if (building.getType().getCategory() == BuildingCategory.ACCOMMODATION) {
+                    accommodationCount++;
+                }
             }
             
-            if (foodCount > 0) {
+            if (accommodationCount > 0 && foodCount > 0) {
                 return 2.0 * foodCount;
             }
             
@@ -434,6 +453,39 @@ public class Events {
         });
         
         eventHandler.createEvent(GameEvent.WEATHER, (params) -> {
+            String message = "";
+            SEASON season = MainTimer.getTimerManager().getTimer().getSeason();
+            
+            if (season == SEASON.WINTER) {
+                double averageDistance = Satisfaction.snowEventDistance();
+                
+                if (averageDistance <= 25) {
+                    message = "A light blanket of snow has fallen upon the campus." +
+                        "\nStudents are enjoying the picturesque view on short walks." +
+                        "\n\n+5% Student satisfaction.";
+                    
+                    Satisfaction.lightSnowEvent();
+                }
+                else if (averageDistance > 50) {
+                    message = "A heavy blanket of snow has descended upon the campus." +
+                        "\nStudents are freezing cold during their long trip to the lecture halls." +
+                        "\n\n-5% Student satisfaction.";
+                    
+                    Satisfaction.heavySnowEvent();
+                }
+                else {
+                    // The students have to travel pretty far in the snow but its not far enough for them to be upset, but nor is it short enough for them to be happy
+                    return null;
+                }
+            }
+            
+            else if (season == SEASON.SUMMER) {
+                message = "A record breaking heatwave is sweeping across Britain!" + 
+                    "\nAuthorities advise everyone to stay inside and in the shade as much as possible." +
+                    "\nUnfortunately, lectures still need to be attended in-person." +
+                    "\n\n-5% Student satisfaction.";
+            }
+            
             return null;
         });
         
@@ -443,7 +495,22 @@ public class Events {
         });
         
         eventHandler.createEvent(GameEvent.DIRTY_BUILDING, (params) -> {
-            return null;
+            String message = "The local students have been out partying *way* too much." +
+            "\nThey keep leaving their empty bottles of vodka all over the place!" +
+            "\nThe campus has never looked so unclean..." +
+            "\n\n-10% Satisfaction to one accommodation block.";
+        
+        System.out.println(message);
+        
+        // Create popup UI
+        
+        // Adds a satisfaction reduction of 10% to any existing accommodation buildings that don't already have the reduction
+        Satisfaction.dirtyBuildingEvent();
+        
+        // Update satisfaction score
+        Satisfaction.updateSatisfactionScore(world);
+        
+        return null;
         });
         
         // Greggs sausage rolls my beloved <3
@@ -451,7 +518,7 @@ public class Events {
             String message = "Greggs™ have started a sale in York." +
                 "\nSausage rolls are now half-price!" +
                 "\nThe students are *very* happy." +
-                "\n\n+10% Satisfaction score to any current accommodation buildings.";
+                "\n\n+10% Student satisfaction.";
             
             System.out.println(message);
             

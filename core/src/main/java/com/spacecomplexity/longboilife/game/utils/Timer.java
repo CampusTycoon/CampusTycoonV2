@@ -1,5 +1,7 @@
 package com.spacecomplexity.longboilife.game.utils;
 
+import com.spacecomplexity.longboilife.game.globals.Constants;
+
 /**
  * Class to represent a simple timer
  */
@@ -12,6 +14,13 @@ public class Timer {
     private Runnable event;
     
     private long lastEventPoll;
+    
+    public enum SEASON {
+        FALL,
+        WINTER,
+        SPRING,
+        SUMMER
+    }
 
     /**
      * Create a new timer object.
@@ -112,6 +121,24 @@ public class Timer {
         if (!paused && timeLeft > 0 && lastEventPoll - timeLeft >= 1000) {
             lastEventPoll = timeLeft;
             Events.pollEventTriggers();
+        }
+    }
+    
+    public SEASON getSeason() {
+        long timeLeft = getTimeLeft();
+        long quarter = Constants.GAME_LENGTH * 250;
+        
+        if (timeLeft < quarter) {
+            return SEASON.SUMMER;
+        }
+        else if (timeLeft < 2 * quarter) {
+            return SEASON.SPRING;
+        }
+        else if (timeLeft < 3 * quarter) {
+            return SEASON.WINTER;
+        }
+        else {
+            return SEASON.FALL;
         }
     }
 }
