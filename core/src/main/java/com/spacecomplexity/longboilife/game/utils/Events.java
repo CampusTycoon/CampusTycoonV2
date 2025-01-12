@@ -145,8 +145,8 @@ public class Events {
         });
         
         GameEvent.FIRE.setProbabilityCalc((params) -> {
-            // Get the amount of buildings in the world (not including roads)
-            Vector<Building> buildings = world.getBuildings();
+            // Get the amount of buildings in the world (removing roads first)
+            Vector<Building> buildings = new Vector<Building>(world.getBuildings());
             buildings.removeIf(building -> building.getType().getCategory() == BuildingCategory.PATHWAY);
             int buildingCount = buildings.size();
             
@@ -367,7 +367,7 @@ public class Events {
         
         // Arson :)
         eventHandler.createEvent(GameEvent.FIRE, (params) -> {
-            Vector<Building> buildings = world.getBuildings();
+            Vector<Building> buildings = new Vector<Building>(world.getBuildings());
             
             if (buildings.isEmpty()) { 
                 // No buildings to set on fire :(
@@ -447,7 +447,7 @@ public class Events {
                 "The government have cut funding from the education sector" +
                 "\n...again." +
                 "\n" +
-                "\n You have lost £" + String.format("%,d", amountCut) + ".";
+                "\n You have lost £" + String.format("%,.2f", amountCut) + ".";
                 
             System.out.println(message);
             
