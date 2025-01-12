@@ -17,6 +17,7 @@ import com.spacecomplexity.longboilife.game.globals.Window;
 import com.spacecomplexity.longboilife.game.ui.game.*;
 import com.spacecomplexity.longboilife.game.ui.gameover.UIOverview;
 import com.spacecomplexity.longboilife.game.utils.EventHandler;
+import com.spacecomplexity.longboilife.game.utils.Events;
 import com.spacecomplexity.longboilife.achievements.AchievementManager;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.spacecomplexity.longboilife.game.utils.UIUtils;
@@ -85,12 +86,12 @@ public class UIManager {
         AchievementManager.getInstance().initializeNotification(viewport, table, skin);
 
         // Hide game UI and show end UI
-        EventHandler.getEventHandler().createEvent(EventHandler.Event.GAME_END, (params) -> {
+        EventHandler.getEventHandler().createEvent(Events.Event.GAME_END, (params) -> {
             GameState.getState().gameOver = true;
             GameState.getState().active = false;
             
             // Cancel all operations and close building mode/menus
-            EventHandler.getEventHandler().callEvent(EventHandler.Event.CANCEL_OPERATIONS);
+            EventHandler.getEventHandler().callEvent(Events.Event.CANCEL_OPERATIONS);
             GameState.getState().buildMenuOpen = false;
             GameState.getState().placingBuilding = null;
             

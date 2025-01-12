@@ -2,6 +2,7 @@ package com.spacecomplexity.longboilife.game.utils;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
+import com.spacecomplexity.longboilife.game.building.Building;
 import com.spacecomplexity.longboilife.game.globals.Constants;
 import com.spacecomplexity.longboilife.game.globals.GameState;
 import com.spacecomplexity.longboilife.game.globals.MainCamera;
@@ -46,5 +47,36 @@ public class GameUtils {
         GameState.getState().scaleFactor = screenHeight / (float) Constants.SCALING_1_HEIGHT;
         // Calculate UI scale factor based on screen height using scaling map
         GameState.getState().uiScaleFactor = Constants.UI_SCALING_MAP.floorEntry(screenHeight).getValue();
+    }
+    
+    public static Boolean roadAdjacent(World world, Building building) {
+        int width = building.getType().getSize().x;
+        int height = building.getType().getSize().y;
+        
+        Vector2Int pos = building.getPosition();
+        
+        Boolean roadIsAdjacent = false;
+        
+        // Check if there are any roads next to the top and bottom sides of the building 
+        for (int x = pos.x; x < pos.x + width; x++) {
+            if (pos.y - 1 >= 0 && world.pathways[x][pos.y - 1] != null) {
+                roadIsAdjacent = true;
+            }
+            if (pos.y + height <= world.getHeight() - 1 && world.pathways[x][pos.y + height] != null) {
+                roadIsAdjacent = true;
+            }
+        }
+        
+        // Check if there are any roads next to the left and right sides of the building 
+        for (int y = pos.y; y < pos.y + height; y++) {
+            if (pos.x - 1 >= 0 && world.pathways[pos.x - 1][y] != null) {
+                roadIsAdjacent = true;
+            }
+            if (pos.x + width <= world.getHeight() - 1 && world.pathways[pos.x + width][y] != null) {
+                roadIsAdjacent = true;
+            }
+        }
+        
+        return roadIsAdjacent;
     }
 }

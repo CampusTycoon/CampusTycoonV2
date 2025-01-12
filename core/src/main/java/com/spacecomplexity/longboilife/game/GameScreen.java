@@ -12,8 +12,6 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.spacecomplexity.longboilife.Main;
 import com.spacecomplexity.longboilife.MainInputManager;
-import com.spacecomplexity.longboilife.achievements.AchievementManager;
-import com.spacecomplexity.longboilife.game.building.Building;
 import com.spacecomplexity.longboilife.game.building.BuildingType;
 import com.spacecomplexity.longboilife.game.globals.Constants;
 import com.spacecomplexity.longboilife.game.globals.GameState;
@@ -21,7 +19,6 @@ import com.spacecomplexity.longboilife.game.globals.MainCamera;
 import com.spacecomplexity.longboilife.game.globals.MainTimer;
 import com.spacecomplexity.longboilife.game.globals.Window;
 import com.spacecomplexity.longboilife.game.tile.InvalidSaveMapException;
-import com.spacecomplexity.longboilife.game.tile.Tile;
 import com.spacecomplexity.longboilife.game.ui.UIManager;
 import com.spacecomplexity.longboilife.game.utils.*;
 import com.spacecomplexity.longboilife.game.world.World;
@@ -66,9 +63,9 @@ public class GameScreen implements Screen {
         }
 
         // Create a new timer for 5 minutes
-        MainTimer.getTimerManager().getTimer().setTimer(1 * 300 * 1000);
+        MainTimer.getTimerManager().getTimer().setTimer(Constants.GAME_LENGTH * 1000);
         MainTimer.getTimerManager().getTimer().setEvent(() -> {
-            EventHandler.getEventHandler().callEvent(EventHandler.Event.GAME_END);
+            EventHandler.getEventHandler().callEvent(Events.Event.GAME_END);
         });
         
         resumeGame();
@@ -131,167 +128,7 @@ public class GameScreen implements Screen {
      */
     private void initialiseEvents() {
         EventHandler eventHandler = EventHandler.getEventHandler();
-
-        // Build the selected building
-        eventHandler.createEvent(EventHandler.Event.BUILD, (params) -> {
-            BuildingType toBuild = gameState.placingBuilding;
-
-            // If there is no selected building do nothing
-            if (toBuild == null) {
-                return null;
-            }
-
-            // If the building is in an invalid location then don't built
-            Vector2Int mouse = GameUtils.getMouseOnGrid(world);
-            if (!world.canBuild(toBuild, mouse)) {
-                return null;
-            }
-
-            // If there is no moving building then this is a new build
-            if (gameState.movingBuilding == null) {
-                // If the user doesn't have enough money to buy the building then don't build
-                float cost = toBuild.getCost();
-                if (gameState.money < cost) {
-                    return null;
-                }
-
-                // Build the building at the mouse location and charge the player accordingly
-                world.build(toBuild, mouse);
-                gameState.money -= cost;
-
-                // Check for achievements
-                AchievementManager.getInstance().checkAchievements();
-
-                // Remove the selected building if shift is not held
-                if (!gameState.shiftHeld) {
-                    gameState.placingBuilding = null;
-                }
-            }
-            // If there is a moving building then this is a moved building.
-            else {
-                // If the user doesn't have enough money to buy the building then don't build
-                float cost = toBuild.getCost() * Constants.moveCostRecovery;
-                if (gameState.money < cost) {
-                    return null;
-                }
-
-                // Build the building at the mouse location and charge the player accordingly
-                world.build(gameState.movingBuilding, mouse);
-                gameState.money -= cost;
-
-                // Remove the old moving building and selected building
-                gameState.movingBuilding = null;
-                gameState.placingBuilding = null;
-            }
-            
-            Satisfaction.updateSatisfactionScore(world);
-
-            return null;
-        });
-
-        // Select a previously built building
-        eventHandler.createEvent(EventHandler.Event.SELECT_BUILDING, (params) -> {
-            // Get the tile at the mouse coordinates
-            Tile tile = world.getTile(GameUtils.getMouseOnGrid(world));
-            // If there is no tile here then do nothing
-            if (tile == null) {
-                return null;
-            }
-            // Get the building on the tile
-            Building selectedBuilding = tile.getBuildingRef();
-        
-            // If there is no building here then do nothing
-            if (selectedBuilding == null) {
-                return null;
-            }
-        
-            // Set the selected building
-            gameState.selectedBuilding = selectedBuilding;
-        
-            // Open the selected building menu
-            eventHandler.callEvent(EventHandler.Event.OPEN_SELECTED_MENU);
-        
-            return null;
-        });
-
-        // Cancel all events
-        eventHandler.createEvent(EventHandler.Event.CANCEL_OPERATIONS, (params) -> {
-            // Close menus and deselect any buildings
-            eventHandler.callEvent(EventHandler.Event.CLOSE_BUILD_MENU);
-            gameState.placingBuilding = null;
-            eventHandler.callEvent(EventHandler.Event.CLOSE_SELECTED_MENU);
-            gameState.selectedBuilding = null;
-
-            // If there is a building move in progress cancel this
-            if (gameState.movingBuilding != null) {
-                world.build(gameState.movingBuilding);
-                gameState.movingBuilding = null;
-            }
-
-            return null;
-        });
-
-        // Sell the selected building
-        eventHandler.createEvent(EventHandler.Event.SELL_BUILDING, (params) -> {
-            // Get the refund amount before nulling the reference
-            float refund = gameState.selectedBuilding.getType().getCost() * Constants.sellCostRecovery;
-            
-            // Delete the building
-            world.demolish(gameState.selectedBuilding);
-            
-            // Add the refund
-            gameState.money += refund;
-            
-            // Update satisfaction score
-            Satisfaction.updateSatisfactionScore(world);
-            
-            // Finally, deselect the building
-            gameState.selectedBuilding = null;
-            
-            return null;
-        });
-
-        // Start the move of the selected building
-        eventHandler.createEvent(EventHandler.Event.MOVE_BUILDING, (params) -> {
-            float cost = gameState.selectedBuilding.getType().getCost() * Constants.moveCostRecovery;
-            // If we don't have enough money then don't allow the move
-            if (gameState.money < cost) {
-                return null;
-            }
-
-            // Delete the original building
-            world.demolish(gameState.selectedBuilding);
-            // Select the same type of building to be placed again
-            gameState.placingBuilding = gameState.selectedBuilding.getType();
-            // Deselect the removed building and set it to the building to be moved
-            gameState.movingBuilding = gameState.selectedBuilding;
-            gameState.selectedBuilding = null;
-
-            // Close the menu
-            eventHandler.callEvent(EventHandler.Event.CLOSE_SELECTED_MENU);
-            
-            Satisfaction.updateSatisfactionScore(world);
-
-            return null;
-        });
-
-        // Return to the menu
-        eventHandler.createEvent(EventHandler.Event.RETURN_MENU, (params) -> {
-            // If the game is over, go to leaderboard instead of menu
-            if (gameState.gameOver) {
-                game.openLeaderboard(Main.ScreenType.GAME);
-            } else {
-                game.switchScreen(Main.ScreenType.MENU);
-            }
-
-            return null;
-        });
-
-        // Open settings menu
-        eventHandler.createEvent(EventHandler.Event.OPEN_SETTINGS, (params) -> {
-            game.openSettings(Main.ScreenType.GAME);
-            return null;
-        });
+        eventHandler.initialiseEvents(game, world);
     }
 
     /**
@@ -303,6 +140,8 @@ public class GameScreen implements Screen {
         if (!gameState.gameOver) {
             MainTimer.getTimerManager().getTimer().poll();
         }
+        
+        MainTimer.getTimerManager().getTimer().pollGameEvents();
         
         // Call to handles any constant input
         inputManager.handleContinuousInput();

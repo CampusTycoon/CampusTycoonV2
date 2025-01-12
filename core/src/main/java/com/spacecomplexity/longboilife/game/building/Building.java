@@ -8,6 +8,8 @@ import com.spacecomplexity.longboilife.game.utils.Vector2Int;
 public class Building {
     private final BuildingType type;
     private Vector2Int position;
+    private double satisfactionModifier;
+    private String satisfactionInfo;
 
     /**
      * Constructs a building instance given the specific type.
@@ -18,6 +20,8 @@ public class Building {
     public Building(BuildingType type, Vector2Int position) {
         this.type = type;
         this.position = position;
+        this.satisfactionModifier = 0;
+        this.satisfactionInfo = "";
     }
 
     public BuildingType getType() {
@@ -30,5 +34,21 @@ public class Building {
 
     public void setPosition(Vector2Int position) {
         this.position = position;
+    }
+    
+    public double getSatisfactionModifier() {
+        return satisfactionModifier;
+    }
+    
+    public void setSatisfactionModifier(double satisfactionModifier) {
+        this.satisfactionModifier = satisfactionModifier;
+    }
+    
+    public String getSatisfactionInfo() {
+        return satisfactionInfo;
+    }
+    
+    public void setSatisfactionInfo(String satisfactionInfo) {
+        this.satisfactionInfo = satisfactionInfo;
     }
 }

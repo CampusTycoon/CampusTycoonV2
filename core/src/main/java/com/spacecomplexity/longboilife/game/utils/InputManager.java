@@ -123,12 +123,12 @@ public class InputManager {
 
                     // If a building is selected then try to build this
                     if (GameState.getState().placingBuilding != null) {
-                        eventHandler.callEvent(EventHandler.Event.BUILD);
+                        eventHandler.callEvent(Events.Event.BUILD);
                     }
 
                     // Else try and select a building already on the map
                     else {
-                        eventHandler.callEvent(EventHandler.Event.SELECT_BUILDING);
+                        eventHandler.callEvent(Events.Event.SELECT_BUILDING);
                     }
 
                     break;
@@ -172,7 +172,7 @@ public class InputManager {
                     // If a building is selected then try to build
                     // This allows drag placing buildings which are not automatically deselected
                     if (GameState.getState().placingBuilding != null) {
-                        eventHandler.callEvent(EventHandler.Event.BUILD);
+                        eventHandler.callEvent(Events.Event.BUILD);
                     }
 
                     break;
@@ -205,7 +205,7 @@ public class InputManager {
         public boolean keyDown(int keycode) {
             // If the close key is pressed, send events to cancel actions
             if (keycode == Keybindings.CANCEL.getKey()) {
-                eventHandler.callEvent(EventHandler.Event.CANCEL_OPERATIONS);
+                eventHandler.callEvent(Events.Event.CANCEL_OPERATIONS);
 
                 return true;
             }
@@ -217,7 +217,7 @@ public class InputManager {
                     return true;
                 }
 
-                eventHandler.callEvent(GameState.getState().paused ? EventHandler.Event.RESUME_GAME : EventHandler.Event.PAUSE_GAME);
+                eventHandler.callEvent(GameState.getState().paused ? Events.Event.RESUME_GAME : Events.Event.PAUSE_GAME);
 
                 return true;
             }

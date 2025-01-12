@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.spacecomplexity.longboilife.game.globals.GameState;
 import com.spacecomplexity.longboilife.game.globals.Keybindings;
+import com.spacecomplexity.longboilife.game.utils.Events;
 import com.spacecomplexity.longboilife.game.utils.EventHandler;
 
 /**
@@ -74,10 +75,10 @@ public class MainInputManager extends InputAdapter {
             
             if (hasActiveOperations) {
                 // Cancel operations if there are any active
-                eventHandler.callEvent(EventHandler.Event.CANCEL_OPERATIONS);
+                eventHandler.callEvent(Events.Event.CANCEL_OPERATIONS);
             } else {
                 // Open settings if no active operations
-                eventHandler.callEvent(EventHandler.Event.OPEN_SETTINGS);
+                eventHandler.callEvent(Events.Event.OPEN_SETTINGS);
             }
             
             return true;

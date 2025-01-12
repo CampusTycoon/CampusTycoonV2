@@ -14,6 +14,7 @@ import com.spacecomplexity.longboilife.game.building.BuildingCategory;
 import com.spacecomplexity.longboilife.game.globals.GameState;
 import com.spacecomplexity.longboilife.game.globals.MainTimer;
 import com.spacecomplexity.longboilife.game.ui.UIElement;
+import com.spacecomplexity.longboilife.game.utils.Events;
 import com.spacecomplexity.longboilife.game.utils.EventHandler;
 import com.spacecomplexity.longboilife.game.utils.UIUtils;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -84,7 +85,7 @@ public class UIBottomMenu extends UIElement {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 // Call the events to pause/resume the game based on the current pause state
-                eventHandler.callEvent(GameState.getState().paused ? EventHandler.Event.RESUME_GAME : EventHandler.Event.PAUSE_GAME);
+                eventHandler.callEvent(GameState.getState().paused ? Events.Event.RESUME_GAME : Events.Event.PAUSE_GAME);
             }
         });
         // Place pause button on the table
@@ -96,13 +97,13 @@ public class UIBottomMenu extends UIElement {
         placeTable();
 
         // Assign pause and play events
-        eventHandler.createEvent(EventHandler.Event.PAUSE_GAME, (params) -> {
+        eventHandler.createEvent(Events.Event.PAUSE_GAME, (params) -> {
             // Set pause state
             GameState.getState().paused = true;
             // Pause the timer
             MainTimer.getTimerManager().getTimer().pauseTimer();
             // Cancel all actions
-            eventHandler.callEvent(EventHandler.Event.CANCEL_OPERATIONS);
+            eventHandler.callEvent(Events.Event.CANCEL_OPERATIONS);
             // Disable all UI but the pause button
             UIUtils.disableAllActors(parentTable.getStage());
             UIUtils.enableActor(pauseButton);
@@ -112,7 +113,7 @@ public class UIBottomMenu extends UIElement {
 
             return null;
         });
-        eventHandler.createEvent(EventHandler.Event.RESUME_GAME, (params) -> {
+        eventHandler.createEvent(Events.Event.RESUME_GAME, (params) -> {
             // Set pause state
             GameState.getState().paused = false;
             // Resume the timer
