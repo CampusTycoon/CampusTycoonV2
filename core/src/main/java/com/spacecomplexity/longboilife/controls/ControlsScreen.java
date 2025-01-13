@@ -2,7 +2,6 @@ package com.spacecomplexity.longboilife.controls;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -20,7 +19,6 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.spacecomplexity.longboilife.Main;
 import com.spacecomplexity.longboilife.MainInputManager;
 import com.spacecomplexity.longboilife.game.globals.Window;
-import java.util.List;
 import com.badlogic.gdx.Input.Keys;
 import com.spacecomplexity.longboilife.game.globals.GameState;
 import com.badlogic.gdx.ScreenAdapter;
@@ -54,7 +52,8 @@ public class ControlsScreen extends ScreenAdapter {
         {"Cancel Selection", "ESC"},
         {"Open Menu", "ESC"},
         {"Toggle Fullscreen", "F11"},
-        {"Pause Game", "Space"}
+        {"Pause Game", "Space"},
+        {"Place Multiple Buildings", "SHIFT"}
     };
 
     public ControlsScreen(Main game, Main.ScreenType previousScreen) {
