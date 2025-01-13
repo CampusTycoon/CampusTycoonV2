@@ -16,7 +16,10 @@ plugins {
 
 import io.github.fourlastor.construo.Target
 
-sourceSets.main.resources.srcDirs += [rootProject.file('assets').path]
+sourceSets.main.resources.srcDirs += [
+    rootProject.file('assets').path,
+    rootProject.file('src/main/resources').path
+]
 mainClassName = 'com.spacecomplexity.longboilife.lwjgl3.Lwjgl3Launcher'
 application.setMainClass(mainClassName)
 eclipse.project.name = appName + '-lwjgl3'
@@ -52,7 +55,10 @@ jar {
 // the duplicatesStrategy matters starting in Gradle 7.0; this setting works.
   duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
   dependsOn configurations.runtimeClasspath
-  from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+  from {
+    configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    sourceSets.main.resources.srcDirs
+  }
 // these "exclude" lines remove some unnecessary duplicate files in the output JAR.
   exclude('META-INF/INDEX.LIST', 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA')
   dependencies {

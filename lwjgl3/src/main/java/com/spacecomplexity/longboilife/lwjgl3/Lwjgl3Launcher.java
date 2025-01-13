@@ -17,7 +17,14 @@ public class Lwjgl3Launcher {
     }
 
     private static Lwjgl3Application createApplication() {
-        return new Lwjgl3Application(new Main(), getDefaultConfiguration());
+        try {
+            return new Lwjgl3Application(new Main(), getDefaultConfiguration());
+        } catch (Exception e) {
+            System.err.println("Failed to create application: " + e.getMessage());
+            e.printStackTrace();
+            System.exit(1);
+            return null;
+        }
     }
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {

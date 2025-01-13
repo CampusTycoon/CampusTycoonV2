@@ -61,9 +61,9 @@ public class LeaderboardScreen implements Screen {
         // Load and compile shaders
         ShaderProgram.pedantic = false;
         try {
-            String vertexShader = Gdx.files.internal("core/src/main/resources/shaders/blur.vert").readString();
-            String fragmentShader = Gdx.files.internal("core/src/main/resources/shaders/blur.frag").readString();
-            
+            String vertexShader = Gdx.files.internal("shaders/blur.vert").readString();
+            String fragmentShader = Gdx.files.internal("shaders/blur.frag").readString();
+
             if (vertexShader == null || fragmentShader == null) {
                 throw new RuntimeException("Failed to load shader files");
             }

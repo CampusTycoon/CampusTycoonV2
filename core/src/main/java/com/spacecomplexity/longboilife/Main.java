@@ -152,9 +152,15 @@ public class Main extends Game {
     @Override
     public void dispose() {
         for (Screen screen : screens.values()) {
-            screen.dispose();
+            if (screen != null) {
+                try {
+                    screen.dispose();
+                } catch (Exception e) {
+                    Gdx.app.error("Main", "Error disposing screen", e);
+                }
+            }
         }
-
+        screens.clear();
         super.dispose();
     }
 }

@@ -58,7 +58,10 @@ public final class Settings {
      */
     public static void save() {
         try {
-            FileWriter writer = new FileWriter("Settings.txt");
+            String userHome = System.getProperty("user.home");
+            File configDir = new File(userHome, ".campustycoon");
+            configDir.mkdirs();
+            FileWriter writer = new FileWriter(new File(configDir, "Settings.txt"));
             
             // Clear the file
             writer.write("");
